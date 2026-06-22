@@ -1,0 +1,646 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  CUSTOMER
+  PROVIDER
+}
+
+enum AccountStatus {
+  ACTIVE
+  SUSPENDED
+  DISABLED
+}
+
+enum ProviderStatus {
+  PENDING_VERIFICATION
+  ACTIVE
+  SUSPENDED
+  DISABLED
+}
+
+enum ProviderVerificationStatus {
+  DRAFT
+  UNDER_REVIEW
+  CHANGES_REQUIRED
+  APPROVED
+  REJECTED
+}
+
+enum ServiceStatus {
+  ACTIVE
+  DISABLED
+}
+
+enum ServiceModerationStatus {
+  NORMAL
+  REQUIRES_REVIEW
+  CHANGES_REQUESTED
+  DISABLED_BY_ADMIN
+}
+
+enum BookingStatus {
+  PENDING
+  ACCEPTED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  REJECTED
+  RESCHEDULED
+}
+
+enum BookingIssueStatus {
+  NONE
+  NEEDS_REVIEW
+  DISPUTED
+  RESOLVED
+}
+
+enum NotificationStatus {
+  UNREAD
+  READ
+}
+
+enum NotificationType {
+  VERIFICATION
+  PROVIDER
+  CUSTOMER
+  BOOKING
+  SERVICE
+  CATEGORY
+  SERVICE_AREA
+  SYSTEM
+}
+
+enum AuditSeverity {
+  INFO
+  NOTICE
+  WARNING
+  CRITICAL
+}
+
+enum AuditEventType {
+  CREATED
+  UPDATED
+  APPROVED
+  REJECTED
+  REQUESTED_CHANGES
+  DISABLED
+  RESTORED
+  SUSPENDED
+  MARKED_READ
+  MARKED_UNREAD
+  SYSTEM_SYNC
+  SIGN_IN
+  SIGN_OUT
+}
+
+enum LanguageCode {
+  EN
+  KM
+}
+
+model User {
+  id                String          @id @default(cuid())
+  publicId          String          @unique
+  email             String          @unique
+  phone             String?         @unique
+  passwordHash      String?
+  role              UserRole
+  accountStatus     AccountStatus   @default(ACTIVE)
+  emailVerifiedAt   DateTime?
+  phoneVerifiedAt   DateTime?
+  lastSignedInAt    DateTime?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  adminProfile      AdminProfile?
+  customerProfile   CustomerProfile?
+  providerProfile   ProviderProfile?
+  preference        UserPreference?
+  accountSessions   AccountSession[]
+  notifications     Notification[]
+
+  @@index([email])
+  @@index([role])
+  @@index([accountStatus])
+  @@map("users")
+}
+
+model AdminProfile {
+  id            String              @id @default(cuid())
+  publicId      String              @unique
+  userId        String              @unique
+  fullName      String
+  avatarUrl     String?
+  jobTitle      String?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  user          User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  auditLogs     AuditLog[]
+  internalNotes InternalAdminNote[]
+  decisions     ProviderVerificationDecision[]
+  moderation    ServiceModerationHistory[]
+
+  @@map("admin_profiles")
+}
+
+model CustomerProfile {
+  id          String            @id @default(cuid())
+  publicId    String            @unique
+  userId      String            @unique
+  fullName    String
+  avatarUrl   String?
+  suspendedAt DateTime?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  addresses   CustomerAddress[]
+  bookings    Booking[]
+  reviews     Review[]
+
+  @@map("customer_profiles")
+}
+
+model ProviderProfile {
+  id                    String                 @id @default(cuid())
+  publicId              String                 @unique
+  userId                String                 @unique
+  contactName           String
+  status                ProviderStatus         @default(PENDING_VERIFICATION)
+  avatarUrl             String?
+  primaryCategoryId     String?
+  primaryAreaId         String?
+  approvedAt            DateTime?
+  suspendedAt           DateTime?
+  suspensionReason      String?
+  averageRating         Decimal?               @db.Decimal(3, 2)
+  completedJobs         Int                    @default(0)
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  user                  User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  primaryCategory       ServiceCategory?       @relation("ProviderPrimaryCategory", fields: [primaryCategoryId], references: [id], onDelete: SetNull)
+  primaryArea           ServiceArea?           @relation("ProviderPrimaryArea", fields: [primaryAreaId], references: [id], onDelete: SetNull)
+  businessProfile       ProviderBusinessProfile?
+  verifications         ProviderVerification[]
+  serviceListings       ServiceListing[]
+  bookings              Booking[]
+  reviews               Review[]
+
+  @@index([status])
+  @@index([primaryCategoryId])
+  @@index([primaryAreaId])
+  @@map("provider_profiles")
+}
+
+model ProviderBusinessProfile {
+  id                 String          @id @default(cuid())
+  providerProfileId  String          @unique
+  businessName       String
+  providerType       String?
+  description        String?
+  logoUrl            String?
+  addressLine        String?
+  district           String?
+  cityProvince       String?
+  coverageSummary    String?
+  latitude           Decimal?        @db.Decimal(10, 7)
+  longitude          Decimal?        @db.Decimal(10, 7)
+  detectedAddress    String?
+  workingDays        String[]        @default([])
+  workingHoursStart  String?
+  workingHoursEnd    String?
+  unavailableDates   DateTime[]      @default([])
+  temporarilyPaused  Boolean         @default(false)
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  providerProfile    ProviderProfile @relation(fields: [providerProfileId], references: [id], onDelete: Cascade)
+
+  @@map("provider_business_profiles")
+}
+
+model UserPreference {
+  id                       String       @id @default(cuid())
+  userId                   String       @unique
+  language                 LanguageCode @default(EN)
+  preferredContactMethod   String?
+  emailNotifications       Boolean      @default(true)
+  pushNotifications        Boolean      @default(true)
+  createdAt                DateTime     @default(now())
+  updatedAt                DateTime     @updatedAt
+  user                     User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_preferences")
+}
+
+model AccountSession {
+  id          String   @id @default(cuid())
+  publicId    String   @unique
+  userId      String
+  tokenHash   String   @unique
+  deviceName  String?
+  ipAddress   String?
+  userAgent   String?
+  lastUsedAt  DateTime?
+  expiresAt   DateTime
+  revokedAt   DateTime?
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("account_sessions")
+}
+
+model ServiceCategory {
+  id               String            @id @default(cuid())
+  publicId         String            @unique
+  nameEn           String
+  nameKm           String
+  slug             String            @unique
+  descriptionEn    String?
+  descriptionKm    String?
+  iconName         String?
+  isActive         Boolean           @default(true)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  serviceListings  ServiceListing[]
+  primaryProviders ProviderProfile[] @relation("ProviderPrimaryCategory")
+
+  @@index([isActive])
+  @@map("service_categories")
+}
+
+model ServiceArea {
+  id               String               @id @default(cuid())
+  publicId         String               @unique
+  nameEn           String
+  nameKm           String
+  slug             String               @unique
+  provinceOrCity   String?
+  isActive         Boolean              @default(true)
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  listingAreas     ServiceListingArea[]
+  primaryProviders ProviderProfile[]    @relation("ProviderPrimaryArea")
+  bookings         Booking[]
+
+  @@index([isActive])
+  @@map("service_areas")
+}
+
+model ProviderVerification {
+  id              String                             @id @default(cuid())
+  publicId        String                             @unique
+  providerProfileId String
+  status          ProviderVerificationStatus         @default(DRAFT)
+  submittedAt     DateTime?
+  reviewedAt      DateTime?
+  reviewerNotes   String?
+  createdAt       DateTime                           @default(now())
+  updatedAt       DateTime                           @updatedAt
+  providerProfile ProviderProfile                    @relation(fields: [providerProfileId], references: [id], onDelete: Cascade)
+  documents       ProviderVerificationDocument[]
+  checklistItems  ProviderVerificationChecklistItem[]
+  decisions       ProviderVerificationDecision[]
+  timelineItems   ProviderVerificationTimelineItem[]
+
+  @@index([providerProfileId])
+  @@index([status])
+  @@index([submittedAt])
+  @@map("provider_verifications")
+}
+
+model ProviderVerificationDocument {
+  id                     String               @id @default(cuid())
+  publicId               String               @unique
+  providerVerificationId String
+  documentType           String
+  fileName               String
+  fileUrl                String
+  mimeType               String?
+  documentNumber         String?
+  expiresAt              DateTime?
+  isVerified             Boolean              @default(false)
+  uploadedAt             DateTime             @default(now())
+  providerVerification   ProviderVerification @relation(fields: [providerVerificationId], references: [id], onDelete: Cascade)
+
+  @@index([providerVerificationId])
+  @@map("provider_verification_documents")
+}
+
+model ProviderVerificationChecklistItem {
+  id                     String               @id @default(cuid())
+  publicId               String               @unique
+  providerVerificationId String
+  label                  String
+  isComplete             Boolean              @default(false)
+  notes                  String?
+  sortOrder              Int                  @default(0)
+  createdAt              DateTime             @default(now())
+  updatedAt              DateTime             @updatedAt
+  providerVerification   ProviderVerification @relation(fields: [providerVerificationId], references: [id], onDelete: Cascade)
+
+  @@index([providerVerificationId])
+  @@map("provider_verification_checklist_items")
+}
+
+model ProviderVerificationDecision {
+  id                     String                     @id @default(cuid())
+  publicId               String                     @unique
+  providerVerificationId String
+  adminProfileId         String?
+  status                 ProviderVerificationStatus
+  reason                 String?
+  decidedAt              DateTime                   @default(now())
+  providerVerification   ProviderVerification       @relation(fields: [providerVerificationId], references: [id], onDelete: Cascade)
+  adminProfile           AdminProfile?              @relation(fields: [adminProfileId], references: [id], onDelete: SetNull)
+
+  @@index([providerVerificationId])
+  @@index([adminProfileId])
+  @@map("provider_verification_decisions")
+}
+
+model ProviderVerificationTimelineItem {
+  id                     String               @id @default(cuid())
+  publicId               String               @unique
+  providerVerificationId String
+  title                  String
+  description            String?
+  status                 ProviderVerificationStatus?
+  occurredAt             DateTime             @default(now())
+  providerVerification   ProviderVerification @relation(fields: [providerVerificationId], references: [id], onDelete: Cascade)
+
+  @@index([providerVerificationId, occurredAt])
+  @@map("provider_verification_timeline_items")
+}
+
+model ServiceListing {
+  id                   String                     @id @default(cuid())
+  publicId             String                     @unique
+  providerProfileId    String
+  categoryId           String
+  name                 String
+  description          String?
+  price                Decimal                    @db.Decimal(10, 2)
+  priceUnit            String?
+  pricingType          String?
+  duration             String?
+  imageUrl             String?
+  quantityEnabled      Boolean                    @default(false)
+  quantityUnit         String?
+  minQuantity          Int?
+  maxQuantity          Int?
+  availabilitySummary  String?
+  serviceStatus        ServiceStatus              @default(DISABLED)
+  moderationStatus     ServiceModerationStatus    @default(NORMAL)
+  createdAt            DateTime                   @default(now())
+  updatedAt            DateTime                   @updatedAt
+  providerProfile      ProviderProfile            @relation(fields: [providerProfileId], references: [id], onDelete: Cascade)
+  category             ServiceCategory            @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  areas                ServiceListingArea[]
+  moderationHistory    ServiceModerationHistory[]
+  bookings             Booking[]
+  reviews              Review[]
+
+  @@index([providerProfileId])
+  @@index([categoryId])
+  @@index([serviceStatus])
+  @@index([moderationStatus])
+  @@map("service_listings")
+}
+
+model ServiceListingArea {
+  id               String         @id @default(cuid())
+  serviceListingId String
+  serviceAreaId    String
+  createdAt        DateTime       @default(now())
+  serviceListing   ServiceListing @relation(fields: [serviceListingId], references: [id], onDelete: Cascade)
+  serviceArea      ServiceArea    @relation(fields: [serviceAreaId], references: [id], onDelete: Cascade)
+
+  @@unique([serviceListingId, serviceAreaId])
+  @@index([serviceAreaId])
+  @@map("service_listing_areas")
+}
+
+model ServiceModerationHistory {
+  id                    String                    @id @default(cuid())
+  publicId              String                    @unique
+  serviceListingId      String
+  adminProfileId        String?
+  eventType             AuditEventType
+  reason                String?
+  note                  String?
+  resultingServiceStatus ServiceStatus
+  resultingModerationStatus ServiceModerationStatus
+  createdAt             DateTime                  @default(now())
+  serviceListing        ServiceListing            @relation(fields: [serviceListingId], references: [id], onDelete: Cascade)
+  adminProfile          AdminProfile?             @relation(fields: [adminProfileId], references: [id], onDelete: SetNull)
+
+  @@index([serviceListingId, createdAt])
+  @@map("service_moderation_history")
+}
+
+model CustomerAddress {
+  id                String          @id @default(cuid())
+  publicId          String          @unique
+  customerProfileId String
+  label             String
+  fullName          String
+  phone             String
+  addressLine       String
+  notes             String?
+  latitude          Decimal?        @db.Decimal(10, 7)
+  longitude         Decimal?        @db.Decimal(10, 7)
+  detectedLocation  String?
+  isDefault         Boolean         @default(false)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  customerProfile   CustomerProfile @relation(fields: [customerProfileId], references: [id], onDelete: Cascade)
+  bookings           Booking[]
+
+  @@index([customerProfileId])
+  @@map("customer_addresses")
+}
+
+model Booking {
+  id                 String                 @id @default(cuid())
+  publicId           String                 @unique
+  customerProfileId  String
+  providerProfileId  String
+  serviceListingId   String
+  customerAddressId  String?
+  serviceAreaId      String?
+  scheduledAt        DateTime
+  timeSlot            String?
+  quantity            Int                    @default(1)
+  estimatedTotal      Decimal                @db.Decimal(10, 2)
+  serviceAddress      String
+  areaSummary         String?
+  accessInstructions  String?
+  customerNotes       String?
+  rejectionReason     String?
+  status              BookingStatus          @default(PENDING)
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
+  customerProfile     CustomerProfile        @relation(fields: [customerProfileId], references: [id], onDelete: Restrict)
+  providerProfile     ProviderProfile        @relation(fields: [providerProfileId], references: [id], onDelete: Restrict)
+  serviceListing      ServiceListing         @relation(fields: [serviceListingId], references: [id], onDelete: Restrict)
+  customerAddress     CustomerAddress?       @relation(fields: [customerAddressId], references: [id], onDelete: SetNull)
+  serviceArea         ServiceArea?           @relation(fields: [serviceAreaId], references: [id], onDelete: SetNull)
+  timelineItems       BookingTimelineItem[]
+  issues              BookingIssue[]
+  statusHistory       BookingStatusHistory[]
+  review              Review?
+
+  @@index([customerProfileId])
+  @@index([providerProfileId])
+  @@index([serviceListingId])
+  @@index([status])
+  @@index([scheduledAt])
+  @@map("bookings")
+}
+
+model BookingTimelineItem {
+  id          String        @id @default(cuid())
+  publicId    String        @unique
+  bookingId   String
+  title       String
+  description String?
+  isComplete  Boolean       @default(false)
+  occurredAt  DateTime?
+  sortOrder   Int           @default(0)
+  booking     Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([bookingId, sortOrder])
+  @@map("booking_timeline_items")
+}
+
+model BookingIssue {
+  id          String             @id @default(cuid())
+  publicId    String             @unique
+  bookingId   String
+  status      BookingIssueStatus @default(NEEDS_REVIEW)
+  summaryEn   String
+  summaryKm   String?
+  resolution  String?
+  resolvedAt  DateTime?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  booking     Booking            @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([bookingId])
+  @@index([status])
+  @@map("booking_issues")
+}
+
+model BookingStatusHistory {
+  id          String        @id @default(cuid())
+  publicId    String        @unique
+  bookingId   String
+  fromStatus  BookingStatus?
+  toStatus    BookingStatus
+  reason      String?
+  changedAt   DateTime      @default(now())
+  booking     Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([bookingId, changedAt])
+  @@map("booking_status_history")
+}
+
+model Review {
+  id                String          @id @default(cuid())
+  publicId          String          @unique
+  customerProfileId String
+  providerProfileId String
+  serviceListingId  String
+  bookingId         String?         @unique
+  rating            Decimal         @db.Decimal(2, 1)
+  comment           String?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  customerProfile   CustomerProfile @relation(fields: [customerProfileId], references: [id], onDelete: Restrict)
+  providerProfile   ProviderProfile @relation(fields: [providerProfileId], references: [id], onDelete: Restrict)
+  serviceListing    ServiceListing  @relation(fields: [serviceListingId], references: [id], onDelete: Restrict)
+  booking           Booking?        @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+
+  @@index([customerProfileId])
+  @@index([providerProfileId])
+  @@index([serviceListingId])
+  @@map("reviews")
+}
+
+model Notification {
+  id              String             @id @default(cuid())
+  publicId        String             @unique
+  userId          String
+  type            NotificationType
+  status          NotificationStatus @default(UNREAD)
+  titleEn         String
+  titleKm         String?
+  messageEn       String
+  messageKm       String?
+  priority        String?
+  relatedModule   String?
+  relatedRecordId String?
+  relatedRoute    String?
+  readAt          DateTime?
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  user            User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@index([type])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+model AuditLog {
+  id              String         @id @default(cuid())
+  publicId        String         @unique
+  adminProfileId  String?
+  actorName       String
+  eventType       AuditEventType
+  severity        AuditSeverity  @default(INFO)
+  actionEn        String
+  actionKm        String?
+  reasonEn        String?
+  reasonKm        String?
+  relatedModule   String
+  relatedRecordId String?
+  relatedRoute    String?
+  metadata        Json?
+  createdAt       DateTime       @default(now())
+  adminProfile    AdminProfile?  @relation(fields: [adminProfileId], references: [id], onDelete: SetNull)
+
+  @@index([adminProfileId])
+  @@index([relatedModule])
+  @@index([eventType])
+  @@index([severity])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model InternalAdminNote {
+  id              String        @id @default(cuid())
+  publicId        String        @unique
+  adminProfileId  String?
+  body            String
+  relatedModule   String
+  relatedRecordId String?
+  relatedRoute    String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  adminProfile    AdminProfile? @relation(fields: [adminProfileId], references: [id], onDelete: SetNull)
+
+  @@index([adminProfileId])
+  @@index([relatedModule, relatedRecordId])
+  @@map("internal_admin_notes")
+}
