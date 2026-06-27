@@ -1,3 +1,5 @@
+import "dotenv/config";
+import { PrismaPg } from "@prisma/adapter-pg";
 import {
   AccountStatus,
   AuditEventType,
@@ -13,9 +15,15 @@ import {
   ServiceModerationStatus,
   ServiceStatus,
   UserRole,
-} from '@prisma/client';
+} from "../src/generated/prisma/client";
 
-const prisma = new PrismaClient();
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) {
+  throw new Error("DATABASE_URL is not set");
+}
+
+const adapter = new PrismaPg({ connectionString });
+const prisma = new PrismaClient({ adapter });
 const FAKE_PASSWORD_HASH = 'NOT_A_REAL_HASH__SEED_ONLY__AUTH_NOT_IMPLEMENTED';
 
 const at = (value: string) => new Date(value);
