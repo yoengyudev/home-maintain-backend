@@ -391,6 +391,7 @@ export const ModelName = {
   ProviderBusinessProfile: 'ProviderBusinessProfile',
   UserPreference: 'UserPreference',
   AccountSession: 'AccountSession',
+  FcmToken: 'FcmToken',
   ServiceCategory: 'ServiceCategory',
   ServiceArea: 'ServiceArea',
   ProviderVerification: 'ProviderVerification',
@@ -425,7 +426,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "adminProfile" | "customerProfile" | "providerProfile" | "providerBusinessProfile" | "userPreference" | "accountSession" | "serviceCategory" | "serviceArea" | "providerVerification" | "providerVerificationDocument" | "providerVerificationChecklistItem" | "providerVerificationDecision" | "providerVerificationTimelineItem" | "serviceListing" | "serviceListingArea" | "serviceModerationHistory" | "customerAddress" | "booking" | "bookingTimelineItem" | "bookingIssue" | "bookingStatusHistory" | "review" | "notification" | "auditLog" | "internalAdminNote"
+    modelProps: "user" | "adminProfile" | "customerProfile" | "providerProfile" | "providerBusinessProfile" | "userPreference" | "accountSession" | "fcmToken" | "serviceCategory" | "serviceArea" | "providerVerification" | "providerVerificationDocument" | "providerVerificationChecklistItem" | "providerVerificationDecision" | "providerVerificationTimelineItem" | "serviceListing" | "serviceListingArea" | "serviceModerationHistory" | "customerAddress" | "booking" | "bookingTimelineItem" | "bookingIssue" | "bookingStatusHistory" | "review" | "notification" | "auditLog" | "internalAdminNote"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -944,6 +945,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.AccountSessionCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.AccountSessionCountAggregateOutputType> | number
+        }
+      }
+    }
+    FcmToken: {
+      payload: Prisma.$FcmTokenPayload<ExtArgs>
+      fields: Prisma.FcmTokenFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FcmTokenFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FcmTokenPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FcmTokenFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FcmTokenPayload>
+        }
+        findFirst: {
+          args: Prisma.FcmTokenFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FcmTokenPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FcmTokenFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FcmTokenPayload>
+        }
+        findMany: {
+          args: Prisma.FcmTokenFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FcmTokenPayload>[]
+        }
+        create: {
+          args: Prisma.FcmTokenCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FcmTokenPayload>
+        }
+        createMany: {
+          args: Prisma.FcmTokenCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FcmTokenCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FcmTokenPayload>[]
+        }
+        delete: {
+          args: Prisma.FcmTokenDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FcmTokenPayload>
+        }
+        update: {
+          args: Prisma.FcmTokenUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FcmTokenPayload>
+        }
+        deleteMany: {
+          args: Prisma.FcmTokenDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FcmTokenUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FcmTokenUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FcmTokenPayload>[]
+        }
+        upsert: {
+          args: Prisma.FcmTokenUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FcmTokenPayload>
+        }
+        aggregate: {
+          args: Prisma.FcmTokenAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFcmToken>
+        }
+        groupBy: {
+          args: Prisma.FcmTokenGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FcmTokenGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FcmTokenCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FcmTokenCountAggregateOutputType> | number
         }
       }
     }
@@ -2516,6 +2591,22 @@ export const AccountSessionScalarFieldEnum = {
 export type AccountSessionScalarFieldEnum = (typeof AccountSessionScalarFieldEnum)[keyof typeof AccountSessionScalarFieldEnum]
 
 
+export const FcmTokenScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  userId: 'userId',
+  token: 'token',
+  platform: 'platform',
+  deviceName: 'deviceName',
+  isActive: 'isActive',
+  lastUsedAt: 'lastUsedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FcmTokenScalarFieldEnum = (typeof FcmTokenScalarFieldEnum)[keyof typeof FcmTokenScalarFieldEnum]
+
+
 export const ServiceCategoryScalarFieldEnum = {
   id: 'id',
   publicId: 'publicId',
@@ -3002,6 +3093,20 @@ export type ListEnumLanguageCodeFieldRefInput<$PrismaModel> = FieldRefInputType<
 
 
 /**
+ * Reference to a field of type 'DevicePlatform'
+ */
+export type EnumDevicePlatformFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DevicePlatform'>
+    
+
+
+/**
+ * Reference to a field of type 'DevicePlatform[]'
+ */
+export type ListEnumDevicePlatformFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DevicePlatform[]'>
+    
+
+
+/**
  * Reference to a field of type 'ProviderVerificationStatus'
  */
 export type EnumProviderVerificationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProviderVerificationStatus'>
@@ -3271,6 +3376,7 @@ export type GlobalOmitConfig = {
   providerBusinessProfile?: Prisma.ProviderBusinessProfileOmit
   userPreference?: Prisma.UserPreferenceOmit
   accountSession?: Prisma.AccountSessionOmit
+  fcmToken?: Prisma.FcmTokenOmit
   serviceCategory?: Prisma.ServiceCategoryOmit
   serviceArea?: Prisma.ServiceAreaOmit
   providerVerification?: Prisma.ProviderVerificationOmit

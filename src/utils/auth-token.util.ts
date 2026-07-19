@@ -9,6 +9,7 @@ import { verifyAccessToken } from "./jwt.util";
 export type AccessTokenPayload = {
     userId: string;
     role: UserRole;
+    sid?: string;
     tokenVersion?: number;
 };
 

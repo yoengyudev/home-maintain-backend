@@ -75,6 +75,11 @@ export type UserPreference = Prisma.UserPreferenceModel
  */
 export type AccountSession = Prisma.AccountSessionModel
 /**
+ * Model FcmToken
+ * 
+ */
+export type FcmToken = Prisma.FcmTokenModel
+/**
  * Model ServiceCategory
  * 
  */
