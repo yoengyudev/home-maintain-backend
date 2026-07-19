@@ -58,6 +58,7 @@ export const ModelName = {
   ProviderBusinessProfile: 'ProviderBusinessProfile',
   UserPreference: 'UserPreference',
   AccountSession: 'AccountSession',
+  FcmToken: 'FcmToken',
   ServiceCategory: 'ServiceCategory',
   ServiceArea: 'ServiceArea',
   ProviderVerification: 'ProviderVerification',
@@ -217,6 +218,22 @@ export const AccountSessionScalarFieldEnum = {
 } as const
 
 export type AccountSessionScalarFieldEnum = (typeof AccountSessionScalarFieldEnum)[keyof typeof AccountSessionScalarFieldEnum]
+
+
+export const FcmTokenScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  userId: 'userId',
+  token: 'token',
+  platform: 'platform',
+  deviceName: 'deviceName',
+  isActive: 'isActive',
+  lastUsedAt: 'lastUsedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FcmTokenScalarFieldEnum = (typeof FcmTokenScalarFieldEnum)[keyof typeof FcmTokenScalarFieldEnum]
 
 
 export const ServiceCategoryScalarFieldEnum = {

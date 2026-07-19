@@ -2,31 +2,86 @@ import { v2 as cloudinary } from "cloudinary";
 
 const trim = (value: string | undefined) => (value ?? "").trim();
 
-if (process.env.CLOUDINARY_URL?.trim()) {
-    cloudinary.config(process.env.CLOUDINARY_URL.trim());
-} else {
-    const cloud_name = trim(process.env.CLOUDINARY_CLOUD_NAME);
-    const api_key = trim(process.env.CLOUDINARY_API_KEY);
-    const api_secret = trim(process.env.CLOUDINARY_API_SECRET);
+export const CUSTOMER_PROFILE_IMAGE_FOLDER = "home-maintain/customer/profile";
 
-    console.log("cloud_name", cloud_name);
-    console.log("api_key", api_key);
-    console.log("api_secret", api_secret);
+const cloudinaryUrl = trim(process.env.CLOUDINARY_URL);
+const cloud_name = trim(process.env.CLOUDINARY_CLOUD_NAME);
+const api_key = trim(process.env.CLOUDINARY_API_KEY);
+const api_secret = trim(process.env.CLOUDINARY_API_SECRET);
 
-    if (!cloud_name || !api_key || !api_secret) {
-        throw new Error(
-            "Cloudinary: set CLOUDINARY_URL or CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET"
-        );
-    }
+const hasExplicitCredentials = Boolean(cloud_name && api_key && api_secret);
+const isConfigured = Boolean(hasExplicitCredentials || cloudinaryUrl);
 
+/**
+ * Cloudinary's first `config()` call also reads `process.env.CLOUDINARY_URL`.
+ * Prefer explicit CLOUDINARY_CLOUD_NAME / API_KEY / API_SECRET and clear any stale URL.
+ */
+if (hasExplicitCredentials) {
+    delete process.env.CLOUDINARY_URL;
+    cloudinary.config(true);
     cloudinary.config({
         cloud_name,
         api_key,
         api_secret,
+        secure: true,
     });
+    console.info(`[cloudinary] configured cloud_name=${cloud_name}`);
+} else if (cloudinaryUrl) {
+    process.env.CLOUDINARY_URL = cloudinaryUrl;
+    cloudinary.config(true);
+    console.info(`[cloudinary] configured from CLOUDINARY_URL cloud_name=${cloudinary.config().cloud_name}`);
+} else {
+    console.warn(
+        "Cloudinary is not configured. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET (or CLOUDINARY_URL)."
+    );
 }
 
 export default cloudinary;
+
+export const isCloudinaryConfigured = () => isConfigured;
+
+export const getCloudinaryCloudName = () =>
+    trim(cloudinary.config().cloud_name as string | undefined) || cloud_name || null;
+
+const assertCloudinaryConfigured = () => {
+    if (!isConfigured) {
+        throw new Error(
+            "Cloudinary is not configured. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET (or CLOUDINARY_URL)."
+        );
+    }
+};
+
+/**
+ * Uploads image bytes to Cloudinary and returns the secure URL.
+ */
+export const uploadImageBuffer = (
+    fileBuffer: Buffer,
+    folder: string
+): Promise<{ secure_url: string }> => {
+    assertCloudinaryConfigured();
+
+    const activeCloudName = getCloudinaryCloudName();
+    if (!activeCloudName) {
+        throw new Error("Cloudinary cloud_name is missing");
+    }
+
+    return new Promise((resolve, reject) => {
+        const upload = cloudinary.uploader.upload_stream(
+            {
+                folder,
+                // Ensure upload targets the configured cloud, not a stale URL cloud.
+            },
+            (error, result) => {
+                if (error || !result?.secure_url) {
+                    reject(error ?? new Error("Image upload failed"));
+                    return;
+                }
+                resolve({ secure_url: result.secure_url });
+            }
+        );
+        upload.end(fileBuffer);
+    });
+};
 
 /**
  * Parses a Cloudinary delivery URL and returns the `public_id` for API calls (e.g. destroy).
@@ -43,7 +98,7 @@ export function extractPublicIdFromCloudinaryUrl(
         if (u.hostname !== "res.cloudinary.com") {
             return null;
         }
-        const expectedCloud = cloudinary.config().cloud_name;
+        const expectedCloud = getCloudinaryCloudName();
         const segments = u.pathname.split("/").filter(Boolean);
         // /{cloud_name}/image/upload/...
         if (segments.length < 4) {
@@ -86,6 +141,10 @@ export function extractPublicIdFromCloudinaryUrl(
 export function destroyCloudinaryImageByUrl(
     imageUrl: string | null | undefined
 ): Promise<void> {
+    if (!isConfigured) {
+        return Promise.resolve();
+    }
+
     const publicId = extractPublicIdFromCloudinaryUrl(imageUrl);
     if (!publicId) {
         return Promise.resolve();

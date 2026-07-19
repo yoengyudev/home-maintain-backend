@@ -146,3 +146,13 @@ export const LanguageCode = {
 } as const
 
 export type LanguageCode = (typeof LanguageCode)[keyof typeof LanguageCode]
+
+
+export const DevicePlatform = {
+  ANDROID: 'ANDROID',
+  IOS: 'IOS',
+  WEB: 'WEB',
+  UNKNOWN: 'UNKNOWN'
+} as const
+
+export type DevicePlatform = (typeof DevicePlatform)[keyof typeof DevicePlatform]
