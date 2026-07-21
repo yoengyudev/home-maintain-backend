@@ -54,9 +54,12 @@ export class CustomerNotificationsService {
         return { count };
     }
 
-    static async markRead(userId: string, publicId: string, lang: Lang) {
+    static async markRead(userId: string, id: string, lang: Lang) {
         const notification = await prisma.notification.findFirst({
-            where: { publicId, userId },
+            where: {
+                userId,
+                OR: [{ id }, { publicId: id }],
+            },
         });
 
         if (!notification) {

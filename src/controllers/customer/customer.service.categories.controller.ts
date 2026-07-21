@@ -16,10 +16,10 @@ export const getCategories = async (req: Request, res: Response) => {
     });
 };
 
-export const getCategoryBySlug = async (req: Request, res: Response) => {
+export const getCategoryById = async (req: Request, res: Response) => {
     const lang = getLang(req);
-    const slug = String(req.params.slug ?? "");
-    const data = await CustomerServiceCategoriesService.getCategoryBySlug(slug, lang);
+    const id = String(req.params.id ?? "");
+    const data = await CustomerServiceCategoriesService.getCategoryById(id, lang);
 
     return sendResponse(res, {
         statusCode: HTTPSTATUS.OK,

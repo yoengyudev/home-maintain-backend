@@ -17,6 +17,6 @@ router.use(authenticate, authorize(UserRole.CUSTOMER));
 router.get("/", asyncHandler(listNotifications));
 router.get("/unread-count", asyncHandler(getUnreadNotificationCount));
 router.post("/read-all", asyncHandler(markAllNotificationsRead));
-router.post("/:publicId/read", asyncHandler(markNotificationRead));
+router.post("/:id/read", asyncHandler(markNotificationRead));
 
 export default router;

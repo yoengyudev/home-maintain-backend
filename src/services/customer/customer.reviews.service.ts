@@ -16,7 +16,7 @@ type CreateReviewDto = z.infer<typeof customerCreateReviewSchema>;
 export class CustomerReviewsService {
     static async createForBooking(
         userId: string,
-        bookingPublicId: string,
+        bookingId: string,
         data: CreateReviewDto,
         lang: Lang
     ) {
@@ -24,8 +24,8 @@ export class CustomerReviewsService {
 
         const booking = await prisma.booking.findFirst({
             where: {
-                publicId: bookingPublicId,
                 customerProfileId: customer.id,
+                OR: [{ id: bookingId }, { publicId: bookingId }],
             },
             include: {
                 review: true,
@@ -91,21 +91,21 @@ export class CustomerReviewsService {
             messageEn: `Thanks for reviewing ${providerName}. Your feedback helps other customers.`,
             messageKm: `អរគុណសម្រាប់ការវាយតម្លៃ ${providerName}។ មតិរបស់អ្នកជួយអតិថិជនផ្សេងទៀត។`,
             relatedModule: "booking",
-            relatedRecordId: booking.publicId,
-            relatedRoute: `/bookings/${booking.publicId}`,
+            relatedRecordId: booking.id,
+            relatedRoute: `/bookings/${booking.id}`,
             priority: "normal",
         });
 
         return this.format(review);
     }
 
-    static async getForBooking(userId: string, bookingPublicId: string, lang: Lang) {
+    static async getForBooking(userId: string, bookingId: string, lang: Lang) {
         const customer = await this.requireCustomerProfile(userId, lang);
 
         const booking = await prisma.booking.findFirst({
             where: {
-                publicId: bookingPublicId,
                 customerProfileId: customer.id,
+                OR: [{ id: bookingId }, { publicId: bookingId }],
             },
             include: { review: true },
         });

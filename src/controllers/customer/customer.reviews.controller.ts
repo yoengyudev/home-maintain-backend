@@ -8,10 +8,10 @@ import { t } from "../../i18n/translate";
 export const createBookingReview = async (req: Request, res: Response) => {
     const lang = getLang(req);
     const userId = (req as any).user?.userId;
-    const publicId = String(req.params.publicId ?? "");
+    const id = String(req.params.id ?? "");
     const data = await CustomerReviewsService.createForBooking(
         userId,
-        publicId,
+        id,
         req.body,
         lang
     );
@@ -26,8 +26,8 @@ export const createBookingReview = async (req: Request, res: Response) => {
 export const getBookingReview = async (req: Request, res: Response) => {
     const lang = getLang(req);
     const userId = (req as any).user?.userId;
-    const publicId = String(req.params.publicId ?? "");
-    const data = await CustomerReviewsService.getForBooking(userId, publicId, lang);
+    const id = String(req.params.id ?? "");
+    const data = await CustomerReviewsService.getForBooking(userId, id, lang);
 
     return sendResponse(res, {
         statusCode: HTTPSTATUS.OK,

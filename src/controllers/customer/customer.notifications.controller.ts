@@ -32,8 +32,8 @@ export const getUnreadNotificationCount = async (req: Request, res: Response) =>
 export const markNotificationRead = async (req: Request, res: Response) => {
     const lang = getLang(req);
     const userId = (req as any).user?.userId;
-    const publicId = String(req.params.publicId ?? "");
-    const data = await CustomerNotificationsService.markRead(userId, publicId, lang);
+    const id = String(req.params.id ?? "");
+    const data = await CustomerNotificationsService.markRead(userId, id, lang);
 
     return sendResponse(res, {
         statusCode: HTTPSTATUS.OK,

@@ -27,10 +27,10 @@ export const getRecommendedProviders = async (req: Request, res: Response) => {
     });
 };
 
-export const getProviderByPublicId = async (req: Request, res: Response) => {
+export const getProviderById = async (req: Request, res: Response) => {
     const lang = getLang(req);
-    const publicId = String(req.params.publicId ?? "");
-    const data = await CustomerProvidersService.getProviderByPublicId(publicId, lang);
+    const id = String(req.params.id ?? "");
+    const data = await CustomerProvidersService.getProviderById(id, lang);
 
     return sendResponse(res, {
         statusCode: HTTPSTATUS.OK,

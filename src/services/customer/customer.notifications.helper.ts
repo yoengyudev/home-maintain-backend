@@ -58,6 +58,7 @@ export class CustomerNotificationsHelper {
 
     static format(
         notification: {
+            id: string;
             publicId: string;
             type: NotificationType;
             status: NotificationStatus;
@@ -78,8 +79,11 @@ export class CustomerNotificationsHelper {
         const title = isKh && notification.titleKm ? notification.titleKm : notification.titleEn;
         const message =
             isKh && notification.messageKm ? notification.messageKm : notification.messageEn;
+        const bookingId =
+            notification.relatedModule === "booking" ? notification.relatedRecordId : null;
 
         return {
+            id: notification.id,
             publicId: notification.publicId,
             type: notification.type,
             status: notification.status,
@@ -94,8 +98,9 @@ export class CustomerNotificationsHelper {
             relatedModule: notification.relatedModule,
             relatedRecordId: notification.relatedRecordId,
             relatedRoute: notification.relatedRoute,
-            bookingPublicId:
-                notification.relatedModule === "booking" ? notification.relatedRecordId : null,
+            bookingId,
+            /** @deprecated prefer bookingId — kept for older clients */
+            bookingPublicId: bookingId,
             readAt: notification.readAt?.toISOString() ?? null,
             createdAt: notification.createdAt.toISOString(),
         };

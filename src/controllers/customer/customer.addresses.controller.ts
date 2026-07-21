@@ -17,6 +17,19 @@ export const listAddresses = async (req: Request, res: Response) => {
     });
 };
 
+export const getAddressById = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const userId = (req as any).user?.userId;
+    const id = String(req.params.id ?? "");
+    const data = await CustomerAddressesService.getById(userId, id, lang);
+
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: t("CUSTOMER_ADDRESSES_FETCHED_SUCCESSFULLY", lang),
+        data,
+    });
+};
+
 export const createAddress = async (req: Request, res: Response) => {
     const lang = getLang(req);
     const userId = (req as any).user?.userId;
@@ -32,8 +45,8 @@ export const createAddress = async (req: Request, res: Response) => {
 export const updateAddress = async (req: Request, res: Response) => {
     const lang = getLang(req);
     const userId = (req as any).user?.userId;
-    const publicId = String(req.params.publicId ?? "");
-    const data = await CustomerAddressesService.update(userId, publicId, req.body, lang);
+    const id = String(req.params.id ?? "");
+    const data = await CustomerAddressesService.update(userId, id, req.body, lang);
 
     return sendResponse(res, {
         statusCode: HTTPSTATUS.OK,
@@ -45,8 +58,8 @@ export const updateAddress = async (req: Request, res: Response) => {
 export const deleteAddress = async (req: Request, res: Response) => {
     const lang = getLang(req);
     const userId = (req as any).user?.userId;
-    const publicId = String(req.params.publicId ?? "");
-    const data = await CustomerAddressesService.remove(userId, publicId, lang);
+    const id = String(req.params.id ?? "");
+    const data = await CustomerAddressesService.remove(userId, id, lang);
 
     return sendResponse(res, {
         statusCode: HTTPSTATUS.OK,

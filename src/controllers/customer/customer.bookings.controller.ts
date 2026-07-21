@@ -17,11 +17,11 @@ export const listBookings = async (req: Request, res: Response) => {
     });
 };
 
-export const getBookingByPublicId = async (req: Request, res: Response) => {
+export const getBookingById = async (req: Request, res: Response) => {
     const lang = getLang(req);
     const userId = (req as any).user?.userId;
-    const publicId = String(req.params.publicId ?? "");
-    const data = await CustomerBookingsService.getByPublicId(userId, publicId, lang);
+    const id = String(req.params.id ?? "");
+    const data = await CustomerBookingsService.getById(userId, id, lang);
 
     return sendResponse(res, {
         statusCode: HTTPSTATUS.OK,
@@ -45,8 +45,8 @@ export const createBooking = async (req: Request, res: Response) => {
 export const cancelBooking = async (req: Request, res: Response) => {
     const lang = getLang(req);
     const userId = (req as any).user?.userId;
-    const publicId = String(req.params.publicId ?? "");
-    const data = await CustomerBookingsService.cancel(userId, publicId, req.body, lang);
+    const id = String(req.params.id ?? "");
+    const data = await CustomerBookingsService.cancel(userId, id, req.body, lang);
 
     return sendResponse(res, {
         statusCode: HTTPSTATUS.OK,
@@ -58,8 +58,8 @@ export const cancelBooking = async (req: Request, res: Response) => {
 export const rescheduleBooking = async (req: Request, res: Response) => {
     const lang = getLang(req);
     const userId = (req as any).user?.userId;
-    const publicId = String(req.params.publicId ?? "");
-    const data = await CustomerBookingsService.reschedule(userId, publicId, req.body, lang);
+    const id = String(req.params.id ?? "");
+    const data = await CustomerBookingsService.reschedule(userId, id, req.body, lang);
 
     return sendResponse(res, {
         statusCode: HTTPSTATUS.OK,

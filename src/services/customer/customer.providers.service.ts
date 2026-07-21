@@ -44,7 +44,7 @@ export class CustomerProvidersService {
                         ? {
                               category: {
                                   isActive: true,
-                                  OR: [{ slug: category }, { publicId: category }],
+                                  OR: [{ id: category }, { slug: category }, { publicId: category }],
                               },
                           }
                         : {}),
@@ -216,10 +216,10 @@ export class CustomerProvidersService {
         };
     }
 
-    static async getProviderByPublicId(publicId: string, lang: Lang) {
+    static async getProviderById(id: string, lang: Lang) {
         const provider = await prisma.providerProfile.findFirst({
             where: {
-                publicId,
+                id,
                 status: ProviderStatus.ACTIVE,
             },
             include: {
@@ -248,6 +248,7 @@ export class CustomerProvidersService {
                         customerProfile: true,
                         serviceListing: {
                             select: {
+                                id: true,
                                 publicId: true,
                                 name: true,
                             },
@@ -274,6 +275,7 @@ export class CustomerProvidersService {
 
     private static formatProviderSummary(
         provider: {
+            id: string;
             publicId: string;
             contactName: string;
             avatarUrl: string | null;
@@ -298,6 +300,7 @@ export class CustomerProvidersService {
                 nameKm: string;
             } | null;
             primaryCategory: {
+                id?: string;
                 publicId: string;
                 slug: string;
                 nameEn: string;
@@ -322,6 +325,7 @@ export class CustomerProvidersService {
                 : null);
 
         return {
+            id: provider.id,
             publicId: provider.publicId,
             contactName: provider.contactName,
             businessName: business?.businessName ?? null,
@@ -349,6 +353,9 @@ export class CustomerProvidersService {
                 : null,
             primaryCategory: provider.primaryCategory
                 ? {
+                      ...(provider.primaryCategory.id
+                          ? { id: provider.primaryCategory.id }
+                          : {}),
                       publicId: provider.primaryCategory.publicId,
                       slug: provider.primaryCategory.slug,
                       name: isKh
@@ -364,6 +371,7 @@ export class CustomerProvidersService {
 
     private static formatProviderDetail(
         provider: {
+            id: string;
             publicId: string;
             contactName: string;
             avatarUrl: string | null;
@@ -398,6 +406,7 @@ export class CustomerProvidersService {
                 iconName: string | null;
             } | null;
             serviceListings: Array<{
+                id: string;
                 publicId: string;
                 name: string;
                 description: string | null;
@@ -408,6 +417,7 @@ export class CustomerProvidersService {
                 imageUrl: string | null;
                 availabilitySummary: string | null;
                 category: {
+                    id: string;
                     publicId: string;
                     slug: string;
                     nameEn: string;
@@ -434,6 +444,7 @@ export class CustomerProvidersService {
                     avatarUrl: string | null;
                 };
                 serviceListing: {
+                    id: string;
                     publicId: string;
                     name: string;
                 };
@@ -484,6 +495,7 @@ export class CustomerProvidersService {
             workingHoursEnd: provider.businessProfile?.workingHoursEnd ?? null,
             areas: Array.from(areaMap.values()),
             services: provider.serviceListings.map((listing) => ({
+                id: listing.id,
                 publicId: listing.publicId,
                 name: listing.name,
                 description: listing.description,
@@ -495,6 +507,7 @@ export class CustomerProvidersService {
                 availabilitySummary: listing.availabilitySummary,
                 reviewCount: listing._count.reviews,
                 category: {
+                    id: listing.category.id,
                     publicId: listing.category.publicId,
                     slug: listing.category.slug,
                     name: isKh ? listing.category.nameKm : listing.category.nameEn,
@@ -518,6 +531,7 @@ export class CustomerProvidersService {
                 authorName: review.customerProfile.fullName,
                 authorAvatarUrl: review.customerProfile.avatarUrl,
                 service: {
+                    id: review.serviceListing.id,
                     publicId: review.serviceListing.publicId,
                     name: review.serviceListing.name,
                 },

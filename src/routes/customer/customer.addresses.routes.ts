@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
     createAddress,
     deleteAddress,
+    getAddressById,
     listAddresses,
     updateAddress,
 } from "../../controllers/customer/customer.addresses.controller";
@@ -21,7 +22,8 @@ router.use(authenticate, authorize(UserRole.CUSTOMER));
 
 router.get("/", asyncHandler(listAddresses));
 router.post("/", validate(customerCreateAddressSchema), asyncHandler(createAddress));
-router.patch("/:publicId", validate(customerUpdateAddressSchema), asyncHandler(updateAddress));
-router.delete("/:publicId", asyncHandler(deleteAddress));
+router.get("/:id", asyncHandler(getAddressById));
+router.patch("/:id", validate(customerUpdateAddressSchema), asyncHandler(updateAddress));
+router.delete("/:id", asyncHandler(deleteAddress));
 
 export default router;

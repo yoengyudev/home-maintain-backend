@@ -91,7 +91,7 @@ export class CustomerServicesService {
                 ? {
                       category: {
                           isActive: true,
-                          OR: [{ slug: category }, { publicId: category }],
+                          OR: [{ id: category }, { slug: category }, { publicId: category }],
                       },
                   }
                 : {}),
@@ -198,10 +198,10 @@ export class CustomerServicesService {
         };
     }
 
-    static async getServiceByPublicId(publicId: string, lang: Lang) {
+    static async getServiceById(id: string, lang: Lang) {
         const service = await prisma.serviceListing.findFirst({
             where: {
-                publicId,
+                id,
                 serviceStatus: ServiceStatus.ACTIVE,
                 moderationStatus: {
                     not: ServiceModerationStatus.DISABLED_BY_ADMIN,
@@ -222,6 +222,7 @@ export class CustomerServicesService {
 
     private static formatService(
         service: {
+            id: string;
             publicId: string;
             name: string;
             description: string | null;
@@ -237,6 +238,7 @@ export class CustomerServicesService {
             availabilitySummary: string | null;
             serviceStatus: ServiceStatus;
             category: {
+                id: string;
                 publicId: string;
                 slug: string;
                 nameEn: string;
@@ -244,6 +246,7 @@ export class CustomerServicesService {
                 iconName: string | null;
             };
             providerProfile: {
+                id: string;
                 publicId: string;
                 contactName: string;
                 avatarUrl: string | null;
@@ -270,6 +273,7 @@ export class CustomerServicesService {
         const isKh = lang === "kh";
 
         return {
+            id: service.id,
             publicId: service.publicId,
             name: service.name,
             description: service.description,
@@ -286,6 +290,7 @@ export class CustomerServicesService {
             serviceStatus: service.serviceStatus,
             reviewCount: service._count.reviews,
             category: {
+                id: service.category.id,
                 publicId: service.category.publicId,
                 slug: service.category.slug,
                 name: isKh ? service.category.nameKm : service.category.nameEn,
@@ -294,6 +299,7 @@ export class CustomerServicesService {
                 iconName: service.category.iconName,
             },
             provider: {
+                id: service.providerProfile.id,
                 publicId: service.providerProfile.publicId,
                 contactName: service.providerProfile.contactName,
                 businessName: service.providerProfile.businessProfile?.businessName ?? null,

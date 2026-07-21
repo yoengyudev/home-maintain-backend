@@ -77,7 +77,9 @@ export const ModelName = {
   Review: 'Review',
   Notification: 'Notification',
   AuditLog: 'AuditLog',
-  InternalAdminNote: 'InternalAdminNote'
+  InternalAdminNote: 'InternalAdminNote',
+  Faq: 'Faq',
+  SupportPage: 'SupportPage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -555,6 +557,36 @@ export const InternalAdminNoteScalarFieldEnum = {
 export type InternalAdminNoteScalarFieldEnum = (typeof InternalAdminNoteScalarFieldEnum)[keyof typeof InternalAdminNoteScalarFieldEnum]
 
 
+export const FaqScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  questionEn: 'questionEn',
+  questionKm: 'questionKm',
+  answerEn: 'answerEn',
+  answerKm: 'answerKm',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FaqScalarFieldEnum = (typeof FaqScalarFieldEnum)[keyof typeof FaqScalarFieldEnum]
+
+
+export const SupportPageScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  pageKey: 'pageKey',
+  contentEn: 'contentEn',
+  contentKm: 'contentKm',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SupportPageScalarFieldEnum = (typeof SupportPageScalarFieldEnum)[keyof typeof SupportPageScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -569,6 +601,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {

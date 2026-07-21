@@ -3,7 +3,10 @@ import { customerAddressBodySchema } from "./address.validator";
 
 export const customerCreateBookingSchema = z
     .object({
-        servicePublicId: z.string().trim().min(1),
+        /** Preferred: internal service listing id */
+        serviceId: z.string().trim().min(1).optional(),
+        /** @deprecated use serviceId — still accepted for older clients */
+        servicePublicId: z.string().trim().min(1).optional(),
         quantity: z.coerce.number().int().min(1).max(20).default(1),
         scheduledDate: z
             .string()
@@ -15,10 +18,18 @@ export const customerCreateBookingSchema = z
         customerNotes: z.string().trim().max(1000).optional().nullable(),
         accessInstructions: z.string().trim().max(500).optional().nullable(),
     })
+    .refine((data) => Boolean(data.serviceId) || Boolean(data.servicePublicId), {
+        message: "serviceId is required",
+        path: ["serviceId"],
+    })
     .refine((data) => Boolean(data.addressId) || Boolean(data.address), {
         message: "addressId or address is required",
         path: ["addressId"],
-    });
+    })
+    .transform((data) => ({
+        ...data,
+        serviceId: (data.serviceId ?? data.servicePublicId) as string,
+    }));
 
 export const customerCancelBookingSchema = z.object({
     reason: z.string().trim().max(500).optional().nullable(),

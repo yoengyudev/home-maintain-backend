@@ -55,11 +55,11 @@ export class CustomerServiceCategoriesService {
         };
     }
 
-    static async getCategoryBySlug(slugOrPublicId: string, lang: Lang) {
+    static async getCategoryById(id: string, lang: Lang) {
         const category = await prisma.serviceCategory.findFirst({
             where: {
+                id,
                 isActive: true,
-                OR: [{ slug: slugOrPublicId }, { publicId: slugOrPublicId }],
             },
             include: {
                 _count: {
@@ -81,6 +81,7 @@ export class CustomerServiceCategoriesService {
 
     private static formatCategory(
         category: {
+            id: string;
             publicId: string;
             nameEn: string;
             nameKm: string;
@@ -96,6 +97,7 @@ export class CustomerServiceCategoriesService {
         const isKh = lang === "kh";
 
         return {
+            id: category.id,
             publicId: category.publicId,
             slug: category.slug,
             name: isKh ? category.nameKm : category.nameEn,

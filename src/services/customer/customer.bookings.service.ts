@@ -92,12 +92,12 @@ export class CustomerBookingsService {
         };
     }
 
-    static async getByPublicId(userId: string, publicId: string, lang: Lang) {
+    static async getById(userId: string, id: string, lang: Lang) {
         const customer = await this.requireCustomerProfile(userId, lang);
         const booking = await prisma.booking.findFirst({
             where: {
-                publicId,
                 customerProfileId: customer.id,
+                OR: [{ id }, { publicId: id }],
             },
             include: bookingInclude,
         });
@@ -114,7 +114,7 @@ export class CustomerBookingsService {
 
         const service = await prisma.serviceListing.findFirst({
             where: {
-                publicId: data.servicePublicId,
+                OR: [{ id: data.serviceId }, { publicId: data.serviceId }],
                 serviceStatus: ServiceStatus.ACTIVE,
                 moderationStatus: { not: ServiceModerationStatus.DISABLED_BY_ADMIN },
                 providerProfile: { status: ProviderStatus.ACTIVE },
@@ -147,8 +147,8 @@ export class CustomerBookingsService {
         if (data.addressId) {
             const address = await prisma.customerAddress.findFirst({
                 where: {
-                    publicId: data.addressId,
                     customerProfileId: customer.id,
+                    OR: [{ id: data.addressId }, { publicId: data.addressId }],
                 },
             });
             if (!address) {
@@ -159,15 +159,9 @@ export class CustomerBookingsService {
             accessInstructions = accessInstructions ?? address.notes;
         } else if (data.address) {
             const created = await CustomerAddressesService.create(userId, data.address, lang);
-            const address = await prisma.customerAddress.findFirst({
-                where: { publicId: created.publicId, customerProfileId: customer.id },
-            });
-            if (!address) {
-                throw new NotFoundException(t("CUSTOMER_ADDRESS_NOT_FOUND", lang));
-            }
-            customerAddressId = address.id;
-            serviceAddress = address.addressLine;
-            accessInstructions = accessInstructions ?? address.notes;
+            customerAddressId = created.id;
+            serviceAddress = created.addressLine;
+            accessInstructions = accessInstructions ?? created.notes;
         } else {
             throw new BadRequestException(t("CUSTOMER_BOOKING_ADDRESS_REQUIRED", lang));
         }
@@ -262,8 +256,8 @@ export class CustomerBookingsService {
             messageEn: `${providerName} received your booking for ${data.scheduledDate} (${data.timeSlot}).`,
             messageKm: `${providerName} បានទទួលការកក់របស់អ្នកសម្រាប់ ${data.scheduledDate} (${data.timeSlot})។`,
             relatedModule: "booking",
-            relatedRecordId: booking.publicId,
-            relatedRoute: `/bookings/${booking.publicId}`,
+            relatedRecordId: booking.id,
+            relatedRoute: `/bookings/${booking.id}`,
             priority: "normal",
         });
 
@@ -272,13 +266,16 @@ export class CustomerBookingsService {
 
     static async cancel(
         userId: string,
-        publicId: string,
+        id: string,
         data: CancelBookingDto,
         lang: Lang
     ) {
         const customer = await this.requireCustomerProfile(userId, lang);
         const booking = await prisma.booking.findFirst({
-            where: { publicId, customerProfileId: customer.id },
+            where: {
+                customerProfileId: customer.id,
+                OR: [{ id }, { publicId: id }],
+            },
         });
 
         if (!booking) {
@@ -289,7 +286,7 @@ export class CustomerBookingsService {
             throw new BadRequestException(t("CUSTOMER_BOOKING_CANNOT_CANCEL", lang));
         }
 
-        const historyPublicId = `BSH-${publicId}-${Date.now()}`;
+        const historyPublicId = `BSH-${booking.publicId}-${Date.now()}`;
 
         const updated = await prisma.$transaction(async (tx) => {
             const next = await tx.booking.update({
@@ -325,11 +322,11 @@ export class CustomerBookingsService {
             userId,
             titleEn: "Booking cancelled",
             titleKm: "ការកក់ត្រូវបានលុបចោល",
-            messageEn: `Your booking ${publicId} was cancelled.`,
-            messageKm: `ការកក់ ${publicId} របស់អ្នកត្រូវបានលុបចោល។`,
+            messageEn: `Your booking ${booking.publicId} was cancelled.`,
+            messageKm: `ការកក់ ${booking.publicId} របស់អ្នកត្រូវបានលុបចោល។`,
             relatedModule: "booking",
-            relatedRecordId: publicId,
-            relatedRoute: `/bookings/${publicId}`,
+            relatedRecordId: booking.id,
+            relatedRoute: `/bookings/${booking.id}`,
             priority: "high",
         });
 
@@ -338,13 +335,16 @@ export class CustomerBookingsService {
 
     static async reschedule(
         userId: string,
-        publicId: string,
+        id: string,
         data: RescheduleBookingDto,
         lang: Lang
     ) {
         const customer = await this.requireCustomerProfile(userId, lang);
         const booking = await prisma.booking.findFirst({
-            where: { publicId, customerProfileId: customer.id },
+            where: {
+                customerProfileId: customer.id,
+                OR: [{ id }, { publicId: id }],
+            },
         });
 
         if (!booking) {
@@ -360,7 +360,7 @@ export class CustomerBookingsService {
             throw new BadRequestException(t("CUSTOMER_BOOKING_SCHEDULE_IN_PAST", lang));
         }
 
-        const historyPublicId = `BSH-${publicId}-R-${Date.now()}`;
+        const historyPublicId = `BSH-${booking.publicId}-R-${Date.now()}`;
         const nextStatus =
             booking.status === BookingStatus.PENDING
                 ? BookingStatus.PENDING
@@ -403,11 +403,11 @@ export class CustomerBookingsService {
             userId,
             titleEn: "Booking rescheduled",
             titleKm: "ការកក់ត្រូវបានកំណត់ពេលឡើងវិញ",
-            messageEn: `Your booking ${publicId} was rescheduled to ${data.scheduledDate} (${data.timeSlot}).`,
-            messageKm: `ការកក់ ${publicId} ត្រូវបានកំណត់ពេលឡើងវិញទៅ ${data.scheduledDate} (${data.timeSlot})។`,
+            messageEn: `Your booking ${booking.publicId} was rescheduled to ${data.scheduledDate} (${data.timeSlot}).`,
+            messageKm: `ការកក់ ${booking.publicId} ត្រូវបានកំណត់ពេលឡើងវិញទៅ ${data.scheduledDate} (${data.timeSlot})។`,
             relatedModule: "booking",
-            relatedRecordId: publicId,
-            relatedRoute: `/bookings/${publicId}`,
+            relatedRecordId: booking.id,
+            relatedRoute: `/bookings/${booking.id}`,
             priority: "normal",
         });
 
@@ -454,6 +454,7 @@ export class CustomerBookingsService {
 
     private static formatBooking(
         booking: {
+            id: string;
             publicId: string;
             scheduledAt: Date;
             timeSlot: string | null;
@@ -468,12 +469,14 @@ export class CustomerBookingsService {
             createdAt: Date;
             updatedAt: Date;
             serviceListing: {
+                id: string;
                 publicId: string;
                 name: string;
                 imageUrl: string | null;
                 priceUnit: string | null;
                 duration: string | null;
                 category: {
+                    id: string;
                     publicId: string;
                     slug: string;
                     nameEn: string;
@@ -481,6 +484,7 @@ export class CustomerBookingsService {
                 };
             };
             providerProfile: {
+                id: string;
                 publicId: string;
                 contactName: string;
                 avatarUrl: string | null;
@@ -490,6 +494,7 @@ export class CustomerBookingsService {
                 } | null;
             };
             customerAddress: {
+                id: string;
                 publicId: string;
                 label: string;
                 fullName: string;
@@ -531,6 +536,7 @@ export class CustomerBookingsService {
             booking.providerProfile.contactName;
 
         return {
+            id: booking.id,
             publicId: booking.publicId,
             status: booking.status,
             statusLabel: this.statusLabel(booking.status),
@@ -557,12 +563,14 @@ export class CustomerBookingsService {
             createdAt: booking.createdAt.toISOString(),
             updatedAt: booking.updatedAt.toISOString(),
             service: {
+                id: booking.serviceListing.id,
                 publicId: booking.serviceListing.publicId,
                 name: booking.serviceListing.name,
                 imageUrl: booking.serviceListing.imageUrl,
                 priceUnit: booking.serviceListing.priceUnit,
                 duration: booking.serviceListing.duration,
                 category: {
+                    id: booking.serviceListing.category.id,
                     publicId: booking.serviceListing.category.publicId,
                     slug: booking.serviceListing.category.slug,
                     name: isKh
@@ -573,6 +581,7 @@ export class CustomerBookingsService {
                 },
             },
             provider: {
+                id: booking.providerProfile.id,
                 publicId: booking.providerProfile.publicId,
                 contactName: booking.providerProfile.contactName,
                 businessName: booking.providerProfile.businessProfile?.businessName ?? null,
@@ -585,6 +594,7 @@ export class CustomerBookingsService {
             address: booking.customerAddress
                 ? CustomerAddressesService.format(booking.customerAddress)
                 : {
+                      id: null,
                       publicId: null,
                       label: "Service address",
                       fullName: "",

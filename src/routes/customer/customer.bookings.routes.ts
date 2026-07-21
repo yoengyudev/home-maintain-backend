@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
     cancelBooking,
     createBooking,
-    getBookingByPublicId,
+    getBookingById,
     listBookings,
     rescheduleBooking,
 } from "../../controllers/customer/customer.bookings.controller";
@@ -28,20 +28,20 @@ router.use(authenticate, authorize(UserRole.CUSTOMER));
 
 router.get("/", asyncHandler(listBookings));
 router.post("/", validate(customerCreateBookingSchema), asyncHandler(createBooking));
-router.get("/:publicId", asyncHandler(getBookingByPublicId));
+router.get("/:id", asyncHandler(getBookingById));
 router.post(
-    "/:publicId/cancel",
+    "/:id/cancel",
     validate(customerCancelBookingSchema),
     asyncHandler(cancelBooking)
 );
 router.post(
-    "/:publicId/reschedule",
+    "/:id/reschedule",
     validate(customerRescheduleBookingSchema),
     asyncHandler(rescheduleBooking)
 );
-router.get("/:publicId/review", asyncHandler(getBookingReview));
+router.get("/:id/review", asyncHandler(getBookingReview));
 router.post(
-    "/:publicId/reviews",
+    "/:id/reviews",
     validate(customerCreateReviewSchema),
     asyncHandler(createBookingReview)
 );
