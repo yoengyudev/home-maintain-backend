@@ -24,6 +24,15 @@ export const signRefreshToken = (payload: object) => {
     return jwt.sign(payload, REFRESH_SECRET, options);
 };
 
+/** Customer tokens do not expire; session is invalidated only on logout. */
+export const signCustomerAccessToken = (payload: object) => {
+    return jwt.sign(payload, ACCESS_SECRET);
+};
+
+export const signCustomerRefreshToken = (payload: object) => {
+    return jwt.sign(payload, REFRESH_SECRET);
+};
+
 export const verifyAccessToken = (token: string) => {
     try {
         return jwt.verify(token, ACCESS_SECRET) as any;

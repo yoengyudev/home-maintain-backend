@@ -5,13 +5,34 @@ export const getPagination = (page = 1, limit = 10) => {
     return { skip, take };
 };
 
+/**
+ * Normalizes query values that may come from Express as:
+ * - a single string
+ * - an array of strings
+ * - anything else
+ */
+export const firstQueryString = (value: unknown): string | undefined => {
+    if (typeof value === "string") {
+        return value;
+    }
+
+    if (Array.isArray(value) && typeof value[0] === "string") {
+        return value[0];
+    }
+
+    return undefined;
+};
+
 export const parsePaginationQuery = (
     page?: unknown,
     limit?: unknown,
     maxLimit = 100
 ) => {
-    const parsedPage = Number(page ?? 1);
-    const parsedLimit = Number(limit ?? 10);
+    const pageRaw = firstQueryString(page) ?? page;
+    const limitRaw = firstQueryString(limit) ?? limit;
+
+    const parsedPage = Number(pageRaw ?? 1);
+    const parsedLimit = Number(limitRaw ?? 10);
 
     const normalizedPage = Number.isNaN(parsedPage) || parsedPage < 1 ? 1 : parsedPage;
     const normalizedLimit =
@@ -34,5 +55,5 @@ export const buildPaginationMeta = (
     page,
     limit,
     total,
-    totalPages: Math.ceil(total / limit),
+    totalPages: Math.ceil(total / limit) || 0,
 });

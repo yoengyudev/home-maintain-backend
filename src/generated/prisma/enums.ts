@@ -156,3 +156,11 @@ export const DevicePlatform = {
 } as const
 
 export type DevicePlatform = (typeof DevicePlatform)[keyof typeof DevicePlatform]
+
+
+export const SupportPageKey = {
+  ABOUT: 'ABOUT',
+  MISSION: 'MISSION'
+} as const
+
+export type SupportPageKey = (typeof SupportPageKey)[keyof typeof SupportPageKey]

@@ -152,3 +152,13 @@ export type AuditLog = Prisma.AuditLogModel
  * 
  */
 export type InternalAdminNote = Prisma.InternalAdminNoteModel
+/**
+ * Model Faq
+ * 
+ */
+export type Faq = Prisma.FaqModel
+/**
+ * Model SupportPage
+ * 
+ */
+export type SupportPage = Prisma.SupportPageModel

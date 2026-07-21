@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getProfile, updateProfile } from "../../controllers/customer/customer.profile.controller";
+import { getProfile, getProfileStats, updateProfile } from "../../controllers/customer/customer.profile.controller";
 import { asyncHandler } from "../../middlewares/async-handler.middlerware";
 import { authenticate } from "../../middlewares/auth.middlerware";
 import { authorize } from "../../middlewares/role.middlerware";
@@ -10,6 +10,7 @@ import { uploadImage } from "../../utils/upload-image.util";
 
 const router = Router();
 
+router.get("/stats", authenticate, authorize(UserRole.CUSTOMER), asyncHandler(getProfileStats));
 router.get("/", authenticate, authorize(UserRole.CUSTOMER), asyncHandler(getProfile));
 router.patch(
     "/",

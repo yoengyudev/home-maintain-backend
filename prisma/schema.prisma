@@ -670,3 +670,38 @@ model InternalAdminNote {
   @@index([relatedModule, relatedRecordId])
   @@map("internal_admin_notes")
 }
+
+model Faq {
+  id          String   @id @default(cuid())
+  publicId    String   @unique
+  questionEn  String
+  questionKm  String
+  answerEn    String
+  answerKm    String
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isActive, sortOrder])
+  @@map("faqs")
+}
+
+enum SupportPageKey {
+  ABOUT
+  MISSION
+}
+
+model SupportPage {
+  id         String         @id @default(cuid())
+  publicId   String         @unique
+  pageKey    SupportPageKey @unique
+  contentEn  Json
+  contentKm  Json
+  isActive   Boolean        @default(true)
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  @@index([isActive])
+  @@map("support_pages")
+}

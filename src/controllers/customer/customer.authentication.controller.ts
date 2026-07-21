@@ -108,3 +108,34 @@ export const logout = async (req: Request, res: Response) => {
         message: t("CUSTOMER_LOGGED_OUT_SUCCESSFULLY", lang),
     });
 };
+
+export const changePassword = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const user = (req as any).user;
+
+    await CustomerAuthenticationService.changePassword(
+        user.userId,
+        req.body,
+        lang,
+        user.sid
+    );
+
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: t("CUSTOMER_PASSWORD_CHANGED_SUCCESSFULLY", lang),
+        data: { success: true },
+    });
+};
+
+export const deleteAccount = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const user = (req as any).user;
+
+    await CustomerAuthenticationService.deleteAccount(user.userId, lang);
+
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: t("CUSTOMER_ACCOUNT_DELETED_SUCCESSFULLY", lang),
+        data: { success: true },
+    });
+};
