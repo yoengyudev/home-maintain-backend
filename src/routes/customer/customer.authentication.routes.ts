@@ -7,6 +7,8 @@ import {
     verifyForgotPasswordOtp,
     resendForgotPasswordOtp,
     resetPassword,
+    changePassword,
+    deleteAccount,
     login,
     logout,
 } from "../../controllers/customer/customer.authentication.controller";
@@ -20,6 +22,7 @@ import {
     customerVerifyForgotPasswordOtpSchema,
     customerResendForgotPasswordOtpSchema,
     customerResetPasswordSchema,
+    customerChangePasswordSchema,
     customerLoginSchema,
 } from "../../validators/customer/auth.validator";
 import { authenticate } from "../../middlewares/auth.middlerware";
@@ -39,5 +42,13 @@ router.post("/forgot-password/reset", validate(customerResetPasswordSchema), asy
 
 router.post("/login", validate(customerLoginSchema), asyncHandler(login));
 router.post("/logout", authenticate, authorize(UserRole.CUSTOMER), asyncHandler(logout));
+router.post(
+    "/change-password",
+    authenticate,
+    authorize(UserRole.CUSTOMER),
+    validate(customerChangePasswordSchema),
+    asyncHandler(changePassword)
+);
+router.delete("/account", authenticate, authorize(UserRole.CUSTOMER), asyncHandler(deleteAccount));
 
 export default router;

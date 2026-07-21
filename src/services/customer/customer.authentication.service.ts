@@ -2,7 +2,7 @@ import crypto from "crypto";
 import { prisma } from "../../database/prisma.client";
 import { hashPassword } from "../../utils/password.util";
 import { verifyPassword } from "../../utils/verify-password.util";
-import { signAccessToken, signRefreshToken } from "../../utils/jwt.util";
+import { signCustomerAccessToken, signCustomerRefreshToken } from "../../utils/jwt.util";
 import type { z } from "zod";
 import type {
     customerRegisterSchema,
@@ -13,8 +13,9 @@ import type {
     customerVerifyForgotPasswordOtpSchema,
     customerResendForgotPasswordOtpSchema,
     customerResetPasswordSchema,
+    customerChangePasswordSchema,
 } from "../../validators/customer/auth.validator";
-import { DevicePlatform, UserRole } from "../../generated/prisma/enums";
+import { AccountStatus, DevicePlatform, UserRole } from "../../generated/prisma/enums";
 import { isCustomerRole } from "../../helper/check-role.helper";
 import {
     createCustomerSession,
@@ -36,6 +37,7 @@ type ForgotPasswordDto = z.infer<typeof customerForgotPasswordSchema>;
 type VerifyForgotPasswordOtpDto = z.infer<typeof customerVerifyForgotPasswordOtpSchema>;
 type ResendForgotPasswordOtpDto = z.infer<typeof customerResendForgotPasswordOtpSchema>;
 type ResetPasswordDto = z.infer<typeof customerResetPasswordSchema>;
+type ChangePasswordDto = z.infer<typeof customerChangePasswordSchema>;
 
 type PendingCustomerRegistration = {
     fullName: string;
@@ -138,8 +140,8 @@ export class CustomerAuthenticationService {
             sid: sessionId,
         };
 
-        const accessToken = signAccessToken(tokenPayload);
-        const refreshToken = signRefreshToken(tokenPayload);
+        const accessToken = signCustomerAccessToken(tokenPayload);
+        const refreshToken = signCustomerRefreshToken(tokenPayload);
 
         await createCustomerSession({
             userId: result.id,
@@ -186,6 +188,10 @@ export class CustomerAuthenticationService {
             throw new UnauthorizedException(t("CUSTOMER_INVALID_CREDENTIALS", lang));
         }
 
+        if (user.accountStatus !== AccountStatus.ACTIVE) {
+            throw new UnauthorizedException(t("CUSTOMER_ACCOUNT_DISABLED", lang));
+        }
+
         const isValid = await verifyPassword(password, user.passwordHash);
         if (!isValid) {
             throw new UnauthorizedException(t("CUSTOMER_INVALID_CREDENTIALS", lang));
@@ -198,8 +204,8 @@ export class CustomerAuthenticationService {
             sid: sessionId,
         };
 
-        const accessToken = signAccessToken(tokenPayload);
-        const refreshToken = signRefreshToken(tokenPayload);
+        const accessToken = signCustomerAccessToken(tokenPayload);
+        const refreshToken = signCustomerRefreshToken(tokenPayload);
 
         await createCustomerSession({
             userId: user.id,
@@ -330,5 +336,104 @@ export class CustomerAuthenticationService {
         return {
             phone,
         };
+    }
+
+    static async changePassword(
+        userId: string,
+        data: ChangePasswordDto,
+        lang: Lang,
+        sessionId?: string
+    ) {
+        const { currentPassword, newPassword } = data;
+
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+        });
+
+        if (!user || !isCustomerRole(user.role) || !user.passwordHash) {
+            throw new NotFoundException(t("CUSTOMER_NOT_FOUND", lang));
+        }
+
+        if (user.accountStatus !== AccountStatus.ACTIVE) {
+            throw new UnauthorizedException(t("CUSTOMER_ACCOUNT_DISABLED", lang));
+        }
+
+        const isValid = await verifyPassword(currentPassword, user.passwordHash);
+        if (!isValid) {
+            throw new BadRequestException(t("CUSTOMER_PASSWORD_CURRENT_INVALID", lang));
+        }
+
+        const passwordHash = await hashPassword(newPassword);
+
+        await prisma.user.update({
+            where: { id: user.id },
+            data: { passwordHash },
+        });
+
+        // Keep the current session; revoke every other device.
+        await prisma.accountSession.updateMany({
+            where: {
+                userId: user.id,
+                revokedAt: null,
+                ...(sessionId ? { NOT: { publicId: sessionId } } : {}),
+            },
+            data: { revokedAt: new Date() },
+        });
+
+        return { success: true as const };
+    }
+
+    static async deleteAccount(userId: string, lang: Lang) {
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+            include: { customerProfile: true },
+        });
+
+        if (!user || !isCustomerRole(user.role)) {
+            throw new NotFoundException(t("CUSTOMER_NOT_FOUND", lang));
+        }
+
+        if (user.accountStatus === AccountStatus.DISABLED) {
+            throw new BadRequestException(t("CUSTOMER_ACCOUNT_DISABLED", lang));
+        }
+
+        const anonymizedEmail = `deleted+${user.publicId}@deleted.local`;
+
+        await prisma.$transaction(async (tx) => {
+            await tx.accountSession.updateMany({
+                where: { userId: user.id, revokedAt: null },
+                data: { revokedAt: new Date() },
+            });
+
+            await tx.fcmToken.updateMany({
+                where: { userId: user.id, isActive: true },
+                data: { isActive: false },
+            });
+
+            if (user.customerProfile) {
+                await tx.customerProfile.update({
+                    where: { id: user.customerProfile.id },
+                    data: {
+                        fullName: "Deleted User",
+                        avatarUrl: null,
+                        suspendedAt: new Date(),
+                    },
+                });
+            }
+
+            await tx.user.update({
+                where: { id: user.id },
+                data: {
+                    accountStatus: AccountStatus.DISABLED,
+                    passwordHash: null,
+                    email: anonymizedEmail,
+                    phone: null,
+                    emailVerifiedAt: null,
+                    phoneVerifiedAt: null,
+                },
+            });
+        });
+
+        return { success: true as const };
     }
 }

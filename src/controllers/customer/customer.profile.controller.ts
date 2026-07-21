@@ -17,6 +17,18 @@ export const getProfile = async (req: Request, res: Response) => {
     });
 };
 
+export const getProfileStats = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const userId = (req as any).user?.userId;
+    const data = await CustomerProfileService.getProfileStats(userId, lang);
+
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: t("CUSTOMER_PROFILE_STATS_FETCHED_SUCCESSFULLY", lang),
+        data,
+    });
+};
+
 export const updateProfile = async (req: Request, res: Response) => {
     const lang = getLang(req);
     const userId = (req as any).user?.userId;

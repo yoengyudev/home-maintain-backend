@@ -1,4 +1,5 @@
 import { prisma } from "../../database/prisma.client";
+import { BookingStatus } from "../../generated/prisma/enums";
 import { isCustomerRole } from "../../helper/check-role.helper";
 import { formatCustomerAuthUser } from "../../helper/customer/auth.helper";
 import type { Lang } from "../../i18n/messages";
@@ -22,6 +23,40 @@ export class CustomerProfileService {
     static async getProfile(userId: string, lang: Lang) {
         const user = await this.findCustomerOrThrow(userId, lang);
         return this.formatProfile(user);
+    }
+
+    static async getProfileStats(userId: string, lang: Lang) {
+        const user = await this.findCustomerOrThrow(userId, lang);
+
+        if (!user.customerProfile) {
+            throw new NotFoundException(t("CUSTOMER_NOT_FOUND", lang));
+        }
+
+        const customerProfileId = user.customerProfile.id;
+
+        const [completedBookings, addresses, reviewedBookings] = await Promise.all([
+            prisma.booking.count({
+                where: {
+                    customerProfileId,
+                    status: BookingStatus.COMPLETED,
+                },
+            }),
+            prisma.customerAddress.count({
+                where: { customerProfileId },
+            }),
+            prisma.booking.count({
+                where: {
+                    customerProfileId,
+                    review: { isNot: null },
+                },
+            }),
+        ]);
+
+        return {
+            completedBookings,
+            addresses,
+            reviewedBookings,
+        };
     }
 
     static async updateProfile(

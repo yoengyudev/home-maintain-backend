@@ -16,12 +16,15 @@ export const createCustomerSession = async (params: {
 }) => {
     const { userId, sessionId, refreshToken } = params;
 
+    // Far-future expiry: customer sessions stay valid until logout (revokedAt).
+    const NEVER_EXPIRES_AT = new Date("9999-12-31T23:59:59.999Z");
+
     return prisma.accountSession.create({
         data: {
             publicId: sessionId,
             userId,
             tokenHash: hashToken(refreshToken),
-            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+            expiresAt: NEVER_EXPIRES_AT,
         },
     });
 };
@@ -66,7 +69,6 @@ export const assertActiveCustomerSession = async (
             publicId: sessionId,
             userId,
             revokedAt: null,
-            expiresAt: { gt: new Date() },
         },
     });
 
