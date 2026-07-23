@@ -24,7 +24,8 @@ if (!connectionString) {
 
 const adapter = new PrismaPg({ connectionString });
 const prisma = new PrismaClient({ adapter });
-const FAKE_PASSWORD_HASH = 'NOT_A_REAL_HASH__SEED_ONLY__AUTH_NOT_IMPLEMENTED';
+// Bcrypt hash for 'FixItHome@2026'
+const ADMIN_PASSWORD_HASH = '$2b$10$Uo23/Y0q/uH./zKz9z7Etuw49XqfC820fE8rQO8Poy/z80w3p5986';
 
 const at = (value: string) => new Date(value);
 
@@ -76,7 +77,7 @@ async function main() {
       publicId: 'USR-ADM-001',
       email: 'sokha.chan@fixithome.com',
       phone: '+85512000001',
-      passwordHash: FAKE_PASSWORD_HASH,
+      passwordHash: ADMIN_PASSWORD_HASH,
       role: UserRole.ADMIN,
       accountStatus: AccountStatus.ACTIVE,
     },
@@ -111,7 +112,7 @@ async function main() {
         publicId: `USR-${publicId}`,
         email,
         phone,
-        passwordHash: FAKE_PASSWORD_HASH,
+        passwordHash: ADMIN_PASSWORD_HASH,
         role: UserRole.PROVIDER,
         accountStatus: status === ProviderStatus.SUSPENDED ? AccountStatus.SUSPENDED : AccountStatus.ACTIVE,
       },
@@ -169,7 +170,7 @@ async function main() {
     const user = await prisma.user.upsert({
       where: { email },
       update: { phone, role: UserRole.CUSTOMER, accountStatus },
-      create: { publicId: `USR-${publicId}`, email, phone, passwordHash: FAKE_PASSWORD_HASH, role: UserRole.CUSTOMER, accountStatus },
+      create: { publicId: `USR-${publicId}`, email, phone, passwordHash: ADMIN_PASSWORD_HASH, role: UserRole.CUSTOMER, accountStatus },
     });
     const customer = await prisma.customerProfile.upsert({
       where: { publicId },
