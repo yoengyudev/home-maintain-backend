@@ -259,7 +259,7 @@ export class AdminCategoriesService {
                     publicId: `AUD-${Date.now()}`,
                     adminProfileId: adminProfile.id,
                     actorName: adminProfile.fullName,
-                    eventType: "DELETED",
+                    eventType: "DISABLED",
                     severity: "CRITICAL",
                     actionEn: `Deleted category: ${c.nameEn}`,
                     relatedModule: "Categories",

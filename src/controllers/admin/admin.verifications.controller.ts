@@ -12,14 +12,14 @@ export const listVerifications = async (req: Request, res: Response) => {
 
 export const getVerificationById = async (req: Request, res: Response) => {
     const lang = getLang(req);
-    const { id } = req.params;
+    const id = req.params.id as string;
     const data = await AdminVerificationsService.getById(id, lang);
     return sendResponse(res, { statusCode: HTTPSTATUS.OK, message: "Verification retrieved", data });
 };
 
 export const approveVerification = async (req: Request, res: Response) => {
     const lang = getLang(req);
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { notes } = req.body;
     const adminUserId = (req as any).user.userId;
     const data = await AdminVerificationsService.approve(id, notes, adminUserId, lang);
@@ -28,7 +28,7 @@ export const approveVerification = async (req: Request, res: Response) => {
 
 export const requestChanges = async (req: Request, res: Response) => {
     const lang = getLang(req);
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { reason } = req.body;
     const adminUserId = (req as any).user.userId;
     const data = await AdminVerificationsService.requestChanges(id, reason, adminUserId, lang);
@@ -37,7 +37,7 @@ export const requestChanges = async (req: Request, res: Response) => {
 
 export const rejectVerification = async (req: Request, res: Response) => {
     const lang = getLang(req);
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { reason } = req.body;
     const adminUserId = (req as any).user.userId;
     const data = await AdminVerificationsService.reject(id, reason, adminUserId, lang);

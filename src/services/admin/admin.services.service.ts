@@ -238,7 +238,7 @@ export class AdminServicesService {
             where: { id: s.id },
             data: {
                 serviceStatus: ServiceStatus.ACTIVE,
-                moderationStatus: ServiceModerationStatus.APPROVED,
+                moderationStatus: ServiceModerationStatus.NORMAL,
             },
         });
 
@@ -250,7 +250,7 @@ export class AdminServicesService {
                 eventType: "APPROVED",
                 note,
                 resultingServiceStatus: ServiceStatus.ACTIVE,
-                resultingModerationStatus: ServiceModerationStatus.APPROVED,
+                resultingModerationStatus: ServiceModerationStatus.NORMAL,
             },
         });
 
@@ -284,7 +284,7 @@ export class AdminServicesService {
         await prisma.serviceListing.update({
             where: { id: s.id },
             data: {
-                moderationStatus: ServiceModerationStatus.CHANGES_REQUIRED,
+                moderationStatus: ServiceModerationStatus.CHANGES_REQUESTED,
             },
         });
 
@@ -293,11 +293,11 @@ export class AdminServicesService {
                 publicId: `SMH-${Date.now()}`,
                 serviceListingId: s.id,
                 adminProfileId: adminProfile?.id,
-                eventType: "CHANGES_REQUIRED",
+                eventType: "REQUESTED_CHANGES",
                 reason,
                 note,
                 resultingServiceStatus: s.serviceStatus,
-                resultingModerationStatus: ServiceModerationStatus.CHANGES_REQUIRED,
+                resultingModerationStatus: ServiceModerationStatus.CHANGES_REQUESTED,
             },
         });
 

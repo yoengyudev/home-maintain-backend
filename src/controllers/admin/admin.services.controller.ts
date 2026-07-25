@@ -12,14 +12,14 @@ export const listServices = async (req: Request, res: Response) => {
 
 export const getServiceById = async (req: Request, res: Response) => {
     const lang = getLang(req);
-    const { id } = req.params;
+    const id = req.params.id as string;
     const data = await AdminServicesService.getById(id, lang);
     return sendResponse(res, { statusCode: HTTPSTATUS.OK, message: "Service retrieved", data });
 };
 
 export const disableService = async (req: Request, res: Response) => {
     const lang = getLang(req);
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { reason } = req.body;
     const adminUserId = (req as any).user.userId;
     const data = await AdminServicesService.disable(id, reason, adminUserId, lang);
@@ -28,7 +28,7 @@ export const disableService = async (req: Request, res: Response) => {
 
 export const restoreService = async (req: Request, res: Response) => {
     const lang = getLang(req);
-    const { id } = req.params;
+    const id = req.params.id as string;
     const adminUserId = (req as any).user.userId;
     const data = await AdminServicesService.restore(id, adminUserId, lang);
     return sendResponse(res, { statusCode: HTTPSTATUS.OK, message: "Service restored", data });
@@ -36,7 +36,7 @@ export const restoreService = async (req: Request, res: Response) => {
 
 export const approveService = async (req: Request, res: Response) => {
     const lang = getLang(req);
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { note } = req.body;
     const adminUserId = (req as any).user.userId;
     const data = await AdminServicesService.approve(id, note, adminUserId, lang);
@@ -45,7 +45,7 @@ export const approveService = async (req: Request, res: Response) => {
 
 export const requestServiceChanges = async (req: Request, res: Response) => {
     const lang = getLang(req);
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { reason, note } = req.body;
     const adminUserId = (req as any).user.userId;
     const data = await AdminServicesService.requestChanges(id, reason, note, adminUserId, lang);

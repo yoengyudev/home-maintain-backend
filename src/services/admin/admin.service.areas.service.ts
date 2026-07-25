@@ -197,7 +197,7 @@ export class AdminServiceAreasService {
                     publicId: `AUD-${Date.now()}`,
                     adminProfileId: adminProfile.id,
                     actorName: adminProfile.fullName,
-                    eventType: "DELETED",
+                    eventType: "DISABLED",
                     severity: "CRITICAL",
                     actionEn: `Deleted service area: ${a.nameEn}`,
                     relatedModule: "ServiceAreas",

@@ -12,14 +12,14 @@ export const listProviders = async (req: Request, res: Response) => {
 
 export const getProviderById = async (req: Request, res: Response) => {
     const lang = getLang(req);
-    const { id } = req.params;
+    const id = req.params.id as string;
     const data = await AdminProvidersService.getById(id, lang);
     return sendResponse(res, { statusCode: HTTPSTATUS.OK, message: "Provider retrieved", data });
 };
 
 export const suspendProvider = async (req: Request, res: Response) => {
     const lang = getLang(req);
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { reason } = req.body;
     const adminUserId = (req as any).user.userId;
     const data = await AdminProvidersService.suspend(id, reason, adminUserId, lang);
@@ -28,7 +28,7 @@ export const suspendProvider = async (req: Request, res: Response) => {
 
 export const restoreProvider = async (req: Request, res: Response) => {
     const lang = getLang(req);
-    const { id } = req.params;
+    const id = req.params.id as string;
     const adminUserId = (req as any).user.userId;
     const data = await AdminProvidersService.restore(id, adminUserId, lang);
     return sendResponse(res, { statusCode: HTTPSTATUS.OK, message: "Provider restored", data });

@@ -19,7 +19,7 @@ export const getUnreadCount = async (req: Request, res: Response) => {
 
 export const markRead = async (req: Request, res: Response) => {
     const lang = getLang(req);
-    const { id } = req.params;
+    const id = req.params.id as string;
     const adminUserId = (req as any).user.userId;
     const data = await AdminNotificationsService.markRead(adminUserId, id, lang);
     return sendResponse(res, { statusCode: HTTPSTATUS.OK, message: "Notification marked read", data });

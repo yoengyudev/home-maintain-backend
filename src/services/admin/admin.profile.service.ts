@@ -21,7 +21,7 @@ export class AdminProfileService {
             email: user.email,
             phone: user.phone ?? null,
             jobTitle: user.adminProfile.jobTitle ?? null,
-            department: user.adminProfile.department ?? null,
+            department: user.adminProfile.jobTitle ?? null,
             avatarUrl: user.adminProfile.avatarUrl ?? null,
             createdAt: user.createdAt.toISOString(),
         };
@@ -40,8 +40,9 @@ export class AdminProfileService {
 
         const updateData: Record<string, any> = {};
         if (data.fullName) updateData.fullName = data.fullName;
-        if (data.jobTitle !== undefined) updateData.jobTitle = data.jobTitle;
-        if (data.department !== undefined) updateData.department = data.department;
+        if (data.jobTitle !== undefined || data.department !== undefined) {
+            updateData.jobTitle = data.jobTitle ?? data.department;
+        }
 
         await Promise.all([
             Object.keys(updateData).length > 0
@@ -63,18 +64,21 @@ export class AdminProfileService {
     ) {
         const user = await prisma.user.findUnique({ where: { id: userId } });
         if (!user) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+        if (!user.passwordHash) {
+            throw new BadRequestException("User does not have a password set.");
+        }
 
-        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        const isMatch = await bcrypt.compare(currentPassword, user.passwordHash);
         if (!isMatch) {
             throw new BadRequestException(
-                lang === "km"
+                lang === "kh"
                     ? "ពាក្យសម្ងាត់បច្ចុប្បន្នមិនត្រឹមត្រូវ។"
                     : "Current password is incorrect."
             );
         }
 
         const hashed = await bcrypt.hash(newPassword, 12);
-        await prisma.user.update({ where: { id: userId }, data: { password: hashed } });
+        await prisma.user.update({ where: { id: userId }, data: { passwordHash: hashed } });
 
         return { success: true };
     }

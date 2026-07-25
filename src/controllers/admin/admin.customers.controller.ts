@@ -12,14 +12,14 @@ export const listCustomers = async (req: Request, res: Response) => {
 
 export const getCustomerById = async (req: Request, res: Response) => {
     const lang = getLang(req);
-    const { id } = req.params;
+    const id = req.params.id as string;
     const data = await AdminCustomersService.getById(id, lang);
     return sendResponse(res, { statusCode: HTTPSTATUS.OK, message: "Customer retrieved", data });
 };
 
 export const suspendCustomer = async (req: Request, res: Response) => {
     const lang = getLang(req);
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { reason } = req.body;
     const adminUserId = (req as any).user.userId;
     const data = await AdminCustomersService.suspend(id, reason, adminUserId, lang);
@@ -28,7 +28,7 @@ export const suspendCustomer = async (req: Request, res: Response) => {
 
 export const restoreCustomer = async (req: Request, res: Response) => {
     const lang = getLang(req);
-    const { id } = req.params;
+    const id = req.params.id as string;
     const adminUserId = (req as any).user.userId;
     const data = await AdminCustomersService.restore(id, adminUserId, lang);
     return sendResponse(res, { statusCode: HTTPSTATUS.OK, message: "Customer restored", data });

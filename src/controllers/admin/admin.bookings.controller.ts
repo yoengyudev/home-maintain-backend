@@ -12,7 +12,7 @@ export const listBookings = async (req: Request, res: Response) => {
 
 export const getBookingById = async (req: Request, res: Response) => {
     const lang = getLang(req);
-    const { id } = req.params;
+    const id = req.params.id as string;
     const data = await AdminBookingsService.getById(id, lang);
     return sendResponse(res, { statusCode: HTTPSTATUS.OK, message: "Booking retrieved", data });
 };
