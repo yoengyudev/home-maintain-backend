@@ -1,4 +1,4 @@
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 import { prisma } from "../../database/prisma.client";
 import { NotFoundException, BadRequestException } from "../../utils/app-error.util";
 import type { Lang } from "../../i18n/messages";
