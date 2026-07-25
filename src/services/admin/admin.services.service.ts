@@ -225,4 +225,98 @@ export class AdminServicesService {
 
         return this.getById(id, lang);
     }
+
+    static async approve(id: string, note: string | undefined, adminUserId: string, lang: Lang) {
+        const s = await prisma.serviceListing.findFirst({
+            where: { OR: [{ id }, { publicId: id }] },
+        });
+        if (!s) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+
+        const adminProfile = await prisma.adminProfile.findFirst({ where: { userId: adminUserId } });
+
+        await prisma.serviceListing.update({
+            where: { id: s.id },
+            data: {
+                serviceStatus: ServiceStatus.ACTIVE,
+                moderationStatus: ServiceModerationStatus.APPROVED,
+            },
+        });
+
+        await prisma.serviceModerationHistory.create({
+            data: {
+                publicId: `SMH-${Date.now()}`,
+                serviceListingId: s.id,
+                adminProfileId: adminProfile?.id,
+                eventType: "APPROVED",
+                note,
+                resultingServiceStatus: ServiceStatus.ACTIVE,
+                resultingModerationStatus: ServiceModerationStatus.APPROVED,
+            },
+        });
+
+        if (adminProfile) {
+            await prisma.auditLog.create({
+                data: {
+                    publicId: `AUD-${Date.now()}`,
+                    adminProfileId: adminProfile.id,
+                    actorName: adminProfile.fullName,
+                    eventType: "APPROVED",
+                    severity: "INFO",
+                    actionEn: `Approved service: ${s.name}`,
+                    relatedModule: "Services",
+                    relatedRecordId: s.publicId,
+                    reasonEn: note,
+                },
+            });
+        }
+
+        return this.getById(id, lang);
+    }
+
+    static async requestChanges(id: string, reason: string, note: string | undefined, adminUserId: string, lang: Lang) {
+        const s = await prisma.serviceListing.findFirst({
+            where: { OR: [{ id }, { publicId: id }] },
+        });
+        if (!s) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+
+        const adminProfile = await prisma.adminProfile.findFirst({ where: { userId: adminUserId } });
+
+        await prisma.serviceListing.update({
+            where: { id: s.id },
+            data: {
+                moderationStatus: ServiceModerationStatus.CHANGES_REQUIRED,
+            },
+        });
+
+        await prisma.serviceModerationHistory.create({
+            data: {
+                publicId: `SMH-${Date.now()}`,
+                serviceListingId: s.id,
+                adminProfileId: adminProfile?.id,
+                eventType: "CHANGES_REQUIRED",
+                reason,
+                note,
+                resultingServiceStatus: s.serviceStatus,
+                resultingModerationStatus: ServiceModerationStatus.CHANGES_REQUIRED,
+            },
+        });
+
+        if (adminProfile) {
+            await prisma.auditLog.create({
+                data: {
+                    publicId: `AUD-${Date.now()}`,
+                    adminProfileId: adminProfile.id,
+                    actorName: adminProfile.fullName,
+                    eventType: "REQUESTED_CHANGES",
+                    severity: "NOTICE",
+                    actionEn: `Requested changes for service: ${s.name}`,
+                    relatedModule: "Services",
+                    relatedRecordId: s.publicId,
+                    reasonEn: reason,
+                },
+            });
+        }
+
+        return this.getById(id, lang);
+    }
 }

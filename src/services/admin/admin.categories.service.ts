@@ -172,4 +172,103 @@ export class AdminCategoriesService {
 
         return this.getById(updated.id, lang);
     }
+
+    static async disable(id: string, adminUserId: string, lang: Lang) {
+        const c = await prisma.serviceCategory.findFirst({
+            where: { OR: [{ id }, { publicId: id }] },
+        });
+        if (!c) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+
+        const updated = await prisma.serviceCategory.update({
+            where: { id: c.id },
+            data: { isActive: false },
+        });
+
+        const adminProfile = await prisma.adminProfile.findFirst({ where: { userId: adminUserId } });
+        if (adminProfile) {
+            await prisma.auditLog.create({
+                data: {
+                    publicId: `AUD-${Date.now()}`,
+                    adminProfileId: adminProfile.id,
+                    actorName: adminProfile.fullName,
+                    eventType: "DISABLED",
+                    severity: "WARNING",
+                    actionEn: `Disabled category: ${c.nameEn}`,
+                    relatedModule: "Categories",
+                    relatedRecordId: c.publicId,
+                },
+            });
+        }
+
+        return this.getById(updated.id, lang);
+    }
+
+    static async restore(id: string, adminUserId: string, lang: Lang) {
+        const c = await prisma.serviceCategory.findFirst({
+            where: { OR: [{ id }, { publicId: id }] },
+        });
+        if (!c) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+
+        const updated = await prisma.serviceCategory.update({
+            where: { id: c.id },
+            data: { isActive: true },
+        });
+
+        const adminProfile = await prisma.adminProfile.findFirst({ where: { userId: adminUserId } });
+        if (adminProfile) {
+            await prisma.auditLog.create({
+                data: {
+                    publicId: `AUD-${Date.now()}`,
+                    adminProfileId: adminProfile.id,
+                    actorName: adminProfile.fullName,
+                    eventType: "RESTORED",
+                    severity: "INFO",
+                    actionEn: `Restored category: ${c.nameEn}`,
+                    relatedModule: "Categories",
+                    relatedRecordId: c.publicId,
+                },
+            });
+        }
+
+        return this.getById(updated.id, lang);
+    }
+
+    static async delete(id: string, adminUserId: string, lang: Lang) {
+        const c = await prisma.serviceCategory.findFirst({
+            where: { OR: [{ id }, { publicId: id }] },
+        });
+        if (!c) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+
+        // Safety check: ensure no linked providers or services
+        const [providerCount, serviceCount] = await Promise.all([
+            prisma.providerProfile.count({ where: { primaryCategoryId: c.id } }),
+            prisma.serviceListing.count({ where: { categoryId: c.id } }),
+        ]);
+
+        if (providerCount > 0 || serviceCount > 0) {
+            const { BadRequestException } = await import("../../utils/app-error.util");
+            throw new BadRequestException(
+                `Cannot delete category: it has ${providerCount} provider(s) and ${serviceCount} service(s) linked to it.`
+            );
+        }
+
+        const adminProfile = await prisma.adminProfile.findFirst({ where: { userId: adminUserId } });
+        if (adminProfile) {
+            await prisma.auditLog.create({
+                data: {
+                    publicId: `AUD-${Date.now()}`,
+                    adminProfileId: adminProfile.id,
+                    actorName: adminProfile.fullName,
+                    eventType: "DELETED",
+                    severity: "CRITICAL",
+                    actionEn: `Deleted category: ${c.nameEn}`,
+                    relatedModule: "Categories",
+                    relatedRecordId: c.publicId,
+                },
+            });
+        }
+
+        await prisma.serviceCategory.delete({ where: { id: c.id } });
+        return { deleted: true, id: c.publicId };
+    }
 }

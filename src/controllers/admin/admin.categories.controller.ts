@@ -31,3 +31,28 @@ export const updateCategory = async (req: Request, res: Response) => {
     const data = await AdminCategoriesService.update(id, req.body, adminUserId, lang);
     return sendResponse(res, { statusCode: HTTPSTATUS.OK, message: "Category updated", data });
 };
+
+export const disableCategory = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const { id } = req.params;
+    const adminUserId = (req as any).user.userId;
+    const data = await AdminCategoriesService.disable(id, adminUserId, lang);
+    return sendResponse(res, { statusCode: HTTPSTATUS.OK, message: "Category disabled", data });
+};
+
+export const restoreCategory = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const { id } = req.params;
+    const adminUserId = (req as any).user.userId;
+    const data = await AdminCategoriesService.restore(id, adminUserId, lang);
+    return sendResponse(res, { statusCode: HTTPSTATUS.OK, message: "Category restored", data });
+};
+
+export const deleteCategory = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const { id } = req.params;
+    const adminUserId = (req as any).user.userId;
+    const data = await AdminCategoriesService.delete(id, adminUserId, lang);
+    return sendResponse(res, { statusCode: HTTPSTATUS.OK, message: "Category deleted", data });
+};
+

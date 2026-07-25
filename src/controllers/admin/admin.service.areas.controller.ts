@@ -31,3 +31,28 @@ export const updateServiceArea = async (req: Request, res: Response) => {
     const data = await AdminServiceAreasService.update(id, req.body, adminUserId, lang);
     return sendResponse(res, { statusCode: HTTPSTATUS.OK, message: "Service area updated", data });
 };
+
+export const disableServiceArea = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const { id } = req.params;
+    const adminUserId = (req as any).user.userId;
+    const data = await AdminServiceAreasService.disable(id, adminUserId, lang);
+    return sendResponse(res, { statusCode: HTTPSTATUS.OK, message: "Service area disabled", data });
+};
+
+export const restoreServiceArea = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const { id } = req.params;
+    const adminUserId = (req as any).user.userId;
+    const data = await AdminServiceAreasService.restore(id, adminUserId, lang);
+    return sendResponse(res, { statusCode: HTTPSTATUS.OK, message: "Service area restored", data });
+};
+
+export const deleteServiceArea = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const { id } = req.params;
+    const adminUserId = (req as any).user.userId;
+    const data = await AdminServiceAreasService.delete(id, adminUserId, lang);
+    return sendResponse(res, { statusCode: HTTPSTATUS.OK, message: "Service area deleted", data });
+};
+

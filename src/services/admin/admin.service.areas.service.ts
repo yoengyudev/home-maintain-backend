@@ -121,4 +121,92 @@ export class AdminServiceAreasService {
         await prisma.serviceArea.update({ where: { id: a.id }, data });
         return this.getById(id, lang);
     }
+
+    static async disable(id: string, adminUserId: string, lang: Lang) {
+        const a = await prisma.serviceArea.findFirst({
+            where: { OR: [{ id }, { publicId: id }] },
+        });
+        if (!a) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+
+        await prisma.serviceArea.update({ where: { id: a.id }, data: { isActive: false } });
+
+        const adminProfile = await prisma.adminProfile.findFirst({ where: { userId: adminUserId } });
+        if (adminProfile) {
+            await prisma.auditLog.create({
+                data: {
+                    publicId: `AUD-${Date.now()}`,
+                    adminProfileId: adminProfile.id,
+                    actorName: adminProfile.fullName,
+                    eventType: "DISABLED",
+                    severity: "WARNING",
+                    actionEn: `Disabled service area: ${a.nameEn}`,
+                    relatedModule: "ServiceAreas",
+                    relatedRecordId: a.publicId,
+                },
+            });
+        }
+
+        return this.getById(id, lang);
+    }
+
+    static async restore(id: string, adminUserId: string, lang: Lang) {
+        const a = await prisma.serviceArea.findFirst({
+            where: { OR: [{ id }, { publicId: id }] },
+        });
+        if (!a) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+
+        await prisma.serviceArea.update({ where: { id: a.id }, data: { isActive: true } });
+
+        const adminProfile = await prisma.adminProfile.findFirst({ where: { userId: adminUserId } });
+        if (adminProfile) {
+            await prisma.auditLog.create({
+                data: {
+                    publicId: `AUD-${Date.now()}`,
+                    adminProfileId: adminProfile.id,
+                    actorName: adminProfile.fullName,
+                    eventType: "RESTORED",
+                    severity: "INFO",
+                    actionEn: `Restored service area: ${a.nameEn}`,
+                    relatedModule: "ServiceAreas",
+                    relatedRecordId: a.publicId,
+                },
+            });
+        }
+
+        return this.getById(id, lang);
+    }
+
+    static async delete(id: string, adminUserId: string, lang: Lang) {
+        const a = await prisma.serviceArea.findFirst({
+            where: { OR: [{ id }, { publicId: id }] },
+        });
+        if (!a) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+
+        const providerCount = await prisma.providerProfile.count({ where: { primaryAreaId: a.id } });
+        if (providerCount > 0) {
+            const { BadRequestException } = await import("../../utils/app-error.util");
+            throw new BadRequestException(
+                `Cannot delete service area: it has ${providerCount} provider(s) linked to it.`
+            );
+        }
+
+        const adminProfile = await prisma.adminProfile.findFirst({ where: { userId: adminUserId } });
+        if (adminProfile) {
+            await prisma.auditLog.create({
+                data: {
+                    publicId: `AUD-${Date.now()}`,
+                    adminProfileId: adminProfile.id,
+                    actorName: adminProfile.fullName,
+                    eventType: "DELETED",
+                    severity: "CRITICAL",
+                    actionEn: `Deleted service area: ${a.nameEn}`,
+                    relatedModule: "ServiceAreas",
+                    relatedRecordId: a.publicId,
+                },
+            });
+        }
+
+        await prisma.serviceArea.delete({ where: { id: a.id } });
+        return { deleted: true, id: a.publicId };
+    }
 }

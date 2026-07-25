@@ -5,6 +5,7 @@ import { authorize } from "../middlewares/role.middlerware";
 import { UserRole } from "../generated/prisma/enums";
 
 import * as authController from "../controllers/admin/admin.authentication.controller";
+import * as profileController from "../controllers/admin/admin.profile.controller";
 import * as providersController from "../controllers/admin/admin.providers.controller";
 import * as customersController from "../controllers/admin/admin.customers.controller";
 import * as bookingsController from "../controllers/admin/admin.bookings.controller";
@@ -28,6 +29,13 @@ router.use(authorize(UserRole.ADMIN));
 
 router.post("/auth/logout", asyncHandler(authController.logout));
 router.get("/auth/me", asyncHandler(authController.me));
+
+// ==========================================
+// Profile
+// ==========================================
+router.get("/auth/profile", asyncHandler(profileController.getProfile));
+router.patch("/auth/profile", asyncHandler(profileController.updateProfile));
+router.post("/auth/change-password", asyncHandler(profileController.changePassword));
 
 // ==========================================
 // Providers
@@ -67,6 +75,8 @@ router.get("/services", asyncHandler(servicesController.listServices));
 router.get("/services/:id", asyncHandler(servicesController.getServiceById));
 router.post("/services/:id/disable", asyncHandler(servicesController.disableService));
 router.post("/services/:id/restore", asyncHandler(servicesController.restoreService));
+router.post("/services/:id/approve", asyncHandler(servicesController.approveService));
+router.post("/services/:id/request-changes", asyncHandler(servicesController.requestServiceChanges));
 
 // ==========================================
 // Categories
@@ -75,6 +85,9 @@ router.get("/categories", asyncHandler(categoriesController.listCategories));
 router.get("/categories/:id", asyncHandler(categoriesController.getCategoryById));
 router.post("/categories", asyncHandler(categoriesController.createCategory));
 router.patch("/categories/:id", asyncHandler(categoriesController.updateCategory));
+router.patch("/categories/:id/disable", asyncHandler(categoriesController.disableCategory));
+router.patch("/categories/:id/restore", asyncHandler(categoriesController.restoreCategory));
+router.delete("/categories/:id", asyncHandler(categoriesController.deleteCategory));
 
 // ==========================================
 // Service Areas
@@ -83,6 +96,9 @@ router.get("/service-areas", asyncHandler(serviceAreasController.listServiceArea
 router.get("/service-areas/:id", asyncHandler(serviceAreasController.getServiceAreaById));
 router.post("/service-areas", asyncHandler(serviceAreasController.createServiceArea));
 router.patch("/service-areas/:id", asyncHandler(serviceAreasController.updateServiceArea));
+router.patch("/service-areas/:id/disable", asyncHandler(serviceAreasController.disableServiceArea));
+router.patch("/service-areas/:id/restore", asyncHandler(serviceAreasController.restoreServiceArea));
+router.delete("/service-areas/:id", asyncHandler(serviceAreasController.deleteServiceArea));
 
 // ==========================================
 // Notifications
