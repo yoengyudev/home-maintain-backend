@@ -21,12 +21,31 @@ app.use(helmet());
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
-app.use(
-    cors({
-        origin: Env.FRONTEND_ORIGIN,
-        credentials: true,
-    })
-);
+// Support a comma-separated list in FRONTEND_ORIGIN but reflect
+// only the single origin that matches the incoming request.
+(() => {
+    const raw = Env.FRONTEND_ORIGIN || "";
+    const allowedOrigins = raw
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+
+    app.use(
+        cors({
+            origin: (origin, callback) => {
+                // Allow non-browser requests (no origin)
+                if (!origin) return callback(null, true);
+                // If no configured origins, allow all
+                if (allowedOrigins.length === 0) return callback(null, true);
+                if (allowedOrigins.includes(origin)) {
+                    return callback(null, true);
+                }
+                return callback(new Error("Not allowed by CORS"));
+            },
+            credentials: true,
+        })
+    );
+})();
 
 app.use(route)
 

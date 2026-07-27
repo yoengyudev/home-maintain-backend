@@ -1,15 +1,22 @@
+export const normalizeCambodiaPhone = (phone: string): string => {
+    if (typeof phone !== "string") return phone;
+
+    const normalizedPhone = phone.replace(/\s+/g, "");
+    if (normalizedPhone.startsWith("+855")) {
+        return `0${normalizedPhone.slice(4)}`;
+    }
+
+    if (normalizedPhone.startsWith("855")) {
+        return `0${normalizedPhone.slice(3)}`;
+    }
+
+    return normalizedPhone;
+};
+
 export const validateCambodiaPhone = (phone: string): boolean => {
     if (typeof phone !== "string") return false;
 
-    const normalizedPhone = phone.replace(/\s+/g, "");
-    let localPhone = normalizedPhone;
-
-    // Normalize to local format starting with 0.
-    if (localPhone.startsWith("+855")) {
-        localPhone = `0${localPhone.slice(4)}`;
-    } else if (localPhone.startsWith("855")) {
-        localPhone = `0${localPhone.slice(3)}`;
-    }
+    const localPhone = normalizeCambodiaPhone(phone);
 
     // Accept only known Cambodia prefixes from the provided carrier list.
     const allowedPrefixes = [
