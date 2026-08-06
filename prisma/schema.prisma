@@ -222,8 +222,7 @@ model ProviderBusinessProfile {
   longitude          Decimal?        @db.Decimal(10, 7)
   detectedAddress    String?
   workingDays        String[]        @default([])
-  workingHoursStart  String?
-  workingHoursEnd    String?
+  workingHours       Json?           @default("{}")
   unavailableDates   DateTime[]      @default([])
   temporarilyPaused  Boolean         @default(false)
   createdAt          DateTime        @default(now())

@@ -90,7 +90,7 @@ export class VendorServiceService {
 
         const service = await prisma.serviceListing.findFirst({
             where: {
-                publicId: serviceId,
+                id: serviceId,
                 providerProfileId: providerProfile.id
             },
             include: {
@@ -157,14 +157,7 @@ export class VendorServiceService {
             });
         }
         
-        // If not found by ID, try to find by publicId
-        if (!category && data.categoryId) {
-            category = await prisma.serviceCategory.findUnique({
-                where: { publicId: data.categoryId }
-            });
-        }
-
-        // If not found by ID or publicId, try to find by name
+        // If not found by ID, try to find by name
         if (!category && data.categoryId) {
             category = await prisma.serviceCategory.findFirst({
                 where: { 
@@ -177,7 +170,6 @@ export class VendorServiceService {
         }
 
         if (!category) {
-            console.error('Category not found for categoryId:', data.categoryId);
             throw new BadRequestException("Invalid category");
         }
 
@@ -209,7 +201,7 @@ export class VendorServiceService {
                 minQuantity: data.minQuantity,
                 maxQuantity: data.maxQuantity,
                 availabilitySummary: data.availabilitySummary,
-                serviceStatus: ServiceStatus.DISABLED,
+                serviceStatus: ServiceStatus.DISABLED, // Start as disabled until provider activates
                 moderationStatus: ServiceModerationStatus.NORMAL,
                 areas: data.areaIds && data.areaIds.length > 0 ? {
                     create: data.areaIds.map(areaId => ({
@@ -250,7 +242,7 @@ export class VendorServiceService {
 
         const existingService = await prisma.serviceListing.findFirst({
             where: {
-                publicId: serviceId,
+                id: serviceId,
                 providerProfileId: providerProfile.id
             }
         });
@@ -299,14 +291,14 @@ export class VendorServiceService {
 
             // Remove existing areas
             await prisma.serviceListingArea.deleteMany({
-                where: { serviceListingId: existingService.id }
+                where: { serviceListingId: serviceId }
             });
 
             // Add new areas
             if (data.areaIds.length > 0) {
                 await prisma.serviceListingArea.createMany({
                     data: data.areaIds.map(areaId => ({
-                        serviceListingId: existingService.id,
+                        serviceListingId: serviceId,
                         serviceAreaId: areaId
                     }))
                 });
@@ -314,7 +306,7 @@ export class VendorServiceService {
         }
 
         const service = await prisma.serviceListing.update({
-            where: { id: existingService.id },
+            where: { id: serviceId },
             data: {
                 ...(data.name && { name: data.name }),
                 ...(category && { categoryId: category.id }),
@@ -364,7 +356,7 @@ export class VendorServiceService {
 
         const existingService = await prisma.serviceListing.findFirst({
             where: {
-                publicId: serviceId,
+                id: serviceId,
                 providerProfileId: providerProfile.id
             }
         });
@@ -376,7 +368,7 @@ export class VendorServiceService {
         // Check if service has active bookings
         const activeBookings = await prisma.booking.count({
             where: {
-                serviceListingId: existingService.id,
+                serviceListingId: serviceId,
                 status: {
                     in: ['PENDING', 'ACCEPTED', 'IN_PROGRESS']
                 }
@@ -388,7 +380,7 @@ export class VendorServiceService {
         }
 
         await prisma.serviceListing.delete({
-            where: { id: existingService.id }
+            where: { id: serviceId }
         });
 
         return {
@@ -408,7 +400,7 @@ export class VendorServiceService {
 
         const existingService = await prisma.serviceListing.findFirst({
             where: {
-                publicId: serviceId,
+                id: serviceId,
                 providerProfileId: providerProfile.id
             }
         });
@@ -418,7 +410,7 @@ export class VendorServiceService {
         }
 
         const service = await prisma.serviceListing.update({
-            where: { id: existingService.id },
+            where: { id: serviceId },
             data: {
                 serviceStatus: active ? ServiceStatus.ACTIVE : ServiceStatus.DISABLED
             }

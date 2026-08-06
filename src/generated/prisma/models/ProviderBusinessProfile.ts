@@ -50,8 +50,6 @@ export type ProviderBusinessProfileMinAggregateOutputType = {
   latitude: runtime.Decimal | null
   longitude: runtime.Decimal | null
   detectedAddress: string | null
-  workingHoursStart: string | null
-  workingHoursEnd: string | null
   temporarilyPaused: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -71,8 +69,6 @@ export type ProviderBusinessProfileMaxAggregateOutputType = {
   latitude: runtime.Decimal | null
   longitude: runtime.Decimal | null
   detectedAddress: string | null
-  workingHoursStart: string | null
-  workingHoursEnd: string | null
   temporarilyPaused: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -93,8 +89,7 @@ export type ProviderBusinessProfileCountAggregateOutputType = {
   longitude: number
   detectedAddress: number
   workingDays: number
-  workingHoursStart: number
-  workingHoursEnd: number
+  workingHours: number
   unavailableDates: number
   temporarilyPaused: number
   createdAt: number
@@ -127,8 +122,6 @@ export type ProviderBusinessProfileMinAggregateInputType = {
   latitude?: true
   longitude?: true
   detectedAddress?: true
-  workingHoursStart?: true
-  workingHoursEnd?: true
   temporarilyPaused?: true
   createdAt?: true
   updatedAt?: true
@@ -148,8 +141,6 @@ export type ProviderBusinessProfileMaxAggregateInputType = {
   latitude?: true
   longitude?: true
   detectedAddress?: true
-  workingHoursStart?: true
-  workingHoursEnd?: true
   temporarilyPaused?: true
   createdAt?: true
   updatedAt?: true
@@ -170,8 +161,7 @@ export type ProviderBusinessProfileCountAggregateInputType = {
   longitude?: true
   detectedAddress?: true
   workingDays?: true
-  workingHoursStart?: true
-  workingHoursEnd?: true
+  workingHours?: true
   unavailableDates?: true
   temporarilyPaused?: true
   createdAt?: true
@@ -280,8 +270,7 @@ export type ProviderBusinessProfileGroupByOutputType = {
   longitude: runtime.Decimal | null
   detectedAddress: string | null
   workingDays: string[]
-  workingHoursStart: string | null
-  workingHoursEnd: string | null
+  workingHours: runtime.JsonValue | null
   unavailableDates: Date[]
   temporarilyPaused: boolean
   createdAt: Date
@@ -326,8 +315,7 @@ export type ProviderBusinessProfileWhereInput = {
   longitude?: Prisma.DecimalNullableFilter<"ProviderBusinessProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detectedAddress?: Prisma.StringNullableFilter<"ProviderBusinessProfile"> | string | null
   workingDays?: Prisma.StringNullableListFilter<"ProviderBusinessProfile">
-  workingHoursStart?: Prisma.StringNullableFilter<"ProviderBusinessProfile"> | string | null
-  workingHoursEnd?: Prisma.StringNullableFilter<"ProviderBusinessProfile"> | string | null
+  workingHours?: Prisma.JsonNullableFilter<"ProviderBusinessProfile">
   unavailableDates?: Prisma.DateTimeNullableListFilter<"ProviderBusinessProfile">
   temporarilyPaused?: Prisma.BoolFilter<"ProviderBusinessProfile"> | boolean
   createdAt?: Prisma.DateTimeFilter<"ProviderBusinessProfile"> | Date | string
@@ -350,8 +338,7 @@ export type ProviderBusinessProfileOrderByWithRelationInput = {
   longitude?: Prisma.SortOrderInput | Prisma.SortOrder
   detectedAddress?: Prisma.SortOrderInput | Prisma.SortOrder
   workingDays?: Prisma.SortOrder
-  workingHoursStart?: Prisma.SortOrderInput | Prisma.SortOrder
-  workingHoursEnd?: Prisma.SortOrderInput | Prisma.SortOrder
+  workingHours?: Prisma.SortOrderInput | Prisma.SortOrder
   unavailableDates?: Prisma.SortOrder
   temporarilyPaused?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -377,8 +364,7 @@ export type ProviderBusinessProfileWhereUniqueInput = Prisma.AtLeast<{
   longitude?: Prisma.DecimalNullableFilter<"ProviderBusinessProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detectedAddress?: Prisma.StringNullableFilter<"ProviderBusinessProfile"> | string | null
   workingDays?: Prisma.StringNullableListFilter<"ProviderBusinessProfile">
-  workingHoursStart?: Prisma.StringNullableFilter<"ProviderBusinessProfile"> | string | null
-  workingHoursEnd?: Prisma.StringNullableFilter<"ProviderBusinessProfile"> | string | null
+  workingHours?: Prisma.JsonNullableFilter<"ProviderBusinessProfile">
   unavailableDates?: Prisma.DateTimeNullableListFilter<"ProviderBusinessProfile">
   temporarilyPaused?: Prisma.BoolFilter<"ProviderBusinessProfile"> | boolean
   createdAt?: Prisma.DateTimeFilter<"ProviderBusinessProfile"> | Date | string
@@ -401,8 +387,7 @@ export type ProviderBusinessProfileOrderByWithAggregationInput = {
   longitude?: Prisma.SortOrderInput | Prisma.SortOrder
   detectedAddress?: Prisma.SortOrderInput | Prisma.SortOrder
   workingDays?: Prisma.SortOrder
-  workingHoursStart?: Prisma.SortOrderInput | Prisma.SortOrder
-  workingHoursEnd?: Prisma.SortOrderInput | Prisma.SortOrder
+  workingHours?: Prisma.SortOrderInput | Prisma.SortOrder
   unavailableDates?: Prisma.SortOrder
   temporarilyPaused?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -432,8 +417,7 @@ export type ProviderBusinessProfileScalarWhereWithAggregatesInput = {
   longitude?: Prisma.DecimalNullableWithAggregatesFilter<"ProviderBusinessProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detectedAddress?: Prisma.StringNullableWithAggregatesFilter<"ProviderBusinessProfile"> | string | null
   workingDays?: Prisma.StringNullableListFilter<"ProviderBusinessProfile">
-  workingHoursStart?: Prisma.StringNullableWithAggregatesFilter<"ProviderBusinessProfile"> | string | null
-  workingHoursEnd?: Prisma.StringNullableWithAggregatesFilter<"ProviderBusinessProfile"> | string | null
+  workingHours?: Prisma.JsonNullableWithAggregatesFilter<"ProviderBusinessProfile">
   unavailableDates?: Prisma.DateTimeNullableListFilter<"ProviderBusinessProfile">
   temporarilyPaused?: Prisma.BoolWithAggregatesFilter<"ProviderBusinessProfile"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ProviderBusinessProfile"> | Date | string
@@ -454,8 +438,7 @@ export type ProviderBusinessProfileCreateInput = {
   longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detectedAddress?: string | null
   workingDays?: Prisma.ProviderBusinessProfileCreateworkingDaysInput | string[]
-  workingHoursStart?: string | null
-  workingHoursEnd?: string | null
+  workingHours?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   unavailableDates?: Prisma.ProviderBusinessProfileCreateunavailableDatesInput | Date[] | string[]
   temporarilyPaused?: boolean
   createdAt?: Date | string
@@ -478,8 +461,7 @@ export type ProviderBusinessProfileUncheckedCreateInput = {
   longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detectedAddress?: string | null
   workingDays?: Prisma.ProviderBusinessProfileCreateworkingDaysInput | string[]
-  workingHoursStart?: string | null
-  workingHoursEnd?: string | null
+  workingHours?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   unavailableDates?: Prisma.ProviderBusinessProfileCreateunavailableDatesInput | Date[] | string[]
   temporarilyPaused?: boolean
   createdAt?: Date | string
@@ -500,8 +482,7 @@ export type ProviderBusinessProfileUpdateInput = {
   longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detectedAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workingDays?: Prisma.ProviderBusinessProfileUpdateworkingDaysInput | string[]
-  workingHoursStart?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  workingHoursEnd?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workingHours?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   unavailableDates?: Prisma.ProviderBusinessProfileUpdateunavailableDatesInput | Date[] | string[]
   temporarilyPaused?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -524,8 +505,7 @@ export type ProviderBusinessProfileUncheckedUpdateInput = {
   longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detectedAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workingDays?: Prisma.ProviderBusinessProfileUpdateworkingDaysInput | string[]
-  workingHoursStart?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  workingHoursEnd?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workingHours?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   unavailableDates?: Prisma.ProviderBusinessProfileUpdateunavailableDatesInput | Date[] | string[]
   temporarilyPaused?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -547,8 +527,7 @@ export type ProviderBusinessProfileCreateManyInput = {
   longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detectedAddress?: string | null
   workingDays?: Prisma.ProviderBusinessProfileCreateworkingDaysInput | string[]
-  workingHoursStart?: string | null
-  workingHoursEnd?: string | null
+  workingHours?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   unavailableDates?: Prisma.ProviderBusinessProfileCreateunavailableDatesInput | Date[] | string[]
   temporarilyPaused?: boolean
   createdAt?: Date | string
@@ -569,8 +548,7 @@ export type ProviderBusinessProfileUpdateManyMutationInput = {
   longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detectedAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workingDays?: Prisma.ProviderBusinessProfileUpdateworkingDaysInput | string[]
-  workingHoursStart?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  workingHoursEnd?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workingHours?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   unavailableDates?: Prisma.ProviderBusinessProfileUpdateunavailableDatesInput | Date[] | string[]
   temporarilyPaused?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -592,8 +570,7 @@ export type ProviderBusinessProfileUncheckedUpdateManyInput = {
   longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detectedAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workingDays?: Prisma.ProviderBusinessProfileUpdateworkingDaysInput | string[]
-  workingHoursStart?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  workingHoursEnd?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workingHours?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   unavailableDates?: Prisma.ProviderBusinessProfileUpdateunavailableDatesInput | Date[] | string[]
   temporarilyPaused?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -636,8 +613,7 @@ export type ProviderBusinessProfileCountOrderByAggregateInput = {
   longitude?: Prisma.SortOrder
   detectedAddress?: Prisma.SortOrder
   workingDays?: Prisma.SortOrder
-  workingHoursStart?: Prisma.SortOrder
-  workingHoursEnd?: Prisma.SortOrder
+  workingHours?: Prisma.SortOrder
   unavailableDates?: Prisma.SortOrder
   temporarilyPaused?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -663,8 +639,6 @@ export type ProviderBusinessProfileMaxOrderByAggregateInput = {
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
   detectedAddress?: Prisma.SortOrder
-  workingHoursStart?: Prisma.SortOrder
-  workingHoursEnd?: Prisma.SortOrder
   temporarilyPaused?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -684,8 +658,6 @@ export type ProviderBusinessProfileMinOrderByAggregateInput = {
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
   detectedAddress?: Prisma.SortOrder
-  workingHoursStart?: Prisma.SortOrder
-  workingHoursEnd?: Prisma.SortOrder
   temporarilyPaused?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -764,8 +736,7 @@ export type ProviderBusinessProfileCreateWithoutProviderProfileInput = {
   longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detectedAddress?: string | null
   workingDays?: Prisma.ProviderBusinessProfileCreateworkingDaysInput | string[]
-  workingHoursStart?: string | null
-  workingHoursEnd?: string | null
+  workingHours?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   unavailableDates?: Prisma.ProviderBusinessProfileCreateunavailableDatesInput | Date[] | string[]
   temporarilyPaused?: boolean
   createdAt?: Date | string
@@ -786,8 +757,7 @@ export type ProviderBusinessProfileUncheckedCreateWithoutProviderProfileInput = 
   longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detectedAddress?: string | null
   workingDays?: Prisma.ProviderBusinessProfileCreateworkingDaysInput | string[]
-  workingHoursStart?: string | null
-  workingHoursEnd?: string | null
+  workingHours?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   unavailableDates?: Prisma.ProviderBusinessProfileCreateunavailableDatesInput | Date[] | string[]
   temporarilyPaused?: boolean
   createdAt?: Date | string
@@ -824,8 +794,7 @@ export type ProviderBusinessProfileUpdateWithoutProviderProfileInput = {
   longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detectedAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workingDays?: Prisma.ProviderBusinessProfileUpdateworkingDaysInput | string[]
-  workingHoursStart?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  workingHoursEnd?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workingHours?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   unavailableDates?: Prisma.ProviderBusinessProfileUpdateunavailableDatesInput | Date[] | string[]
   temporarilyPaused?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -846,8 +815,7 @@ export type ProviderBusinessProfileUncheckedUpdateWithoutProviderProfileInput = 
   longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detectedAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workingDays?: Prisma.ProviderBusinessProfileUpdateworkingDaysInput | string[]
-  workingHoursStart?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  workingHoursEnd?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workingHours?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   unavailableDates?: Prisma.ProviderBusinessProfileUpdateunavailableDatesInput | Date[] | string[]
   temporarilyPaused?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -871,8 +839,7 @@ export type ProviderBusinessProfileSelect<ExtArgs extends runtime.Types.Extensio
   longitude?: boolean
   detectedAddress?: boolean
   workingDays?: boolean
-  workingHoursStart?: boolean
-  workingHoursEnd?: boolean
+  workingHours?: boolean
   unavailableDates?: boolean
   temporarilyPaused?: boolean
   createdAt?: boolean
@@ -895,8 +862,7 @@ export type ProviderBusinessProfileSelectCreateManyAndReturn<ExtArgs extends run
   longitude?: boolean
   detectedAddress?: boolean
   workingDays?: boolean
-  workingHoursStart?: boolean
-  workingHoursEnd?: boolean
+  workingHours?: boolean
   unavailableDates?: boolean
   temporarilyPaused?: boolean
   createdAt?: boolean
@@ -919,8 +885,7 @@ export type ProviderBusinessProfileSelectUpdateManyAndReturn<ExtArgs extends run
   longitude?: boolean
   detectedAddress?: boolean
   workingDays?: boolean
-  workingHoursStart?: boolean
-  workingHoursEnd?: boolean
+  workingHours?: boolean
   unavailableDates?: boolean
   temporarilyPaused?: boolean
   createdAt?: boolean
@@ -943,15 +908,14 @@ export type ProviderBusinessProfileSelectScalar = {
   longitude?: boolean
   detectedAddress?: boolean
   workingDays?: boolean
-  workingHoursStart?: boolean
-  workingHoursEnd?: boolean
+  workingHours?: boolean
   unavailableDates?: boolean
   temporarilyPaused?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ProviderBusinessProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "providerProfileId" | "businessName" | "providerType" | "description" | "logoUrl" | "addressLine" | "district" | "cityProvince" | "coverageSummary" | "latitude" | "longitude" | "detectedAddress" | "workingDays" | "workingHoursStart" | "workingHoursEnd" | "unavailableDates" | "temporarilyPaused" | "createdAt" | "updatedAt", ExtArgs["result"]["providerBusinessProfile"]>
+export type ProviderBusinessProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "providerProfileId" | "businessName" | "providerType" | "description" | "logoUrl" | "addressLine" | "district" | "cityProvince" | "coverageSummary" | "latitude" | "longitude" | "detectedAddress" | "workingDays" | "workingHours" | "unavailableDates" | "temporarilyPaused" | "createdAt" | "updatedAt", ExtArgs["result"]["providerBusinessProfile"]>
 export type ProviderBusinessProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   providerProfile?: boolean | Prisma.ProviderProfileDefaultArgs<ExtArgs>
 }
@@ -982,8 +946,7 @@ export type $ProviderBusinessProfilePayload<ExtArgs extends runtime.Types.Extens
     longitude: runtime.Decimal | null
     detectedAddress: string | null
     workingDays: string[]
-    workingHoursStart: string | null
-    workingHoursEnd: string | null
+    workingHours: runtime.JsonValue | null
     unavailableDates: Date[]
     temporarilyPaused: boolean
     createdAt: Date
@@ -1426,8 +1389,7 @@ export interface ProviderBusinessProfileFieldRefs {
   readonly longitude: Prisma.FieldRef<"ProviderBusinessProfile", 'Decimal'>
   readonly detectedAddress: Prisma.FieldRef<"ProviderBusinessProfile", 'String'>
   readonly workingDays: Prisma.FieldRef<"ProviderBusinessProfile", 'String[]'>
-  readonly workingHoursStart: Prisma.FieldRef<"ProviderBusinessProfile", 'String'>
-  readonly workingHoursEnd: Prisma.FieldRef<"ProviderBusinessProfile", 'String'>
+  readonly workingHours: Prisma.FieldRef<"ProviderBusinessProfile", 'Json'>
   readonly unavailableDates: Prisma.FieldRef<"ProviderBusinessProfile", 'DateTime[]'>
   readonly temporarilyPaused: Prisma.FieldRef<"ProviderBusinessProfile", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"ProviderBusinessProfile", 'DateTime'>

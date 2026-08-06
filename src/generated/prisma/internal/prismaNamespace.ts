@@ -2549,8 +2549,7 @@ export const ProviderBusinessProfileScalarFieldEnum = {
   longitude: 'longitude',
   detectedAddress: 'detectedAddress',
   workingDays: 'workingDays',
-  workingHoursStart: 'workingHoursStart',
-  workingHoursEnd: 'workingHoursEnd',
+  workingHours: 'workingHours',
   unavailableDates: 'unavailableDates',
   temporarilyPaused: 'temporarilyPaused',
   createdAt: 'createdAt',
@@ -3072,6 +3071,20 @@ export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
@@ -3229,20 +3242,6 @@ export type EnumAuditSeverityFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
  * Reference to a field of type 'AuditSeverity[]'
  */
 export type ListEnumAuditSeverityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditSeverity[]'>
-    
-
-
-/**
- * Reference to a field of type 'Json'
- */
-export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
-
-
-/**
- * Reference to a field of type 'QueryMode'
- */
-export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
