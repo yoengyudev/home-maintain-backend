@@ -145,8 +145,14 @@ async function main() {
         cityProvince: areaSeeds.find(([id]) => id === areaId)?.[1],
         coverageSummary: areaSeeds.find(([id]) => id === areaId)?.[1],
         workingDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-        workingHoursStart: '08:00',
-        workingHoursEnd: '18:00',
+        workingHours: {
+          Monday: [{ start: '08:00', end: '18:00' }],
+          Tuesday: [{ start: '08:00', end: '18:00' }],
+          Wednesday: [{ start: '08:00', end: '18:00' }],
+          Thursday: [{ start: '08:00', end: '18:00' }],
+          Friday: [{ start: '08:00', end: '18:00' }],
+          Saturday: [{ start: '08:00', end: '18:00' }],
+        },
       },
     });
     await prisma.userPreference.upsert({

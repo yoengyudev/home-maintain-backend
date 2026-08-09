@@ -6,6 +6,7 @@ import { signAccessToken, signRefreshToken } from "../../utils/jwt.util";
 import { BadRequestException, NotFoundException, UnauthorizedException } from "../../utils/app-error.util";
 import type { z } from "zod";
 import type { vendorRegisterSchema, vendorLoginSchema, forgotPasswordSchema, resetPasswordSchema } from "../../validators/vendor/vendor.auth.validator";
+import { normalizeCambodiaPhone } from "../../validators/phone.validate";
 import { UserRole, ProviderStatus } from "../../generated/prisma/enums";
 
 type RegisterDto = z.infer<typeof vendorRegisterSchema>;
@@ -16,11 +17,12 @@ type ResetPasswordDto = z.infer<typeof resetPasswordSchema>;
 export class VendorAuthenticationService {
     static async register(data: RegisterDto) {
         const { businessName, email, password, contactName, phone } = data;
+        const normalizedPhone = normalizeCambodiaPhone(phone);
 
         const existingUser = await prisma.user.findFirst({
             where: {
                 OR: [
-                    { phone },
+                    { phone: normalizedPhone },
                     ...(email ? [{ email }] : [])
                 ]
             }
@@ -37,8 +39,8 @@ export class VendorAuthenticationService {
         const result = await prisma.$transaction(async (tx) => {
             const user = await tx.user.create({
                 data: {
-                    email: email || undefined,
-                    phone,
+                    email: email ?? `${normalizedPhone.replace("+", "")}@provider.local`,
+                    phone: normalizedPhone,
                     passwordHash: hashedPassword,
                     role: UserRole.PROVIDER,
                     publicId,
@@ -101,9 +103,10 @@ export class VendorAuthenticationService {
 
     static async login(data: LoginDto) {
         const { phone, password } = data;
+        const normalizedPhone = normalizeCambodiaPhone(phone);
 
         const user = await prisma.user.findUnique({
-            where: { phone },
+            where: { phone: normalizedPhone },
             include: { 
                 providerProfile: {
                     include: {
@@ -155,9 +158,10 @@ export class VendorAuthenticationService {
 
     static async forgotPassword(data: ForgotPasswordDto) {
         const { phone } = data;
+        const normalizedPhone = normalizeCambodiaPhone(phone);
 
         const user = await prisma.user.findUnique({
-            where: { phone }
+            where: { phone: normalizedPhone }
         });
 
         if (!user || user.role !== UserRole.PROVIDER) {
@@ -176,6 +180,7 @@ export class VendorAuthenticationService {
 
     static async resetPassword(data: ResetPasswordDto) {
         const { phone, otp, newPassword } = data;
+        const normalizedPhone = normalizeCambodiaPhone(phone);
 
         // Mock verification
         if (otp !== "123456") {
@@ -183,7 +188,7 @@ export class VendorAuthenticationService {
         }
 
         const user = await prisma.user.findUnique({
-            where: { phone }
+            where: { phone: normalizedPhone }
         });
 
         if (!user || user.role !== UserRole.PROVIDER) {
@@ -247,6 +252,105 @@ export class VendorAuthenticationService {
             phone: user.phone,
             role: user.role,
             profile: user.providerProfile
+        };
+    }
+
+    static async updateProfile(userId: string, data: {
+        businessName?: string;
+        providerType?: string;
+        contactName?: string;
+        addressLine?: string;
+        district?: string;
+        cityProvince?: string;
+        about?: string;
+        logoUrl?: string;
+        latitude?: number;
+        longitude?: number;
+    }) {
+        const providerProfile = await prisma.providerProfile.findUnique({
+            where: { userId },
+            include: { businessProfile: true }
+        });
+
+        if (!providerProfile) {
+            throw new NotFoundException("Provider profile not found");
+        }
+
+        // Update business profile
+        if (providerProfile.businessProfile) {
+            await prisma.providerBusinessProfile.update({
+                where: { id: providerProfile.businessProfile.id },
+                data: {
+                    ...(data.businessName && { businessName: data.businessName }),
+                    ...(data.providerType && { providerType: data.providerType }),
+                    ...(data.addressLine && { addressLine: data.addressLine }),
+                    ...(data.district && { district: data.district }),
+                    ...(data.cityProvince && { cityProvince: data.cityProvince }),
+                    ...(data.about && { description: data.about }),
+                    ...(data.logoUrl && { logoUrl: data.logoUrl }),
+                    ...(data.latitude !== undefined && { latitude: data.latitude }),
+                    ...(data.longitude !== undefined && { longitude: data.longitude })
+                }
+            });
+        }
+
+        // Update provider profile
+        await prisma.providerProfile.update({
+            where: { id: providerProfile.id },
+            data: {
+                ...(data.contactName && { contactName: data.contactName })
+            }
+        });
+
+        // Return updated profile
+        return this.me(userId);
+    }
+
+    static async updateAvailability(userId: string, data: {
+        workingDays?: string[];
+        workingHours?: Record<string, { start: string; end: string }[]>;
+        workingHoursStart?: string;
+        workingHoursEnd?: string;
+        unavailableDates?: string[];
+        temporaryPause?: boolean;
+        status?: string;
+    }) {
+        const providerProfile = await prisma.providerProfile.findUnique({
+            where: { userId },
+            include: { businessProfile: true }
+        });
+
+        if (!providerProfile) {
+            throw new NotFoundException("Provider profile not found");
+        }
+
+        if (providerProfile.businessProfile) {
+            let workingHours = data.workingHours;
+            if (!workingHours && (data.workingHoursStart || data.workingHoursEnd)) {
+                const days = data.workingDays?.length
+                    ? data.workingDays
+                    : providerProfile.businessProfile.workingDays;
+                const start = data.workingHoursStart ?? "08:00";
+                const end = data.workingHoursEnd ?? "18:00";
+                workingHours = Object.fromEntries(
+                    days.map((day) => [day, [{ start, end }]])
+                );
+            }
+
+            await prisma.providerBusinessProfile.update({
+                where: { id: providerProfile.businessProfile.id },
+                data: {
+                    ...(data.workingDays && { workingDays: data.workingDays }),
+                    ...(workingHours && { workingHours }),
+                    ...(data.unavailableDates && { unavailableDates: data.unavailableDates.map(d => new Date(d)) }),
+                    ...(data.temporaryPause !== undefined && { temporarilyPaused: data.temporaryPause })
+                }
+            });
+        }
+
+        return {
+            success: true,
+            message: "Availability updated successfully"
         };
     }
 }

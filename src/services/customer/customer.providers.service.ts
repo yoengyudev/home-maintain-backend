@@ -389,8 +389,7 @@ export class CustomerProvidersService {
                 coverageSummary: string | null;
                 providerType: string | null;
                 workingDays: string[];
-                workingHoursStart: string | null;
-                workingHoursEnd: string | null;
+                workingHours: unknown;
             } | null;
             primaryArea: {
                 publicId: string;
@@ -491,8 +490,7 @@ export class CustomerProvidersService {
             ...summary,
             addressLine: provider.businessProfile?.addressLine ?? null,
             workingDays: provider.businessProfile?.workingDays ?? [],
-            workingHoursStart: provider.businessProfile?.workingHoursStart ?? null,
-            workingHoursEnd: provider.businessProfile?.workingHoursEnd ?? null,
+            workingHours: provider.businessProfile?.workingHours ?? {},
             areas: Array.from(areaMap.values()),
             services: provider.serviceListings.map((listing) => ({
                 id: listing.id,

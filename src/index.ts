@@ -26,15 +26,17 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
-const allowedOrigins = Env.FRONTEND_ORIGIN.split(",")
+// Support a comma-separated list in FRONTEND_ORIGIN.
+const allowedOrigins = (Env.FRONTEND_ORIGIN || "")
+    .split(",")
     .map((origin) => origin.trim())
     .filter(Boolean);
 
 app.use(
     cors({
         origin(origin, callback) {
-            // Allow non-browser tools (no Origin) and configured frontend origins.
-            if (!origin || allowedOrigins.includes(origin)) {
+            // Allow non-browser tools (no Origin), empty allow-list, and configured origins.
+            if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
                 callback(null, true);
                 return;
             }

@@ -13,6 +13,17 @@ export const register = async (req: Request, res: Response) => {
     });
 };
 
+export const getProfile = async (req: Request, res: Response) => {
+    const userId = (req as any).user?.userId;
+    const data = await VendorAuthenticationService.me(userId);
+
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: "Provider profile retrieved successfully",
+        data,
+    });
+};
+
 export const login = async (req: Request, res: Response) => {
     const data = await VendorAuthenticationService.login(req.body);
 
@@ -64,6 +75,28 @@ export const me = async (req: Request, res: Response) => {
     return sendResponse(res, {
         statusCode: HTTPSTATUS.OK,
         message: "Provider profile retrieved successfully",
+        data,
+    });
+};
+
+export const updateProfile = async (req: Request, res: Response) => {
+    const userId = (req as any).user?.userId;
+    const data = await VendorAuthenticationService.updateProfile(userId, req.body);
+
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: "Profile updated successfully",
+        data,
+    });
+};
+
+export const updateAvailability = async (req: Request, res: Response) => {
+    const userId = (req as any).user?.userId;
+    const data = await VendorAuthenticationService.updateAvailability(userId, req.body);
+
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: "Availability updated successfully",
         data,
     });
 };
