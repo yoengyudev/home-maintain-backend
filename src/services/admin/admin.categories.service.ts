@@ -1,13 +1,31 @@
 import { prisma } from "../../database/prisma.client";
-import { NotFoundException } from "../../utils/app-error.util";
+import {
+    BadRequestException,
+    InternalServerException,
+    NotFoundException,
+} from "../../utils/app-error.util";
 import {
     buildPaginationMeta,
     parsePaginationQuery,
 } from "../../utils/pagination.util";
 import type { Lang } from "../../i18n/messages";
 import { t } from "../../i18n/translate";
+import {
+    CATEGORY_IMAGE_FOLDER,
+    destroyCloudinaryImageByUrl,
+    uploadImageBuffer,
+} from "../../utils/cloudinary.util";
 
 type CategoriesQuery = { page?: unknown; limit?: unknown; isActive?: unknown };
+
+type CategoryBody = {
+    nameEn?: string;
+    nameKm?: string;
+    descriptionEn?: string;
+    descriptionKm?: string;
+    iconName?: string;
+    isActive?: boolean | string;
+};
 
 function formatCategory(c: any, counts: { providers: number; services: number }) {
     return {
@@ -25,6 +43,24 @@ function formatCategory(c: any, counts: { providers: number; services: number })
         createdAt: c.createdAt.toISOString(),
         updatedAt: c.updatedAt.toISOString(),
     };
+}
+
+function parseOptionalBoolean(value: unknown): boolean | undefined {
+    if (value === undefined || value === null || value === "") return undefined;
+    if (typeof value === "boolean") return value;
+    if (typeof value === "string") {
+        const normalized = value.trim().toLowerCase();
+        if (normalized === "true" || normalized === "1") return true;
+        if (normalized === "false" || normalized === "0") return false;
+    }
+    return undefined;
+}
+
+function toSlug(nameEn: string) {
+    return nameEn
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
 }
 
 export class AdminCategoriesService {
@@ -99,32 +135,32 @@ export class AdminCategoriesService {
     }
 
     static async create(
-        data: {
-            nameEn: string;
-            nameKm: string;
-            descriptionEn?: string;
-            descriptionKm?: string;
-            iconName?: string;
-            isActive?: boolean;
-        },
+        data: CategoryBody,
+        imageFile: Express.Multer.File | undefined,
         adminUserId: string,
         lang: Lang
     ) {
-        const slug = data.nameEn
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, "-")
-            .replace(/^-|-$/g, "");
+        const nameEn = data.nameEn?.trim();
+        const nameKm = data.nameKm?.trim();
+        if (!nameEn || !nameKm) {
+            throw new BadRequestException(t("ERROR_BAD_REQUEST", lang));
+        }
+
+        let iconName = typeof data.iconName === "string" ? data.iconName.trim() || undefined : undefined;
+        if (imageFile?.buffer) {
+            iconName = await this.uploadCategoryImage(imageFile.buffer, lang);
+        }
 
         const category = await prisma.serviceCategory.create({
             data: {
                 publicId: `CAT-${Date.now()}`,
-                nameEn: data.nameEn,
-                nameKm: data.nameKm,
-                slug,
+                nameEn,
+                nameKm,
+                slug: toSlug(nameEn),
                 descriptionEn: data.descriptionEn,
                 descriptionKm: data.descriptionKm,
-                iconName: data.iconName,
-                isActive: data.isActive ?? true,
+                iconName,
+                isActive: parseOptionalBoolean(data.isActive) ?? true,
             },
         });
 
@@ -149,15 +185,9 @@ export class AdminCategoriesService {
 
     static async update(
         id: string,
-        data: Partial<{
-            nameEn: string;
-            nameKm: string;
-            descriptionEn: string;
-            descriptionKm: string;
-            iconName: string;
-            isActive: boolean;
-        }>,
-        adminUserId: string,
+        data: CategoryBody,
+        imageFile: Express.Multer.File | undefined,
+        _adminUserId: string,
         lang: Lang
     ) {
         const c = await prisma.serviceCategory.findFirst({
@@ -165,10 +195,34 @@ export class AdminCategoriesService {
         });
         if (!c) throw new NotFoundException(t("ADMIN_CATEGORY_NOT_FOUND", lang));
 
+        const previousIconName = c.iconName;
+        let nextIconName: string | null | undefined;
+
+        if (imageFile?.buffer) {
+            nextIconName = await this.uploadCategoryImage(imageFile.buffer, lang);
+        } else if (data.iconName !== undefined) {
+            const trimmed = typeof data.iconName === "string" ? data.iconName.trim() : "";
+            nextIconName = trimmed.length > 0 ? trimmed : null;
+        }
+
+        const nameEn = data.nameEn?.trim();
+        const isActive = parseOptionalBoolean(data.isActive);
+
         const updated = await prisma.serviceCategory.update({
             where: { id: c.id },
-            data,
+            data: {
+                ...(nameEn ? { nameEn, slug: toSlug(nameEn) } : {}),
+                ...(data.nameKm !== undefined ? { nameKm: data.nameKm.trim() } : {}),
+                ...(data.descriptionEn !== undefined ? { descriptionEn: data.descriptionEn } : {}),
+                ...(data.descriptionKm !== undefined ? { descriptionKm: data.descriptionKm } : {}),
+                ...(nextIconName !== undefined ? { iconName: nextIconName } : {}),
+                ...(isActive !== undefined ? { isActive } : {}),
+            },
         });
+
+        if (nextIconName !== undefined && previousIconName && previousIconName !== nextIconName) {
+            await destroyCloudinaryImageByUrl(previousIconName);
+        }
 
         return this.getById(updated.id, lang);
     }
@@ -239,14 +293,12 @@ export class AdminCategoriesService {
         });
         if (!c) throw new NotFoundException(t("ADMIN_CATEGORY_NOT_FOUND", lang));
 
-        // Safety check: ensure no linked providers or services
         const [providerCount, serviceCount] = await Promise.all([
             prisma.providerProfile.count({ where: { primaryCategoryId: c.id } }),
             prisma.serviceListing.count({ where: { categoryId: c.id } }),
         ]);
 
         if (providerCount > 0 || serviceCount > 0) {
-            const { BadRequestException } = await import("../../utils/app-error.util");
             throw new BadRequestException(
                 t("ADMIN_CATEGORY_DELETE_HAS_LINKS", lang)
                     .replace("{providers}", String(providerCount))
@@ -271,6 +323,28 @@ export class AdminCategoriesService {
         }
 
         await prisma.serviceCategory.delete({ where: { id: c.id } });
+        await destroyCloudinaryImageByUrl(c.iconName);
         return { deleted: true, id: c.publicId };
+    }
+
+    private static async uploadCategoryImage(fileBuffer: Buffer, lang: Lang) {
+        try {
+            const uploaded = await uploadImageBuffer(fileBuffer, CATEGORY_IMAGE_FOLDER);
+            return uploaded.secure_url;
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : String(err);
+            const maybeObj = err as { message?: string; http_code?: number } | null;
+            console.error("[cloudinary] category upload failed:", message, maybeObj?.http_code);
+
+            if (
+                message.includes("Invalid Signature") ||
+                message.includes("Invalid API Key") ||
+                maybeObj?.http_code === 401
+            ) {
+                throw new InternalServerException(t("CLOUDINARY_INVALID_CREDENTIALS", lang));
+            }
+
+            throw new InternalServerException(t("IMAGE_UPLOAD_FAILED", lang));
+        }
     }
 }

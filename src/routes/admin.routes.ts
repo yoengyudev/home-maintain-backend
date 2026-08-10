@@ -5,6 +5,7 @@ import { authorize } from "../middlewares/role.middlerware";
 import { UserRole } from "../generated/prisma/enums";
 import { validate } from "../validators/validate";
 import { adminLoginSchema } from "../validators/admin/admin.auth.validator";
+import { uploadImage } from "../utils/upload-image.util";
 
 import * as authController from "../controllers/admin/admin.authentication.controller";
 import * as profileController from "../controllers/admin/admin.profile.controller";
@@ -19,6 +20,11 @@ import * as notificationsController from "../controllers/admin/admin.notificatio
 import * as auditController from "../controllers/admin/admin.audit.controller";
 
 const router = Router();
+
+const categoryImageUpload = uploadImage.fields([
+    { name: "image", maxCount: 1 },
+    { name: "icon", maxCount: 1 },
+]);
 
 // ==========================================
 // Authentication
@@ -85,8 +91,16 @@ router.post("/services/:id/request-changes", asyncHandler(servicesController.req
 // ==========================================
 router.get("/categories", asyncHandler(categoriesController.listCategories));
 router.get("/categories/:id", asyncHandler(categoriesController.getCategoryById));
-router.post("/categories", asyncHandler(categoriesController.createCategory));
-router.patch("/categories/:id", asyncHandler(categoriesController.updateCategory));
+router.post(
+    "/categories",
+    categoryImageUpload,
+    asyncHandler(categoriesController.createCategory)
+);
+router.patch(
+    "/categories/:id",
+    categoryImageUpload,
+    asyncHandler(categoriesController.updateCategory)
+);
 router.patch("/categories/:id/disable", asyncHandler(categoriesController.disableCategory));
 router.patch("/categories/:id/restore", asyncHandler(categoriesController.restoreCategory));
 router.delete("/categories/:id", asyncHandler(categoriesController.deleteCategory));

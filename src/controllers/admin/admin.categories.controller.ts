@@ -5,6 +5,13 @@ import { sendResponse } from "../../utils/response.util";
 import { getLang } from "../../utils/get-lang.util";
 import { t } from "../../i18n/translate";
 
+const getCategoryImageFile = (req: Request): Express.Multer.File | undefined => {
+    if (req.file) return req.file;
+
+    const files = req.files as Record<string, Express.Multer.File[]> | undefined;
+    return files?.image?.[0] ?? files?.icon?.[0];
+};
+
 export const listCategories = async (req: Request, res: Response) => {
     const lang = getLang(req);
     const data = await AdminCategoriesService.list(req.query, lang);
@@ -29,7 +36,12 @@ export const getCategoryById = async (req: Request, res: Response) => {
 export const createCategory = async (req: Request, res: Response) => {
     const lang = getLang(req);
     const adminUserId = (req as any).user.userId;
-    const data = await AdminCategoriesService.create(req.body, adminUserId, lang);
+    const data = await AdminCategoriesService.create(
+        req.body,
+        getCategoryImageFile(req),
+        adminUserId,
+        lang
+    );
     return sendResponse(res, {
         statusCode: HTTPSTATUS.CREATED,
         message: t("ADMIN_CATEGORY_CREATED", lang),
@@ -41,7 +53,13 @@ export const updateCategory = async (req: Request, res: Response) => {
     const lang = getLang(req);
     const id = req.params.id as string;
     const adminUserId = (req as any).user.userId;
-    const data = await AdminCategoriesService.update(id, req.body, adminUserId, lang);
+    const data = await AdminCategoriesService.update(
+        id,
+        req.body,
+        getCategoryImageFile(req),
+        adminUserId,
+        lang
+    );
     return sendResponse(res, {
         statusCode: HTTPSTATUS.OK,
         message: t("ADMIN_CATEGORY_UPDATED", lang),

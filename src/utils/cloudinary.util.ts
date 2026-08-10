@@ -3,6 +3,7 @@ import { v2 as cloudinary } from "cloudinary";
 const trim = (value: string | undefined) => (value ?? "").trim();
 
 export const CUSTOMER_PROFILE_IMAGE_FOLDER = "home-maintain/customer/profile";
+export const CATEGORY_IMAGE_FOLDER = "home-maintain/admin/categories";
 
 const cloudinaryUrl = trim(process.env.CLOUDINARY_URL);
 const cloud_name = trim(process.env.CLOUDINARY_CLOUD_NAME);
