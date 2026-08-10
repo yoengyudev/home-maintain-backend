@@ -88,7 +88,7 @@ export class AdminCategoriesService {
         const c = await prisma.serviceCategory.findFirst({
             where: { OR: [{ id }, { publicId: id }] },
         });
-        if (!c) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+        if (!c) throw new NotFoundException(t("ADMIN_CATEGORY_NOT_FOUND", lang));
 
         const [providers, services] = await Promise.all([
             prisma.providerProfile.count({ where: { primaryCategoryId: c.id } }),
@@ -163,7 +163,7 @@ export class AdminCategoriesService {
         const c = await prisma.serviceCategory.findFirst({
             where: { OR: [{ id }, { publicId: id }] },
         });
-        if (!c) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+        if (!c) throw new NotFoundException(t("ADMIN_CATEGORY_NOT_FOUND", lang));
 
         const updated = await prisma.serviceCategory.update({
             where: { id: c.id },
@@ -177,7 +177,7 @@ export class AdminCategoriesService {
         const c = await prisma.serviceCategory.findFirst({
             where: { OR: [{ id }, { publicId: id }] },
         });
-        if (!c) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+        if (!c) throw new NotFoundException(t("ADMIN_CATEGORY_NOT_FOUND", lang));
 
         const updated = await prisma.serviceCategory.update({
             where: { id: c.id },
@@ -207,7 +207,7 @@ export class AdminCategoriesService {
         const c = await prisma.serviceCategory.findFirst({
             where: { OR: [{ id }, { publicId: id }] },
         });
-        if (!c) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+        if (!c) throw new NotFoundException(t("ADMIN_CATEGORY_NOT_FOUND", lang));
 
         const updated = await prisma.serviceCategory.update({
             where: { id: c.id },
@@ -237,7 +237,7 @@ export class AdminCategoriesService {
         const c = await prisma.serviceCategory.findFirst({
             where: { OR: [{ id }, { publicId: id }] },
         });
-        if (!c) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+        if (!c) throw new NotFoundException(t("ADMIN_CATEGORY_NOT_FOUND", lang));
 
         // Safety check: ensure no linked providers or services
         const [providerCount, serviceCount] = await Promise.all([
@@ -248,7 +248,9 @@ export class AdminCategoriesService {
         if (providerCount > 0 || serviceCount > 0) {
             const { BadRequestException } = await import("../../utils/app-error.util");
             throw new BadRequestException(
-                `Cannot delete category: it has ${providerCount} provider(s) and ${serviceCount} service(s) linked to it.`
+                t("ADMIN_CATEGORY_DELETE_HAS_LINKS", lang)
+                    .replace("{providers}", String(providerCount))
+                    .replace("{services}", String(serviceCount))
             );
         }
 

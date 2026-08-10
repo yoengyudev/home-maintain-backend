@@ -112,7 +112,7 @@ export class AdminProvidersService {
         });
 
         if (!provider) {
-            throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+            throw new NotFoundException(t("ADMIN_PROVIDER_NOT_FOUND", lang));
         }
 
         return formatProvider(provider);
@@ -124,9 +124,9 @@ export class AdminProvidersService {
             include: { user: true },
         });
 
-        if (!provider) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+        if (!provider) throw new NotFoundException(t("ADMIN_PROVIDER_NOT_FOUND", lang));
         if (provider.status === ProviderStatus.SUSPENDED) {
-            throw new BadRequestException("Provider is already suspended");
+            throw new BadRequestException(t("ADMIN_PROVIDER_ALREADY_SUSPENDED", lang));
         }
 
         const updated = await prisma.providerProfile.update({
@@ -168,9 +168,9 @@ export class AdminProvidersService {
             include: { user: true },
         });
 
-        if (!provider) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+        if (!provider) throw new NotFoundException(t("ADMIN_PROVIDER_NOT_FOUND", lang));
         if (provider.status !== ProviderStatus.SUSPENDED) {
-            throw new BadRequestException("Provider is not suspended");
+            throw new BadRequestException(t("ADMIN_PROVIDER_NOT_SUSPENDED", lang));
         }
 
         const updated = await prisma.providerProfile.update({

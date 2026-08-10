@@ -68,7 +68,7 @@ export class AdminServiceAreasService {
         const a = await prisma.serviceArea.findFirst({
             where: { OR: [{ id }, { publicId: id }] },
         });
-        if (!a) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+        if (!a) throw new NotFoundException(t("ADMIN_SERVICE_AREA_NOT_FOUND", lang));
         const count = await prisma.providerProfile.count({ where: { primaryAreaId: a.id } });
         return formatArea(a, count);
     }
@@ -116,7 +116,7 @@ export class AdminServiceAreasService {
         const a = await prisma.serviceArea.findFirst({
             where: { OR: [{ id }, { publicId: id }] },
         });
-        if (!a) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+        if (!a) throw new NotFoundException(t("ADMIN_SERVICE_AREA_NOT_FOUND", lang));
 
         await prisma.serviceArea.update({ where: { id: a.id }, data });
         return this.getById(id, lang);
@@ -126,7 +126,7 @@ export class AdminServiceAreasService {
         const a = await prisma.serviceArea.findFirst({
             where: { OR: [{ id }, { publicId: id }] },
         });
-        if (!a) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+        if (!a) throw new NotFoundException(t("ADMIN_SERVICE_AREA_NOT_FOUND", lang));
 
         await prisma.serviceArea.update({ where: { id: a.id }, data: { isActive: false } });
 
@@ -153,7 +153,7 @@ export class AdminServiceAreasService {
         const a = await prisma.serviceArea.findFirst({
             where: { OR: [{ id }, { publicId: id }] },
         });
-        if (!a) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+        if (!a) throw new NotFoundException(t("ADMIN_SERVICE_AREA_NOT_FOUND", lang));
 
         await prisma.serviceArea.update({ where: { id: a.id }, data: { isActive: true } });
 
@@ -180,13 +180,16 @@ export class AdminServiceAreasService {
         const a = await prisma.serviceArea.findFirst({
             where: { OR: [{ id }, { publicId: id }] },
         });
-        if (!a) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+        if (!a) throw new NotFoundException(t("ADMIN_SERVICE_AREA_NOT_FOUND", lang));
 
         const providerCount = await prisma.providerProfile.count({ where: { primaryAreaId: a.id } });
         if (providerCount > 0) {
             const { BadRequestException } = await import("../../utils/app-error.util");
             throw new BadRequestException(
-                `Cannot delete service area: it has ${providerCount} provider(s) linked to it.`
+                t("ADMIN_SERVICE_AREA_DELETE_HAS_LINKS", lang).replace(
+                    "{providers}",
+                    String(providerCount)
+                )
             );
         }
 

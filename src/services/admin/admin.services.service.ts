@@ -124,7 +124,7 @@ export class AdminServicesService {
             where: { OR: [{ id }, { publicId: id }] },
             include: serviceInclude,
         });
-        if (!s) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+        if (!s) throw new NotFoundException(t("ADMIN_SERVICE_NOT_FOUND", lang));
         return formatService(s);
     }
 
@@ -132,9 +132,9 @@ export class AdminServicesService {
         const s = await prisma.serviceListing.findFirst({
             where: { OR: [{ id }, { publicId: id }] },
         });
-        if (!s) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+        if (!s) throw new NotFoundException(t("ADMIN_SERVICE_NOT_FOUND", lang));
         if (s.moderationStatus === ServiceModerationStatus.DISABLED_BY_ADMIN) {
-            throw new BadRequestException("Service is already disabled");
+            throw new BadRequestException(t("ADMIN_SERVICE_ALREADY_DISABLED", lang));
         }
 
         const adminProfile = await prisma.adminProfile.findFirst({ where: { userId: adminUserId } });
@@ -182,9 +182,9 @@ export class AdminServicesService {
         const s = await prisma.serviceListing.findFirst({
             where: { OR: [{ id }, { publicId: id }] },
         });
-        if (!s) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+        if (!s) throw new NotFoundException(t("ADMIN_SERVICE_NOT_FOUND", lang));
         if (s.moderationStatus !== ServiceModerationStatus.DISABLED_BY_ADMIN) {
-            throw new BadRequestException("Service is not disabled by admin");
+            throw new BadRequestException(t("ADMIN_SERVICE_NOT_DISABLED", lang));
         }
 
         const adminProfile = await prisma.adminProfile.findFirst({ where: { userId: adminUserId } });
@@ -230,7 +230,7 @@ export class AdminServicesService {
         const s = await prisma.serviceListing.findFirst({
             where: { OR: [{ id }, { publicId: id }] },
         });
-        if (!s) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+        if (!s) throw new NotFoundException(t("ADMIN_SERVICE_NOT_FOUND", lang));
 
         const adminProfile = await prisma.adminProfile.findFirst({ where: { userId: adminUserId } });
 
@@ -277,7 +277,7 @@ export class AdminServicesService {
         const s = await prisma.serviceListing.findFirst({
             where: { OR: [{ id }, { publicId: id }] },
         });
-        if (!s) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+        if (!s) throw new NotFoundException(t("ADMIN_SERVICE_NOT_FOUND", lang));
 
         const adminProfile = await prisma.adminProfile.findFirst({ where: { userId: adminUserId } });
 

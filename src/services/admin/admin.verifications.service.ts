@@ -110,7 +110,7 @@ export class AdminVerificationsService {
             where: { OR: [{ id }, { publicId: id }] },
             include: verificationInclude,
         });
-        if (!v) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+        if (!v) throw new NotFoundException(t("ADMIN_VERIFICATION_NOT_FOUND", lang));
         return formatVerification(v);
     }
 
@@ -119,9 +119,9 @@ export class AdminVerificationsService {
             where: { OR: [{ id }, { publicId: id }] },
             include: { providerProfile: true },
         });
-        if (!v) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+        if (!v) throw new NotFoundException(t("ADMIN_VERIFICATION_NOT_FOUND", lang));
         if (v.status !== ProviderVerificationStatus.UNDER_REVIEW) {
-            throw new BadRequestException("Verification must be UNDER_REVIEW to approve");
+            throw new BadRequestException(t("ADMIN_VERIFICATION_MUST_BE_UNDER_REVIEW", lang));
         }
 
         const adminProfile = await prisma.adminProfile.findFirst({ where: { userId: adminUserId } });
@@ -178,7 +178,7 @@ export class AdminVerificationsService {
             where: { OR: [{ id }, { publicId: id }] },
             include: { providerProfile: true },
         });
-        if (!v) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+        if (!v) throw new NotFoundException(t("ADMIN_VERIFICATION_NOT_FOUND", lang));
 
         const adminProfile = await prisma.adminProfile.findFirst({ where: { userId: adminUserId } });
 
@@ -227,7 +227,7 @@ export class AdminVerificationsService {
             where: { OR: [{ id }, { publicId: id }] },
             include: { providerProfile: true },
         });
-        if (!v) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+        if (!v) throw new NotFoundException(t("ADMIN_VERIFICATION_NOT_FOUND", lang));
 
         const adminProfile = await prisma.adminProfile.findFirst({ where: { userId: adminUserId } });
 

@@ -32,6 +32,93 @@ export const messages = {
         SAMPLE_UPDATED_SUCCESSFULLY: "Sample updated successfully",
         SAMPLE_DELETED_SUCCESSFULLY: "Sample deleted successfully",
 
+        // admin auth
+        ADMIN_INVALID_CREDENTIALS: "Incorrect email or password",
+        ADMIN_ACCOUNT_DISABLED: "This admin account has been disabled",
+        ADMIN_LOGGED_IN_SUCCESSFULLY: "Logged in successfully",
+        ADMIN_LOGGED_OUT_SUCCESSFULLY: "Logged out successfully",
+        ADMIN_ME_RETRIEVED: "Admin profile retrieved",
+        ADMIN_PROFILE_RETRIEVED: "Profile retrieved",
+        ADMIN_PROFILE_UPDATED: "Profile updated",
+        ADMIN_PASSWORD_CHANGED: "Password changed successfully",
+        ADMIN_PASSWORD_NOT_SET: "User does not have a password set",
+        ADMIN_PASSWORD_CURRENT_INVALID: "Current password is incorrect",
+
+        // admin providers
+        ADMIN_PROVIDERS_RETRIEVED: "Providers retrieved",
+        ADMIN_PROVIDER_RETRIEVED: "Provider retrieved",
+        ADMIN_PROVIDER_SUSPENDED: "Provider suspended",
+        ADMIN_PROVIDER_RESTORED: "Provider restored",
+        ADMIN_PROVIDER_ALREADY_SUSPENDED: "Provider is already suspended",
+        ADMIN_PROVIDER_NOT_SUSPENDED: "Provider is not suspended",
+        ADMIN_PROVIDER_NOT_FOUND: "Provider not found",
+
+        // admin customers
+        ADMIN_CUSTOMERS_RETRIEVED: "Customers retrieved",
+        ADMIN_CUSTOMER_RETRIEVED: "Customer retrieved",
+        ADMIN_CUSTOMER_SUSPENDED: "Customer suspended",
+        ADMIN_CUSTOMER_RESTORED: "Customer restored",
+        ADMIN_CUSTOMER_ALREADY_SUSPENDED: "Customer is already suspended",
+        ADMIN_CUSTOMER_NOT_SUSPENDED: "Customer is not suspended",
+        ADMIN_CUSTOMER_NOT_FOUND: "Customer not found",
+
+        // admin bookings
+        ADMIN_BOOKINGS_RETRIEVED: "Bookings retrieved",
+        ADMIN_BOOKING_RETRIEVED: "Booking retrieved",
+        ADMIN_BOOKING_NOT_FOUND: "Booking not found",
+
+        // admin verifications
+        ADMIN_VERIFICATIONS_RETRIEVED: "Verifications retrieved",
+        ADMIN_VERIFICATION_RETRIEVED: "Verification retrieved",
+        ADMIN_VERIFICATION_APPROVED: "Verification approved",
+        ADMIN_VERIFICATION_CHANGES_REQUESTED: "Verification changes requested",
+        ADMIN_VERIFICATION_REJECTED: "Verification rejected",
+        ADMIN_VERIFICATION_NOT_FOUND: "Verification not found",
+        ADMIN_VERIFICATION_MUST_BE_UNDER_REVIEW: "Verification must be UNDER_REVIEW to approve",
+
+        // admin services
+        ADMIN_SERVICES_RETRIEVED: "Services retrieved",
+        ADMIN_SERVICE_RETRIEVED: "Service retrieved",
+        ADMIN_SERVICE_DISABLED: "Service disabled",
+        ADMIN_SERVICE_RESTORED: "Service restored",
+        ADMIN_SERVICE_APPROVED: "Service approved",
+        ADMIN_SERVICE_CHANGES_REQUESTED: "Changes requested",
+        ADMIN_SERVICE_ALREADY_DISABLED: "Service is already disabled",
+        ADMIN_SERVICE_NOT_DISABLED: "Service is not disabled by admin",
+        ADMIN_SERVICE_NOT_FOUND: "Service not found",
+
+        // admin categories
+        ADMIN_CATEGORIES_RETRIEVED: "Categories retrieved",
+        ADMIN_CATEGORY_RETRIEVED: "Category retrieved",
+        ADMIN_CATEGORY_CREATED: "Category created",
+        ADMIN_CATEGORY_UPDATED: "Category updated",
+        ADMIN_CATEGORY_DISABLED: "Category disabled",
+        ADMIN_CATEGORY_RESTORED: "Category restored",
+        ADMIN_CATEGORY_DELETED: "Category deleted",
+        ADMIN_CATEGORY_NOT_FOUND: "Category not found",
+        ADMIN_CATEGORY_DELETE_HAS_LINKS: "Cannot delete category: it has {providers} provider(s) and {services} service(s) linked to it",
+
+        // admin service areas
+        ADMIN_SERVICE_AREAS_RETRIEVED: "Service areas retrieved",
+        ADMIN_SERVICE_AREA_RETRIEVED: "Service area retrieved",
+        ADMIN_SERVICE_AREA_CREATED: "Service area created",
+        ADMIN_SERVICE_AREA_UPDATED: "Service area updated",
+        ADMIN_SERVICE_AREA_DISABLED: "Service area disabled",
+        ADMIN_SERVICE_AREA_RESTORED: "Service area restored",
+        ADMIN_SERVICE_AREA_DELETED: "Service area deleted",
+        ADMIN_SERVICE_AREA_NOT_FOUND: "Service area not found",
+        ADMIN_SERVICE_AREA_DELETE_HAS_LINKS: "Cannot delete service area: it has {providers} provider(s) linked to it",
+
+        // admin notifications
+        ADMIN_NOTIFICATIONS_RETRIEVED: "Notifications retrieved",
+        ADMIN_NOTIFICATION_UNREAD_COUNT_RETRIEVED: "Unread count retrieved",
+        ADMIN_NOTIFICATION_MARKED_READ: "Notification marked read",
+        ADMIN_NOTIFICATIONS_MARKED_READ: "All notifications marked read",
+        ADMIN_NOTIFICATION_NOT_FOUND: "Notification not found",
+
+        // admin audit
+        ADMIN_AUDIT_LOGS_RETRIEVED: "Audit logs retrieved",
+
         // customer auth
         CUSTOMER_OTP_SENT_SUCCESSFULLY: "OTP sent successfully",
         CUSTOMER_OTP_RESENT_SUCCESSFULLY: "OTP resent successfully",
@@ -132,6 +219,93 @@ export const messages = {
         SAMPLE_CREATED_SUCCESSFULLY: "បានបង្កើត Sample ដោយជោគជ័យ",
         SAMPLE_UPDATED_SUCCESSFULLY: "បានកែប្រែ Sample ដោយជោគជ័យ",
         SAMPLE_DELETED_SUCCESSFULLY: "បានលុប Sample ដោយជោគជ័យ",
+
+        // admin auth
+        ADMIN_INVALID_CREDENTIALS: "អ៊ីមែល ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវ",
+        ADMIN_ACCOUNT_DISABLED: "គណនីអ្នកគ្រប់គ្រងនេះត្រូវបានបិទ",
+        ADMIN_LOGGED_IN_SUCCESSFULLY: "បានចូលប្រើប្រាស់ដោយជោគជ័យ",
+        ADMIN_LOGGED_OUT_SUCCESSFULLY: "បានចាកចេញដោយជោគជ័យ",
+        ADMIN_ME_RETRIEVED: "បានទាញយកប្រវត្តិរូបអ្នកគ្រប់គ្រង",
+        ADMIN_PROFILE_RETRIEVED: "បានទាញយកប្រវត្តិរូប",
+        ADMIN_PROFILE_UPDATED: "បានធ្វើបច្ចុប្បន្នភាពប្រវត្តិរូប",
+        ADMIN_PASSWORD_CHANGED: "បានផ្លាស់ប្តូរពាក្យសម្ងាត់ដោយជោគជ័យ",
+        ADMIN_PASSWORD_NOT_SET: "អ្នកប្រើមិនទាន់មានពាក្យសម្ងាត់",
+        ADMIN_PASSWORD_CURRENT_INVALID: "ពាក្យសម្ងាត់បច្ចុប្បន្នមិនត្រឹមត្រូវ",
+
+        // admin providers
+        ADMIN_PROVIDERS_RETRIEVED: "បានទាញយកបញ្ជីអ្នកផ្តល់សេវា",
+        ADMIN_PROVIDER_RETRIEVED: "បានទាញយកអ្នកផ្តល់សេវា",
+        ADMIN_PROVIDER_SUSPENDED: "បានផ្អាកអ្នកផ្តល់សេវា",
+        ADMIN_PROVIDER_RESTORED: "បានស្តារអ្នកផ្តល់សេវា",
+        ADMIN_PROVIDER_ALREADY_SUSPENDED: "អ្នកផ្តល់សេវាត្រូវបានផ្អាករួចហើយ",
+        ADMIN_PROVIDER_NOT_SUSPENDED: "អ្នកផ្តល់សេវាមិនស្ថិតក្នុងស្ថានភាពផ្អាក",
+        ADMIN_PROVIDER_NOT_FOUND: "រកមិនឃើញអ្នកផ្តល់សេវា",
+
+        // admin customers
+        ADMIN_CUSTOMERS_RETRIEVED: "បានទាញយកបញ្ជីអតិថិជន",
+        ADMIN_CUSTOMER_RETRIEVED: "បានទាញយកអតិថិជន",
+        ADMIN_CUSTOMER_SUSPENDED: "បានផ្អាកអតិថិជន",
+        ADMIN_CUSTOMER_RESTORED: "បានស្តារអតិថិជន",
+        ADMIN_CUSTOMER_ALREADY_SUSPENDED: "អតិថិជនត្រូវបានផ្អាករួចហើយ",
+        ADMIN_CUSTOMER_NOT_SUSPENDED: "អតិថិជនមិនស្ថិតក្នុងស្ថានភាពផ្អាក",
+        ADMIN_CUSTOMER_NOT_FOUND: "រកមិនឃើញអតិថិជន",
+
+        // admin bookings
+        ADMIN_BOOKINGS_RETRIEVED: "បានទាញយកបញ្ជីការកក់",
+        ADMIN_BOOKING_RETRIEVED: "បានទាញយកការកក់",
+        ADMIN_BOOKING_NOT_FOUND: "រកមិនឃើញការកក់",
+
+        // admin verifications
+        ADMIN_VERIFICATIONS_RETRIEVED: "បានទាញយកបញ្ជីការផ្ទៀងផ្ទាត់",
+        ADMIN_VERIFICATION_RETRIEVED: "បានទាញយកការផ្ទៀងផ្ទាត់",
+        ADMIN_VERIFICATION_APPROVED: "បានអនុម័តការផ្ទៀងផ្ទាត់",
+        ADMIN_VERIFICATION_CHANGES_REQUESTED: "បានស្នើសុំការកែប្រែសម្រាប់ការផ្ទៀងផ្ទាត់",
+        ADMIN_VERIFICATION_REJECTED: "បានបដិសេធការផ្ទៀងផ្ទាត់",
+        ADMIN_VERIFICATION_NOT_FOUND: "រកមិនឃើញការផ្ទៀងផ្ទាត់",
+        ADMIN_VERIFICATION_MUST_BE_UNDER_REVIEW: "ការផ្ទៀងផ្ទាត់ត្រូវតែស្ថិតក្នុងស្ថានភាព UNDER_REVIEW ដើម្បីអនុម័ត",
+
+        // admin services
+        ADMIN_SERVICES_RETRIEVED: "បានទាញយកបញ្ជីសេវាកម្ម",
+        ADMIN_SERVICE_RETRIEVED: "បានទាញយកសេវាកម្ម",
+        ADMIN_SERVICE_DISABLED: "បានបិទសេវាកម្ម",
+        ADMIN_SERVICE_RESTORED: "បានស្តារសេវាកម្ម",
+        ADMIN_SERVICE_APPROVED: "បានអនុម័តសេវាកម្ម",
+        ADMIN_SERVICE_CHANGES_REQUESTED: "បានស្នើសុំការកែប្រែ",
+        ADMIN_SERVICE_ALREADY_DISABLED: "សេវាកម្មត្រូវបានបិទរួចហើយ",
+        ADMIN_SERVICE_NOT_DISABLED: "សេវាកម្មមិនត្រូវបានបិទដោយអ្នកគ្រប់គ្រង",
+        ADMIN_SERVICE_NOT_FOUND: "រកមិនឃើញសេវាកម្ម",
+
+        // admin categories
+        ADMIN_CATEGORIES_RETRIEVED: "បានទាញយកបញ្ជីប្រភេទសេវា",
+        ADMIN_CATEGORY_RETRIEVED: "បានទាញយកប្រភេទសេវា",
+        ADMIN_CATEGORY_CREATED: "បានបង្កើតប្រភេទសេវា",
+        ADMIN_CATEGORY_UPDATED: "បានធ្វើបច្ចុប្បន្នភាពប្រភេទសេវា",
+        ADMIN_CATEGORY_DISABLED: "បានបិទប្រភេទសេវា",
+        ADMIN_CATEGORY_RESTORED: "បានស្តារប្រភេទសេវា",
+        ADMIN_CATEGORY_DELETED: "បានលុបប្រភេទសេវា",
+        ADMIN_CATEGORY_NOT_FOUND: "រកមិនឃើញប្រភេទសេវា",
+        ADMIN_CATEGORY_DELETE_HAS_LINKS: "មិនអាចលុបប្រភេទសេវាបានទេ៖ មានអ្នកផ្តល់សេវា {providers} និងសេវាកម្ម {services} ភ្ជាប់ជាមួយវា",
+
+        // admin service areas
+        ADMIN_SERVICE_AREAS_RETRIEVED: "បានទាញយកបញ្ជីតំបន់សេវា",
+        ADMIN_SERVICE_AREA_RETRIEVED: "បានទាញយកតំបន់សេវា",
+        ADMIN_SERVICE_AREA_CREATED: "បានបង្កើតតំបន់សេវា",
+        ADMIN_SERVICE_AREA_UPDATED: "បានធ្វើបច្ចុប្បន្នភាពតំបន់សេវា",
+        ADMIN_SERVICE_AREA_DISABLED: "បានបិទតំបន់សេវា",
+        ADMIN_SERVICE_AREA_RESTORED: "បានស្តារតំបន់សេវា",
+        ADMIN_SERVICE_AREA_DELETED: "បានលុបតំបន់សេវា",
+        ADMIN_SERVICE_AREA_NOT_FOUND: "រកមិនឃើញតំបន់សេវា",
+        ADMIN_SERVICE_AREA_DELETE_HAS_LINKS: "មិនអាចលុបតំបន់សេវាបានទេ៖ មានអ្នកផ្តល់សេវា {providers} ភ្ជាប់ជាមួយវា",
+
+        // admin notifications
+        ADMIN_NOTIFICATIONS_RETRIEVED: "បានទាញយកបញ្ជីការជូនដំណឹង",
+        ADMIN_NOTIFICATION_UNREAD_COUNT_RETRIEVED: "បានទាញយកចំនួនមិនទាន់អាន",
+        ADMIN_NOTIFICATION_MARKED_READ: "បានសម្គាល់ការជូនដំណឹងថាបានអាន",
+        ADMIN_NOTIFICATIONS_MARKED_READ: "បានសម្គាល់ការជូនដំណឹងទាំងអស់ថាបានអាន",
+        ADMIN_NOTIFICATION_NOT_FOUND: "រកមិនឃើញការជូនដំណឹង",
+
+        // admin audit
+        ADMIN_AUDIT_LOGS_RETRIEVED: "បានទាញយកកំណត់ត្រាសវនកម្ម",
 
         // customer auth
         CUSTOMER_OTP_SENT_SUCCESSFULLY: "បានផ្ញើ OTP ដោយជោគជ័យ",

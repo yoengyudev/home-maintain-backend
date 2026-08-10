@@ -65,16 +65,12 @@ export class AdminProfileService {
         const user = await prisma.user.findUnique({ where: { id: userId } });
         if (!user) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
         if (!user.passwordHash) {
-            throw new BadRequestException("User does not have a password set.");
+            throw new BadRequestException(t("ADMIN_PASSWORD_NOT_SET", lang));
         }
 
         const isMatch = await bcrypt.compare(currentPassword, user.passwordHash);
         if (!isMatch) {
-            throw new BadRequestException(
-                lang === "kh"
-                    ? "ពាក្យសម្ងាត់បច្ចុប្បន្នមិនត្រឹមត្រូវ។"
-                    : "Current password is incorrect."
-            );
+            throw new BadRequestException(t("ADMIN_PASSWORD_CURRENT_INVALID", lang));
         }
 
         const hashed = await bcrypt.hash(newPassword, 12);

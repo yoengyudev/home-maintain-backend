@@ -83,7 +83,7 @@ export class AdminCustomersService {
             where: { OR: [{ id }, { publicId: id }] },
             include: customerInclude,
         });
-        if (!customer) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+        if (!customer) throw new NotFoundException(t("ADMIN_CUSTOMER_NOT_FOUND", lang));
         return formatCustomer(customer);
     }
 
@@ -92,9 +92,9 @@ export class AdminCustomersService {
             where: { OR: [{ id }, { publicId: id }] },
             include: { user: true },
         });
-        if (!customer) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+        if (!customer) throw new NotFoundException(t("ADMIN_CUSTOMER_NOT_FOUND", lang));
         if (customer.user.accountStatus === AccountStatus.SUSPENDED) {
-            throw new BadRequestException("Customer is already suspended");
+            throw new BadRequestException(t("ADMIN_CUSTOMER_ALREADY_SUSPENDED", lang));
         }
 
         await prisma.user.update({
@@ -135,9 +135,9 @@ export class AdminCustomersService {
             where: { OR: [{ id }, { publicId: id }] },
             include: { user: true },
         });
-        if (!customer) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+        if (!customer) throw new NotFoundException(t("ADMIN_CUSTOMER_NOT_FOUND", lang));
         if (customer.user.accountStatus !== AccountStatus.SUSPENDED) {
-            throw new BadRequestException("Customer is not suspended");
+            throw new BadRequestException(t("ADMIN_CUSTOMER_NOT_SUSPENDED", lang));
         }
 
         await prisma.user.update({

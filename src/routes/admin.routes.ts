@@ -3,6 +3,8 @@ import { asyncHandler } from "../middlewares/async-handler.middlerware";
 import { authenticate } from "../middlewares/auth.middlerware";
 import { authorize } from "../middlewares/role.middlerware";
 import { UserRole } from "../generated/prisma/enums";
+import { validate } from "../validators/validate";
+import { adminLoginSchema } from "../validators/admin/admin.auth.validator";
 
 import * as authController from "../controllers/admin/admin.authentication.controller";
 import * as profileController from "../controllers/admin/admin.profile.controller";
@@ -21,7 +23,7 @@ const router = Router();
 // ==========================================
 // Authentication
 // ==========================================
-router.post("/auth/login", asyncHandler(authController.login));
+router.post("/auth/login", validate(adminLoginSchema), asyncHandler(authController.login));
 
 // All routes below require ADMIN role
 router.use(authenticate);

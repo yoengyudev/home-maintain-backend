@@ -144,7 +144,7 @@ export class AdminBookingsService {
             where: { OR: [{ id }, { publicId: id }] },
             include: bookingInclude,
         });
-        if (!booking) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+        if (!booking) throw new NotFoundException(t("ADMIN_BOOKING_NOT_FOUND", lang));
         return formatBooking(booking);
     }
 }

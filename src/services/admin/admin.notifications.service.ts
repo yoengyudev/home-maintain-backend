@@ -60,7 +60,7 @@ export class AdminNotificationsService {
         const notification = await prisma.notification.findFirst({
             where: { OR: [{ id: notificationId }, { publicId: notificationId }], userId },
         });
-        if (!notification) throw new NotFoundException(t("ERROR_NOT_FOUND", lang));
+        if (!notification) throw new NotFoundException(t("ADMIN_NOTIFICATION_NOT_FOUND", lang));
 
         const updated = await prisma.notification.update({
             where: { id: notification.id },

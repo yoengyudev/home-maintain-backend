@@ -1,13 +1,20 @@
+import type { z } from "zod";
 import { prisma } from "../../database/prisma.client";
 import { verifyPassword } from "../../utils/verify-password.util";
 import { signAccessToken } from "../../utils/jwt.util";
-import { BadRequestException, UnauthorizedException } from "../../utils/app-error.util";
+import { UnauthorizedException } from "../../utils/app-error.util";
 import { AccountStatus, UserRole } from "../../generated/prisma/enums";
 import type { Lang } from "../../i18n/messages";
 import { t } from "../../i18n/translate";
+import { deactivateFcmToken, upsertFcmToken } from "../../helper/customer/auth.helper";
+import type { adminLoginSchema } from "../../validators/admin/admin.auth.validator";
+
+type AdminLoginDto = z.infer<typeof adminLoginSchema>;
 
 export class AdminAuthenticationService {
-    static async login(email: string, password: string, lang: Lang) {
+    static async login(data: AdminLoginDto, lang: Lang) {
+        const { email, password, fcmToken, platform, deviceName } = data;
+
         const user = await prisma.user.findFirst({
             where: {
                 email: { equals: email, mode: "insensitive" },
@@ -19,22 +26,29 @@ export class AdminAuthenticationService {
         });
 
         if (!user || !user.passwordHash) {
-            throw new UnauthorizedException(t("UNAUTHORIZED", lang));
+            throw new UnauthorizedException(t("ADMIN_INVALID_CREDENTIALS", lang));
         }
 
         if (user.accountStatus !== AccountStatus.ACTIVE) {
-            throw new UnauthorizedException(t("UNAUTHORIZED", lang));
+            throw new UnauthorizedException(t("ADMIN_ACCOUNT_DISABLED", lang));
         }
 
         const isPasswordValid = await verifyPassword(password, user.passwordHash);
         if (!isPasswordValid) {
-            throw new UnauthorizedException(t("UNAUTHORIZED", lang));
+            throw new UnauthorizedException(t("ADMIN_INVALID_CREDENTIALS", lang));
         }
 
         // Update last sign-in timestamp
         await prisma.user.update({
             where: { id: user.id },
             data: { lastSignedInAt: new Date() },
+        });
+
+        await upsertFcmToken({
+            userId: user.id,
+            token: fcmToken,
+            platform,
+            deviceName,
         });
 
         // Log the sign-in to audit log
@@ -81,6 +95,8 @@ export class AdminAuthenticationService {
         if (!user) {
             throw new UnauthorizedException(t("UNAUTHORIZED", lang));
         }
+
+        await deactivateFcmToken(userId);
 
         // Log the sign-out
         if (user.adminProfile) {
