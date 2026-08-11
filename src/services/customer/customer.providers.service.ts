@@ -8,10 +8,10 @@ import {
     parsePaginationQuery,
 } from "../../utils/pagination.util";
 import {
-    ProviderStatus,
     ServiceModerationStatus,
     ServiceStatus,
 } from "../../generated/prisma/enums";
+import { availableToCustomersWhere } from "../../utils/customer-provider-visibility.util";
 
 type ProvidersQuery = {
     page?: unknown;
@@ -36,32 +36,36 @@ export class CustomerProvidersService {
         const area = firstQueryString(query.area)?.trim() ?? "";
 
         const where = {
-            status: ProviderStatus.ACTIVE,
-            serviceListings: {
-                some: {
-                    ...activeServiceWhere,
-                    ...(category
-                        ? {
-                              category: {
-                                  isActive: true,
-                                  OR: [{ id: category }, { slug: category }, { publicId: category }],
-                              },
-                          }
-                        : {}),
-                    ...(area
-                        ? {
-                              areas: {
-                                  some: {
-                                      serviceArea: {
-                                          isActive: true,
-                                          OR: [{ slug: area }, { publicId: area }],
-                                      },
-                                  },
-                              },
-                          }
-                        : {}),
-                },
-            },
+            ...availableToCustomersWhere,
+            ...(category || area
+                ? {
+                      serviceListings: {
+                          some: {
+                              ...activeServiceWhere,
+                              ...(category
+                                  ? {
+                                        category: {
+                                            isActive: true,
+                                            OR: [{ id: category }, { slug: category }, { publicId: category }],
+                                        },
+                                    }
+                                  : {}),
+                              ...(area
+                                  ? {
+                                        areas: {
+                                            some: {
+                                                serviceArea: {
+                                                    isActive: true,
+                                                    OR: [{ slug: area }, { publicId: area }],
+                                                },
+                                            },
+                                        },
+                                    }
+                                  : {}),
+                          },
+                      },
+                  }
+                : {}),
             ...(search
                 ? {
                       OR: [
@@ -141,10 +145,7 @@ export class CustomerProvidersService {
             : 3;
 
         const activeWhere = {
-            status: ProviderStatus.ACTIVE,
-            serviceListings: {
-                some: activeServiceWhere,
-            },
+            ...availableToCustomersWhere,
         };
 
         const providerInclude = {
@@ -219,8 +220,8 @@ export class CustomerProvidersService {
     static async getProviderById(id: string, lang: Lang) {
         const provider = await prisma.providerProfile.findFirst({
             where: {
-                id,
-                status: ProviderStatus.ACTIVE,
+                OR: [{ id }, { publicId: id }],
+                ...availableToCustomersWhere,
             },
             include: {
                 businessProfile: true,

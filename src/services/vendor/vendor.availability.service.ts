@@ -1,5 +1,6 @@
 import { prisma } from "../../database/prisma.client";
-import { NotFoundException, BadRequestException } from "../../utils/app-error.util";
+import { NotFoundException } from "../../utils/app-error.util";
+import { resolveSchedule } from "../../utils/provider-availability.util";
 
 interface UpdateAvailabilityData {
   workingDays?: string[];
@@ -22,7 +23,6 @@ export class VendorAvailabilityService {
     }
 
     if (!providerProfile.businessProfile) {
-      // Return default availability if no business profile exists
       return {
         workingDays: [],
         workingHours: {},
@@ -31,22 +31,11 @@ export class VendorAvailabilityService {
       };
     }
 
-    // Parse workingHours JSON if it exists
-    let workingHours = {};
-    if (providerProfile.businessProfile.workingHours) {
-      try {
-        workingHours = typeof providerProfile.businessProfile.workingHours === 'string'
-          ? JSON.parse(providerProfile.businessProfile.workingHours as string)
-          : providerProfile.businessProfile.workingHours;
-      } catch (e) {
-        console.error('Error parsing workingHours JSON:', e);
-        workingHours = {};
-      }
-    }
+    const resolved = resolveSchedule(providerProfile.businessProfile);
 
     return {
-      workingDays: providerProfile.businessProfile.workingDays,
-      workingHours,
+      workingDays: resolved.workingDays,
+      workingHours: resolved.hours,
       unavailableDates: providerProfile.businessProfile.unavailableDates.map((date: Date) => date.toISOString().split('T')[0]),
       temporaryPause: providerProfile.businessProfile.temporarilyPaused
     };
@@ -69,8 +58,7 @@ export class VendorAvailabilityService {
       ? data.unavailableDates.map(dateStr => new Date(dateStr))
       : [];
 
-    // Convert workingHours object to JSON string
-    const workingHoursJson = data.workingHours ? JSON.stringify(data.workingHours) : '{}';
+    const workingHoursJson = data.workingHours ?? {};
 
     if (providerProfile.businessProfile) {
       // Update existing business profile

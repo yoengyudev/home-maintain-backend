@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { HTTPSTATUS } from "../../config/http.config";
-import { VendorServiceService } from "../../services/vendor/vendor.Services.service";
+import { VendorServiceService } from "../../services/vendor/vendor.services.service";
 import { sendResponse } from "../../utils/response.util";
 
 export const getServices = async (req: Request, res: Response) => {

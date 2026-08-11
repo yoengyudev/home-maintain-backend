@@ -380,6 +380,11 @@ export class CustomerCatalogService {
 
         const where: any = {
             status: ProviderStatus.ACTIVE,
+            NOT: {
+                businessProfile: {
+                    is: { temporarilyPaused: true },
+                },
+            },
             ...(searchText
                 ? {
                       OR: [
@@ -477,6 +482,11 @@ export class CustomerCatalogService {
             where: {
                 OR: [{ id }, { publicId: id }],
                 status: ProviderStatus.ACTIVE,
+                NOT: {
+                    businessProfile: {
+                        is: { temporarilyPaused: true },
+                    },
+                },
             },
             include: {
                 businessProfile: true,

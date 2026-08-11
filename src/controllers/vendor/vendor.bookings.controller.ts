@@ -1,70 +1,76 @@
 import { Request, Response } from "express";
 import { HTTPSTATUS } from "../../config/http.config";
-import { VendorVerificationService } from "../../services/vendor/vendor.Verification.service";
+import { VendorBookingsService } from "../../services/vendor/vendor.bookings.service";
 import { sendResponse } from "../../utils/response.util";
 
-export const getDraft = async (req: Request, res: Response) => {
+export const listBookings = async (req: Request, res: Response) => {
     const userId = (req as any).user?.userId;
-    const data = await VendorVerificationService.getDraftVerification(userId);
+    const data = await VendorBookingsService.list(userId, req.query);
 
     return sendResponse(res, {
         statusCode: HTTPSTATUS.OK,
-        message: "Draft verification retrieved successfully",
+        message: "Bookings retrieved successfully",
         data,
     });
 };
 
-export const saveDraft = async (req: Request, res: Response) => {
+export const getBookingById = async (req: Request, res: Response) => {
     const userId = (req as any).user?.userId;
-    const data = await VendorVerificationService.saveDraftVerification(userId, req.body);
+    const id = String(req.params.id ?? "");
+    const data = await VendorBookingsService.getById(userId, id);
 
     return sendResponse(res, {
         statusCode: HTTPSTATUS.OK,
-        message: "Draft saved successfully",
+        message: "Booking retrieved successfully",
         data,
     });
 };
 
-export const submit = async (req: Request, res: Response) => {
+export const acceptBooking = async (req: Request, res: Response) => {
     const userId = (req as any).user?.userId;
-    const data = await VendorVerificationService.submitVerification(userId, req.body);
+    const id = String(req.params.id ?? "");
+    const data = await VendorBookingsService.accept(userId, id);
 
     return sendResponse(res, {
-        statusCode: HTTPSTATUS.CREATED,
-        message: "Verification submitted successfully",
+        statusCode: HTTPSTATUS.OK,
+        message: "Booking accepted successfully",
         data,
     });
 };
 
-export const getStatus = async (req: Request, res: Response) => {
+export const rejectBooking = async (req: Request, res: Response) => {
     const userId = (req as any).user?.userId;
-    const data = await VendorVerificationService.getVerificationStatus(userId);
+    const id = String(req.params.id ?? "");
+    const reason = typeof req.body?.reason === "string" ? req.body.reason : "";
+    const data = await VendorBookingsService.reject(userId, id, reason);
 
     return sendResponse(res, {
         statusCode: HTTPSTATUS.OK,
-        message: "Verification status retrieved successfully",
+        message: "Booking rejected successfully",
         data,
     });
 };
 
-export const updateForChanges = async (req: Request, res: Response) => {
+export const startBooking = async (req: Request, res: Response) => {
     const userId = (req as any).user?.userId;
-    const data = await VendorVerificationService.updateVerificationForChanges(userId, req.body);
+    const id = String(req.params.id ?? "");
+    const data = await VendorBookingsService.start(userId, id);
 
     return sendResponse(res, {
         statusCode: HTTPSTATUS.OK,
-        message: "Verification updated successfully",
+        message: "Service started successfully",
         data,
     });
 };
 
-export const deleteDraft = async (req: Request, res: Response) => {
+export const completeBooking = async (req: Request, res: Response) => {
     const userId = (req as any).user?.userId;
-    const data = await VendorVerificationService.deleteDraftVerification(userId);
+    const id = String(req.params.id ?? "");
+    const data = await VendorBookingsService.complete(userId, id);
 
     return sendResponse(res, {
         statusCode: HTTPSTATUS.OK,
-        message: "Draft deleted successfully",
+        message: "Service completed successfully",
         data,
     });
 };

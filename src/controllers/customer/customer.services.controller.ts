@@ -27,6 +27,18 @@ export const getRecommendedServices = async (req: Request, res: Response) => {
     });
 };
 
+export const getServiceAvailability = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const id = String(req.params.id ?? "");
+    const data = await CustomerServicesService.getServiceAvailability(id, req.query, lang);
+
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: t("CUSTOMER_SERVICE_AVAILABILITY_FETCHED_SUCCESSFULLY", lang),
+        data,
+    });
+};
+
 export const getServiceById = async (req: Request, res: Response) => {
     const lang = getLang(req);
     const id = String(req.params.id ?? "");

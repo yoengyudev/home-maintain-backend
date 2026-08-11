@@ -1,448 +1,326 @@
-import crypto from "crypto";
 import { prisma } from "../../database/prisma.client";
 import { BadRequestException, NotFoundException } from "../../utils/app-error.util";
-import { ProviderVerificationStatus } from "../../generated/prisma/enums";
+import {
+    buildPaginationMeta,
+    firstQueryString,
+    parsePaginationQuery,
+} from "../../utils/pagination.util";
+import { BookingStatus, NotificationType } from "../../generated/prisma/enums";
+import { CustomerNotificationsHelper } from "../customer/customer.notifications.helper";
 
-interface VerificationSubmissionData {
-    businessName: string;
-    providerType: string;
-    contactName: string;
-    email: string;
-    addressLine: string;
-    district: string;
-    cityProvince: string;
-    about: string;
-    logoUrl?: string;
-    latitude?: number;
-    longitude?: number;
-    serviceCategories: string[];
-    documents: Array<{
-        documentType: string;
-        fileName: string;
-        fileUrl: string;
-        mimeType?: string;
-        documentNumber?: string;
-    }>;
+type BookingsQuery = {
+    page?: unknown;
+    limit?: unknown;
+    status?: unknown;
+};
+
+const bookingInclude = {
+    serviceListing: {
+        select: {
+            id: true,
+            publicId: true,
+            name: true,
+        },
+    },
+    customerProfile: {
+        select: {
+            userId: true,
+            fullName: true,
+            user: { select: { email: true, phone: true } },
+        },
+    },
+    serviceArea: {
+        select: { nameEn: true, nameKm: true },
+    },
+} as const;
+
+const STATUS_UI: Record<BookingStatus, string> = {
+    PENDING: "Pending",
+    ACCEPTED: "Accepted",
+    IN_PROGRESS: "In Progress",
+    COMPLETED: "Completed",
+    CANCELLED: "Cancelled",
+    REJECTED: "Rejected",
+    RESCHEDULED: "Rescheduled",
+};
+
+function calendarDate(date: Date): string {
+    return new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Phnom_Penh",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+    }).format(date);
 }
 
-interface VerificationDraftData extends Partial<VerificationSubmissionData> {
-    step?: number;
+function decimalNumber(value: { toNumber?: () => number } | number | string | null | undefined): number {
+    if (value == null) return 0;
+    if (typeof value === "number") return value;
+    if (typeof value === "string") return Number(value) || 0;
+    return value.toNumber?.() ?? 0;
 }
 
-export class VendorVerificationService {
-    static async getDraftVerification(userId: string) {
-        const providerProfile = await prisma.providerProfile.findUnique({
-            where: { userId },
-            include: {
-                user: true,
-                businessProfile: true,
-                verifications: {
-                    where: { status: ProviderVerificationStatus.DRAFT },
-                    orderBy: { createdAt: 'desc' },
-                    take: 1,
-                    include: {
-                        documents: true,
-                        checklistItems: true
-                    }
-                }
-            }
-        });
+function formatBooking(booking: any) {
+    return {
+        bookingId: booking.publicId || booking.id,
+        serviceId: booking.serviceListing?.publicId || booking.serviceListingId,
+        serviceName: booking.serviceListing?.name || "Service",
+        customerName: booking.customerProfile?.fullName || "Customer",
+        customerPhone: booking.customerProfile?.user?.phone || "",
+        customerEmail: booking.customerProfile?.user?.email || "",
+        quantity: booking.quantity ?? 1,
+        requestedDate: calendarDate(booking.scheduledAt),
+        requestedTimeSlot: booking.timeSlot || "",
+        serviceAddress: booking.serviceAddress || "",
+        areaSummary: booking.areaSummary || booking.serviceArea?.nameEn || booking.serviceArea?.nameKm || "",
+        accessInstructions: booking.accessInstructions || "",
+        estimatedTotal: decimalNumber(booking.estimatedTotal),
+        requestCreationTime: booking.createdAt.toISOString(),
+        status: STATUS_UI[booking.status as BookingStatus] || booking.status,
+        rejectionReason: booking.rejectionReason || undefined,
+        notes: booking.customerNotes || undefined,
+        scheduledAt: booking.scheduledAt.toISOString(),
+    };
+}
 
-        if (!providerProfile) {
+export class VendorBookingsService {
+    private static async requireProvider(userId: string) {
+        const provider = await prisma.providerProfile.findUnique({
+            where: { userId },
+            select: { id: true },
+        });
+        if (!provider) {
             throw new NotFoundException("Provider profile not found");
         }
+        return provider;
+    }
 
-        const draft = providerProfile.verifications[0];
-        
-        if (!draft) {
-            return {
-                exists: false,
-                data: null
+    private static parseStatusFilter(statusRaw?: string): BookingStatus[] | null {
+        if (!statusRaw || statusRaw === "ALL") return null;
+
+        const map: Record<string, BookingStatus[]> = {
+            PENDING: [BookingStatus.PENDING],
+            ACCEPTED: [BookingStatus.ACCEPTED],
+            IN_PROGRESS: [BookingStatus.IN_PROGRESS],
+            "IN-PROGRESS": [BookingStatus.IN_PROGRESS],
+            COMPLETED: [BookingStatus.COMPLETED],
+            CANCELLED: [BookingStatus.CANCELLED],
+            REJECTED: [BookingStatus.REJECTED],
+            RESCHEDULED: [BookingStatus.RESCHEDULED],
+        };
+
+        return map[statusRaw] ?? null;
+    }
+
+    static async list(userId: string, query: BookingsQuery) {
+        const provider = await this.requireProvider(userId);
+        const { page, limit, skip, take } = parsePaginationQuery(query.page, query.limit);
+        const statusFilter = this.parseStatusFilter(firstQueryString(query.status)?.trim().toUpperCase());
+
+        const where = {
+            providerProfileId: provider.id,
+            ...(statusFilter ? { status: { in: statusFilter } } : {}),
+        };
+
+        const [bookings, total] = await Promise.all([
+            prisma.booking.findMany({
+                where,
+                skip,
+                take,
+                orderBy: { scheduledAt: "asc" },
+                include: bookingInclude,
+            }),
+            prisma.booking.count({ where }),
+        ]);
+
+        return {
+            items: bookings.map(formatBooking),
+            meta: buildPaginationMeta(page, limit, total),
+        };
+    }
+
+    static async getById(userId: string, id: string) {
+        const provider = await this.requireProvider(userId);
+        const booking = await prisma.booking.findFirst({
+            where: {
+                providerProfileId: provider.id,
+                OR: [{ id }, { publicId: id }],
+            },
+            include: bookingInclude,
+        });
+
+        if (!booking) {
+            throw new NotFoundException("Booking not found");
+        }
+
+        return formatBooking(booking);
+    }
+
+    static async accept(userId: string, id: string) {
+        return this.transition(userId, id, {
+            allowed: [BookingStatus.PENDING, BookingStatus.RESCHEDULED],
+            next: BookingStatus.ACCEPTED,
+            reason: "Accepted by provider",
+            timelineSortOrder: 1,
+            timelineTitle: "Vendor Assigned",
+            timelineDescription: "The provider accepted your booking request.",
+            notify: {
+                titleEn: "Booking accepted",
+                titleKm: "ការកក់ត្រូវបានទទួលយក",
+                messageEn: "Your provider accepted the booking and will arrive at the scheduled time.",
+                messageKm: "អ្នកផ្តល់សេវាបានទទួលយកការកក់ ហើយនឹងមកដល់តាមពេលកំណត់។",
+            },
+        });
+    }
+
+    static async reject(userId: string, id: string, reason?: string) {
+        const rejectionReason = reason?.trim() || "Rejected by provider";
+        return this.transition(userId, id, {
+            allowed: [BookingStatus.PENDING, BookingStatus.RESCHEDULED],
+            next: BookingStatus.REJECTED,
+            reason: rejectionReason,
+            rejectionReason,
+            timelineSortOrder: 1,
+            timelineTitle: "Request rejected",
+            timelineDescription: rejectionReason,
+            notify: {
+                titleEn: "Booking rejected",
+                titleKm: "ការកក់ត្រូវបានបដិសេធ",
+                messageEn: `Your booking was declined. ${rejectionReason}`,
+                messageKm: `ការកក់របស់អ្នកត្រូវបានបដិសេធ។ ${rejectionReason}`,
+            },
+        });
+    }
+
+    static async start(userId: string, id: string) {
+        return this.transition(userId, id, {
+            allowed: [BookingStatus.ACCEPTED],
+            next: BookingStatus.IN_PROGRESS,
+            reason: "Service started by provider",
+            timelineSortOrder: 2,
+            timelineTitle: "Service in progress",
+            timelineDescription: "The provider started the service.",
+            notify: {
+                titleEn: "Service started",
+                titleKm: "សេវាកម្មបានចាប់ផ្តើម",
+                messageEn: "Your provider has started the service.",
+                messageKm: "អ្នកផ្តល់សេវាបានចាប់ផ្តើមការងារ។",
+            },
+        });
+    }
+
+    static async complete(userId: string, id: string) {
+        return this.transition(userId, id, {
+            allowed: [BookingStatus.IN_PROGRESS],
+            next: BookingStatus.COMPLETED,
+            reason: "Service completed by provider",
+            timelineSortOrder: 3,
+            timelineTitle: "Service completed",
+            timelineDescription: "The provider marked this booking as completed.",
+            notify: {
+                titleEn: "Service completed",
+                titleKm: "សេវាកម្មបានបញ្ចប់",
+                messageEn: "Your booking was marked complete. You can leave a review.",
+                messageKm: "ការកក់របស់អ្នកត្រូវបានបញ្ចប់។ អ្នកអាចវាយតម្លៃបាន។",
+            },
+        });
+    }
+
+    private static async findOwned(userId: string, id: string) {
+        const provider = await this.requireProvider(userId);
+        const booking = await prisma.booking.findFirst({
+            where: {
+                providerProfileId: provider.id,
+                OR: [{ id }, { publicId: id }],
+            },
+            include: bookingInclude,
+        });
+        if (!booking) {
+            throw new NotFoundException("Booking not found");
+        }
+        return booking;
+    }
+
+    private static async transition(
+        userId: string,
+        id: string,
+        options: {
+            allowed: BookingStatus[];
+            next: BookingStatus;
+            reason: string;
+            rejectionReason?: string;
+            timelineSortOrder: number;
+            timelineTitle: string;
+            timelineDescription: string;
+            notify: {
+                titleEn: string;
+                titleKm: string;
+                messageEn: string;
+                messageKm: string;
             };
         }
-
-        return {
-            exists: true,
-            data: {
-                id: draft.publicId,
-                businessName: providerProfile.businessProfile?.businessName,
-                providerType: providerProfile.businessProfile?.providerType,
-                contactName: providerProfile.contactName,
-                email: providerProfile.user?.email,
-                addressLine: providerProfile.businessProfile?.addressLine,
-                district: providerProfile.businessProfile?.district,
-                cityProvince: providerProfile.businessProfile?.cityProvince,
-                about: providerProfile.businessProfile?.description,
-                logoUrl: providerProfile.businessProfile?.logoUrl,
-                latitude: providerProfile.businessProfile?.latitude?.toNumber(),
-                longitude: providerProfile.businessProfile?.longitude?.toNumber(),
-                documents: draft.documents.map(doc => ({
-                    documentType: doc.documentType,
-                    fileName: doc.fileName,
-                    fileUrl: doc.fileUrl,
-                    mimeType: doc.mimeType,
-                    documentNumber: doc.documentNumber
-                })),
-                checklistItems: draft.checklistItems.map(item => ({
-                    label: item.label,
-                    isComplete: item.isComplete,
-                    notes: item.notes
-                })),
-                step: 1
-            }
-        };
-    }
-
-    static async saveDraftVerification(userId: string, data: VerificationDraftData) {
-        const providerProfile = await prisma.providerProfile.findUnique({
-            where: { userId },
-            include: { businessProfile: true, verifications: true }
-        });
-
-        if (!providerProfile) {
-            throw new NotFoundException("Provider profile not found");
+    ) {
+        const booking = await this.findOwned(userId, id);
+        if (!options.allowed.includes(booking.status)) {
+            throw new BadRequestException(
+                `This booking cannot move from ${STATUS_UI[booking.status]} to ${STATUS_UI[options.next]}.`
+            );
         }
 
-        // Update business profile if data provided
-        if (providerProfile.businessProfile) {
-            await prisma.providerBusinessProfile.update({
-                where: { id: providerProfile.businessProfile.id },
+        const updated = await prisma.$transaction(async (tx) => {
+            const next = await tx.booking.update({
+                where: { id: booking.id },
                 data: {
-                    ...(data.businessName && { businessName: data.businessName }),
-                    ...(data.providerType && { providerType: data.providerType }),
-                    ...(data.addressLine && { addressLine: data.addressLine }),
-                    ...(data.district && { district: data.district }),
-                    ...(data.cityProvince && { cityProvince: data.cityProvince }),
-                    ...(data.about && { description: data.about }),
-                    ...(data.logoUrl && { logoUrl: data.logoUrl }),
-                    ...(data.latitude !== undefined && { latitude: data.latitude }),
-                    ...(data.longitude !== undefined && { longitude: data.longitude })
-                }
+                    status: options.next,
+                    ...(options.rejectionReason !== undefined && {
+                        rejectionReason: options.rejectionReason,
+                    }),
+                },
+                include: bookingInclude,
             });
-        }
 
-        await prisma.providerProfile.update({
-            where: { id: providerProfile.id },
-            data: {
-                ...(data.contactName && { contactName: data.contactName })
-            }
-        });
-
-        // Find or create draft verification
-        let draftVerification = await prisma.providerVerification.findFirst({
-            where: {
-                providerProfileId: providerProfile.id,
-                status: ProviderVerificationStatus.DRAFT
-            }
-        });
-
-        if (!draftVerification) {
-            draftVerification = await prisma.providerVerification.create({
+            await tx.bookingStatusHistory.create({
                 data: {
-                    publicId: crypto.randomUUID(),
-                    providerProfileId: providerProfile.id,
-                    status: ProviderVerificationStatus.DRAFT
-                }
+                    publicId: `BSH-${booking.publicId}-${Date.now()}`,
+                    bookingId: booking.id,
+                    fromStatus: booking.status,
+                    toStatus: options.next,
+                    reason: options.reason,
+                },
             });
-        }
 
-        return {
-            success: true,
-            message: "Draft saved successfully",
-            verificationId: draftVerification.publicId
-        };
-    }
-
-    static async submitVerification(userId: string, data: VerificationSubmissionData) {
-        const providerProfile = await prisma.providerProfile.findUnique({
-            where: { userId },
-            include: { businessProfile: true, user: true }
-        });
-
-        if (!providerProfile) {
-            throw new NotFoundException("Provider profile not found");
-        }
-
-        // Check if there's already a pending verification
-        const existingVerification = await prisma.providerVerification.findFirst({
-            where: {
-                providerProfileId: providerProfile.id,
-                status: {
-                    in: [ProviderVerificationStatus.UNDER_REVIEW, ProviderVerificationStatus.CHANGES_REQUIRED]
-                }
-            }
-        });
-
-        if (existingVerification) {
-            throw new BadRequestException("You already have a verification under review. Please wait for the current process to complete.");
-        }
-
-        // Update business profile
-        if (providerProfile.businessProfile) {
-            await prisma.providerBusinessProfile.update({
-                where: { id: providerProfile.businessProfile.id },
+            await tx.bookingTimelineItem.updateMany({
+                where: { bookingId: booking.id, sortOrder: options.timelineSortOrder },
                 data: {
-                    businessName: data.businessName,
-                    providerType: data.providerType,
-                    addressLine: data.addressLine,
-                    district: data.district,
-                    cityProvince: data.cityProvince,
-                    description: data.about,
-                    logoUrl: data.logoUrl,
-                    latitude: data.latitude,
-                    longitude: data.longitude
-                }
-            });
-        }
-
-        await prisma.providerProfile.update({
-            where: { id: providerProfile.id },
-            data: {
-                contactName: data.contactName
-            }
-        });
-
-        // Create verification record
-        const verification = await prisma.$transaction(async (tx) => {
-            // Delete any existing drafts
-            await tx.providerVerification.deleteMany({
-                where: {
-                    providerProfileId: providerProfile.id,
-                    status: ProviderVerificationStatus.DRAFT
-                }
+                    title: options.timelineTitle,
+                    description: options.timelineDescription,
+                    isComplete: true,
+                    occurredAt: new Date(),
+                },
             });
 
-            // Create new verification
-            const newVerification = await tx.providerVerification.create({
-                data: {
-                    publicId: crypto.randomUUID(),
-                    providerProfileId: providerProfile.id,
-                    status: ProviderVerificationStatus.UNDER_REVIEW,
-                    submittedAt: new Date(),
-                    documents: {
-                        create: data.documents.map(doc => ({
-                            publicId: crypto.randomUUID(),
-                            documentType: doc.documentType,
-                            fileName: doc.fileName,
-                            fileUrl: doc.fileUrl,
-                            mimeType: doc.mimeType,
-                            documentNumber: doc.documentNumber
-                        }))
-                    },
-                    checklistItems: {
-                        create: [
-                            { publicId: crypto.randomUUID(), label: "Business Information", isComplete: true, sortOrder: 1 },
-                            { publicId: crypto.randomUUID(), label: "Contact Details", isComplete: true, sortOrder: 2 },
-                            { publicId: crypto.randomUUID(), label: "Service Categories", isComplete: true, sortOrder: 3 },
-                            { publicId: crypto.randomUUID(), label: "Required Documents", isComplete: true, sortOrder: 4 },
-                            { publicId: crypto.randomUUID(), label: "Terms & Conditions", isComplete: true, sortOrder: 5 }
-                        ]
-                    },
-                    timelineItems: {
-                        create: {
-                            publicId: crypto.randomUUID(),
-                            title: "Verification Submitted",
-                            description: "Provider submitted verification for review",
-                            status: ProviderVerificationStatus.UNDER_REVIEW
-                        }
-                    }
-                }
-            });
-
-            return newVerification;
+            return next;
         });
 
-        return {
-            success: true,
-            message: "Verification submitted successfully",
-            verificationId: verification.publicId,
-            status: verification.status
-        };
-    }
-
-    static async getVerificationStatus(userId: string) {
-        const providerProfile = await prisma.providerProfile.findUnique({
-            where: { userId },
-            include: {
-                verifications: {
-                    orderBy: { createdAt: 'desc' },
-                    take: 1,
-                    include: {
-                        documents: true,
-                        checklistItems: true,
-                        decisions: {
-                            include: {
-                                adminProfile: true
-                            }
-                        },
-                        timelineItems: {
-                            orderBy: { occurredAt: 'desc' }
-                        }
-                    }
-                }
-            }
-        });
-
-        if (!providerProfile) {
-            throw new NotFoundException("Provider profile not found");
-        }
-
-        const verification = providerProfile.verifications[0];
-
-        if (!verification) {
-            return {
-                exists: false,
-                status: null,
-                data: null
-            };
-        }
-
-        return {
-            exists: true,
-            status: verification.status,
-            submittedAt: verification.submittedAt,
-            reviewedAt: verification.reviewedAt,
-            reviewerNotes: verification.reviewerNotes,
-            documents: verification.documents.map(doc => ({
-                documentType: doc.documentType,
-                fileName: doc.fileName,
-                fileUrl: doc.fileUrl,
-                isVerified: doc.isVerified
-            })),
-            checklistItems: verification.checklistItems.map(item => ({
-                label: item.label,
-                isComplete: item.isComplete,
-                notes: item.notes
-            })),
-            decisions: verification.decisions.map(decision => ({
-                status: decision.status,
-                reason: decision.reason,
-                decidedAt: decision.decidedAt,
-                reviewerName: decision.adminProfile?.fullName
-            })),
-            timeline: verification.timelineItems.map(item => ({
-                title: item.title,
-                description: item.description,
-                status: item.status,
-                occurredAt: item.occurredAt
-            }))
-        };
-    }
-
-    static async updateVerificationForChanges(userId: string, data: Partial<VerificationSubmissionData>) {
-        const providerProfile = await prisma.providerProfile.findUnique({
-            where: { userId },
-            include: { businessProfile: true }
-        });
-
-        if (!providerProfile) {
-            throw new NotFoundException("Provider profile not found");
-        }
-
-        // Find verification with CHANGES_REQUIRED status
-        const verification = await prisma.providerVerification.findFirst({
-            where: {
-                providerProfileId: providerProfile.id,
-                status: ProviderVerificationStatus.CHANGES_REQUIRED
-            }
-        });
-
-        if (!verification) {
-            throw new BadRequestException("No verification requiring changes found");
-        }
-
-        // Update business profile
-        if (providerProfile.businessProfile) {
-            await prisma.providerBusinessProfile.update({
-                where: { id: providerProfile.businessProfile.id },
-                data: {
-                    ...(data.businessName && { businessName: data.businessName }),
-                    ...(data.providerType && { providerType: data.providerType }),
-                    ...(data.addressLine && { addressLine: data.addressLine }),
-                    ...(data.district && { district: data.district }),
-                    ...(data.cityProvince && { cityProvince: data.cityProvince }),
-                    ...(data.about && { description: data.about }),
-                    ...(data.logoUrl && { logoUrl: data.logoUrl }),
-                    ...(data.latitude !== undefined && { latitude: data.latitude }),
-                    ...(data.longitude !== undefined && { longitude: data.longitude })
-                }
-            });
-        }
-
-        await prisma.providerProfile.update({
-            where: { id: providerProfile.id },
-            data: {
-                ...(data.contactName && { contactName: data.contactName })
-            }
-        });
-
-        // Update documents if provided
-        if (data.documents && data.documents.length > 0) {
-            await prisma.$transaction(async (tx) => {
-                // Delete existing documents
-                await tx.providerVerificationDocument.deleteMany({
-                    where: { providerVerificationId: verification.id }
+        if (booking.customerProfile?.userId) {
+            try {
+                await CustomerNotificationsHelper.create({
+                    userId: booking.customerProfile.userId,
+                    type: NotificationType.BOOKING,
+                    titleEn: options.notify.titleEn,
+                    titleKm: options.notify.titleKm,
+                    messageEn: `${options.notify.messageEn} (${booking.publicId})`,
+                    messageKm: `${options.notify.messageKm} (${booking.publicId})`,
+                    relatedModule: "booking",
+                    relatedRecordId: booking.id,
+                    relatedRoute: `/bookings/${booking.id}`,
+                    priority: "high",
                 });
-
-                // Create new documents
-                await tx.providerVerificationDocument.createMany({
-                    data: data.documents.map(doc => ({
-                        publicId: crypto.randomUUID(),
-                        providerVerificationId: verification.id,
-                        documentType: doc.documentType,
-                        fileName: doc.fileName,
-                        fileUrl: doc.fileUrl,
-                        mimeType: doc.mimeType,
-                        documentNumber: doc.documentNumber
-                    }))
-                });
-            });
+            } catch (error) {
+                console.error("Failed to notify customer about booking transition", error);
+            }
         }
 
-        // Update verification status back to UNDER_REVIEW
-        const updatedVerification = await prisma.providerVerification.update({
-            where: { id: verification.id },
-            data: {
-                status: ProviderVerificationStatus.UNDER_REVIEW,
-                reviewerNotes: null,
-                timelineItems: {
-                    create: {
-                        publicId: crypto.randomUUID(),
-                        title: "Verification Resubmitted",
-                        description: "Provider submitted requested changes",
-                        status: ProviderVerificationStatus.UNDER_REVIEW
-                    }
-                }
-            }
-        });
-
-        return {
-            success: true,
-            message: "Verification updated successfully",
-            verificationId: updatedVerification.publicId,
-            status: updatedVerification.status
-        };
-    }
-
-    static async deleteDraftVerification(userId: string) {
-        const providerProfile = await prisma.providerProfile.findUnique({
-            where: { userId }
-        });
-
-        if (!providerProfile) {
-            throw new NotFoundException("Provider profile not found");
-        }
-
-        await prisma.providerVerification.deleteMany({
-            where: {
-                providerProfileId: providerProfile.id,
-                status: ProviderVerificationStatus.DRAFT
-            }
-        });
-
-        return {
-            success: true,
-            message: "Draft deleted successfully"
-        };
+        return formatBooking(updated);
     }
 }

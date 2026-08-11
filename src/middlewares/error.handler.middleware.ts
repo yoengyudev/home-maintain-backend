@@ -14,6 +14,14 @@ export const errorHandler: ErrorRequestHandler = (error, req, res, next): any =>
         });
     }
 
+    if (error?.type === "entity.too.large" || error?.status === 413) {
+        return res.status(HTTPSTATUS.BAD_REQUEST).json({
+            success: false,
+            message: "Request is too large. Upload images separately instead of embedding them.",
+            error: ErrorCode.ERROR_BAD_REQUEST,
+        });
+    }
+
     if (error instanceof MulterError) {
         const message =
             error.code === "LIMIT_UNEXPECTED_FILE"

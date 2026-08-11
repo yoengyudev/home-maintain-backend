@@ -8,10 +8,11 @@ import {
     parsePaginationQuery,
 } from "../../utils/pagination.util";
 import {
-    ProviderStatus,
     ServiceModerationStatus,
     ServiceStatus,
 } from "../../generated/prisma/enums";
+import { availableToCustomersWhere } from "../../utils/customer-provider-visibility.util";
+import { buildAvailabilityCalendar, resolveSchedule } from "../../utils/provider-availability.util";
 
 type ServicesQuery = {
     page?: unknown;
@@ -52,9 +53,7 @@ export class CustomerServicesService {
             moderationStatus: {
                 not: ServiceModerationStatus.DISABLED_BY_ADMIN,
             },
-            providerProfile: {
-                status: ProviderStatus.ACTIVE,
-            },
+            providerProfile: availableToCustomersWhere,
             ...(search
                 ? {
                       OR: [
@@ -141,9 +140,7 @@ export class CustomerServicesService {
             moderationStatus: {
                 not: ServiceModerationStatus.DISABLED_BY_ADMIN,
             },
-            providerProfile: {
-                status: ProviderStatus.ACTIVE,
-            },
+            providerProfile: availableToCustomersWhere,
         };
 
         const topBooked = await prisma.booking.groupBy({
@@ -201,14 +198,12 @@ export class CustomerServicesService {
     static async getServiceById(id: string, lang: Lang) {
         const service = await prisma.serviceListing.findFirst({
             where: {
-                id,
+                OR: [{ id }, { publicId: id }],
                 serviceStatus: ServiceStatus.ACTIVE,
                 moderationStatus: {
                     not: ServiceModerationStatus.DISABLED_BY_ADMIN,
                 },
-                providerProfile: {
-                    status: ProviderStatus.ACTIVE,
-                },
+                providerProfile: availableToCustomersWhere,
             },
             include: serviceInclude,
         });
@@ -218,6 +213,43 @@ export class CustomerServicesService {
         }
 
         return this.formatService(service, lang);
+    }
+
+    static async getServiceAvailability(id: string, query: { days?: unknown }, lang: Lang) {
+        const service = await prisma.serviceListing.findFirst({
+            where: {
+                OR: [{ id }, { publicId: id }],
+                serviceStatus: ServiceStatus.ACTIVE,
+                moderationStatus: {
+                    not: ServiceModerationStatus.DISABLED_BY_ADMIN,
+                },
+                providerProfile: availableToCustomersWhere,
+            },
+            include: {
+                providerProfile: {
+                    include: { businessProfile: true },
+                },
+            },
+        });
+
+        if (!service) {
+            throw new NotFoundException(t("CUSTOMER_SERVICE_NOT_FOUND", lang));
+        }
+
+        const daysRaw = Number(firstQueryString(query.days) ?? 30);
+        const days = Number.isFinite(daysRaw) ? Math.min(Math.max(Math.trunc(daysRaw), 7), 60) : 30;
+        const profile = service.providerProfile.businessProfile;
+        const calendar = buildAvailabilityCalendar(profile, days);
+        const resolved = resolveSchedule(profile);
+
+        return {
+            temporaryPause: Boolean(profile?.temporarilyPaused),
+            workingDays: resolved.workingDays,
+            unavailableDates: (profile?.unavailableDates ?? []).map((date) =>
+                date.toISOString().slice(0, 10)
+            ),
+            dates: calendar,
+        };
     }
 
     private static formatService(

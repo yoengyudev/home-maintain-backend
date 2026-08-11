@@ -13,10 +13,11 @@ import {
 import { nextPublicId } from "../../utils/public-id.util";
 import {
     BookingStatus,
-    ProviderStatus,
+    NotificationType,
     ServiceModerationStatus,
     ServiceStatus,
 } from "../../generated/prisma/enums";
+import { availableToCustomersWhere } from "../../utils/customer-provider-visibility.util";
 import type { z } from "zod";
 import type {
     customerCancelBookingSchema,
@@ -25,6 +26,10 @@ import type {
 } from "../../validators/customer/booking.validator";
 import { CustomerAddressesService } from "./customer.addresses.service";
 import { CustomerNotificationsHelper } from "./customer.notifications.helper";
+import {
+    evaluateAvailabilityDay,
+    isSlotOnDay,
+} from "../../utils/provider-availability.util";
 
 type CreateBookingDto = z.infer<typeof customerCreateBookingSchema>;
 type CancelBookingDto = z.infer<typeof customerCancelBookingSchema>;
@@ -48,6 +53,12 @@ const bookingInclude = {
     providerProfile: {
         include: {
             businessProfile: true,
+            _count: {
+                select: {
+                    reviews: true,
+                    bookings: true,
+                },
+            },
         },
     },
     customerAddress: true,
@@ -117,7 +128,7 @@ export class CustomerBookingsService {
                 OR: [{ id: data.serviceId }, { publicId: data.serviceId }],
                 serviceStatus: ServiceStatus.ACTIVE,
                 moderationStatus: { not: ServiceModerationStatus.DISABLED_BY_ADMIN },
-                providerProfile: { status: ProviderStatus.ACTIVE },
+                providerProfile: availableToCustomersWhere,
             },
             include: {
                 providerProfile: {
@@ -134,6 +145,17 @@ export class CustomerBookingsService {
         if (!service) {
             throw new NotFoundException(t("CUSTOMER_SERVICE_NOT_FOUND", lang));
         }
+
+        if (service.providerProfile.businessProfile?.temporarilyPaused) {
+            throw new BadRequestException(t("CUSTOMER_PROVIDER_UNAVAILABLE", lang));
+        }
+
+        this.assertBookableSchedule(
+            service.providerProfile.businessProfile,
+            data.scheduledDate,
+            data.timeSlot,
+            lang
+        );
 
         const scheduledAt = this.buildScheduledAt(data.scheduledDate, data.timeSlot, lang);
         if (scheduledAt.getTime() < Date.now() - 60_000) {
@@ -261,6 +283,19 @@ export class CustomerBookingsService {
             priority: "normal",
         });
 
+        await CustomerNotificationsHelper.create({
+            userId: service.providerProfile.userId,
+            type: NotificationType.BOOKING,
+            titleEn: "New booking request",
+            titleKm: "សំណើកក់ថ្មី",
+            messageEn: `A customer requested ${service.name} on ${data.scheduledDate} (${data.timeSlot}).`,
+            messageKm: `អតិថិជនបានស្នើសុំ ${service.name} នៅ ${data.scheduledDate} (${data.timeSlot})។`,
+            relatedModule: "booking",
+            relatedRecordId: booking.id,
+            relatedRoute: `/provider/requests`,
+            priority: "high",
+        });
+
         return this.formatBooking(booking, lang);
     }
 
@@ -355,6 +390,22 @@ export class CustomerBookingsService {
             throw new BadRequestException(t("CUSTOMER_BOOKING_CANNOT_RESCHEDULE", lang));
         }
 
+        const providerProfile = await prisma.providerProfile.findUnique({
+            where: { id: booking.providerProfileId },
+            include: { businessProfile: true },
+        });
+
+        if (providerProfile?.businessProfile?.temporarilyPaused) {
+            throw new BadRequestException(t("CUSTOMER_PROVIDER_UNAVAILABLE", lang));
+        }
+
+        this.assertBookableSchedule(
+            providerProfile?.businessProfile,
+            data.scheduledDate,
+            data.timeSlot,
+            lang
+        );
+
         const scheduledAt = this.buildScheduledAt(data.scheduledDate, data.timeSlot, lang);
         if (scheduledAt.getTime() < Date.now() - 60_000) {
             throw new BadRequestException(t("CUSTOMER_BOOKING_SCHEDULE_IN_PAST", lang));
@@ -431,6 +482,33 @@ export class CustomerBookingsService {
         return map[statusRaw] ?? null;
     }
 
+    private static assertBookableSchedule(
+        profile:
+            | {
+                  workingDays?: string[];
+                  workingHours?: unknown;
+                  unavailableDates?: Date[];
+                  temporarilyPaused?: boolean;
+              }
+            | null
+            | undefined,
+        scheduledDate: string,
+        timeSlot: string,
+        lang: Lang
+    ) {
+        const day = evaluateAvailabilityDay(profile, scheduledDate.slice(0, 10));
+        if (!day.available) {
+            throw new BadRequestException(
+                day.reason === "paused"
+                    ? t("CUSTOMER_PROVIDER_UNAVAILABLE", lang)
+                    : t("CUSTOMER_BOOKING_DAY_CLOSED", lang)
+            );
+        }
+        if (timeSlot && day.slots.length > 0 && !isSlotOnDay(day, timeSlot)) {
+            throw new BadRequestException(t("CUSTOMER_BOOKING_SLOT_UNAVAILABLE", lang));
+        }
+    }
+
     private static buildScheduledAt(date: string, timeSlot: string, lang: Lang): Date {
         const startMatch = timeSlot.match(/(\d{1,2}):(\d{2})\s*(AM|PM)?/i);
         if (!startMatch) {
@@ -488,10 +566,16 @@ export class CustomerBookingsService {
                 publicId: string;
                 contactName: string;
                 avatarUrl: string | null;
+                averageRating: { toNumber?: () => number } | number | string | null;
+                completedJobs: number;
                 businessProfile: {
                     businessName: string;
                     logoUrl: string | null;
                 } | null;
+                _count?: {
+                    reviews: number;
+                    bookings: number;
+                };
             };
             customerAddress: {
                 id: string;
@@ -590,6 +674,10 @@ export class CustomerBookingsService {
                     booking.providerProfile.avatarUrl ??
                     booking.providerProfile.businessProfile?.logoUrl ??
                     null,
+                averageRating: this.toNumber(booking.providerProfile.averageRating),
+                completedJobs: booking.providerProfile.completedJobs ?? 0,
+                reviewCount: booking.providerProfile._count?.reviews ?? 0,
+                bookingCount: booking.providerProfile._count?.bookings ?? 0,
             },
             address: booking.customerAddress
                 ? CustomerAddressesService.format(booking.customerAddress)

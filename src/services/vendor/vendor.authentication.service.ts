@@ -251,7 +251,14 @@ export class VendorAuthenticationService {
             include: { 
                 providerProfile: {
                     include: {
-                        businessProfile: true
+                        businessProfile: true,
+                        primaryArea: {
+                            select: {
+                                publicId: true,
+                                nameEn: true,
+                                nameKm: true,
+                            },
+                        },
                     }
                 } 
             }
@@ -283,6 +290,7 @@ export class VendorAuthenticationService {
         longitude?: number | null;
         coverageSummary?: string;
         detectedAddress?: string;
+        serviceAreaIds?: string[];
     }) {
         const providerProfile = await prisma.providerProfile.findUnique({
             where: { userId },
@@ -293,22 +301,51 @@ export class VendorAuthenticationService {
             throw new NotFoundException("Provider profile not found");
         }
 
+        let primaryAreaId: string | null | undefined;
+        if (data.serviceAreaIds !== undefined) {
+            const tokens = data.serviceAreaIds.filter(Boolean);
+            if (tokens.length > 0) {
+                const areas = await prisma.serviceArea.findMany({
+                    where: {
+                        OR: tokens.flatMap((token) => [
+                            { id: token },
+                            { publicId: token },
+                            { slug: token },
+                        ]),
+                    },
+                });
+                primaryAreaId = areas[0]?.id ?? null;
+            } else {
+                primaryAreaId = null;
+            }
+        }
+
+        const businessData = {
+            ...(data.businessName !== undefined && { businessName: data.businessName }),
+            ...(data.providerType !== undefined && { providerType: data.providerType }),
+            ...(data.addressLine !== undefined && { addressLine: data.addressLine }),
+            ...(data.district !== undefined && { district: data.district }),
+            ...(data.cityProvince !== undefined && { cityProvince: data.cityProvince }),
+            ...(data.about !== undefined && { description: data.about }),
+            ...(data.logoUrl !== undefined && { logoUrl: data.logoUrl }),
+            ...(data.latitude !== undefined && { latitude: data.latitude }),
+            ...(data.longitude !== undefined && { longitude: data.longitude }),
+            ...(data.coverageSummary !== undefined && { coverageSummary: data.coverageSummary }),
+            ...(data.detectedAddress !== undefined && { detectedAddress: data.detectedAddress }),
+        };
+
         // Update business profile
         if (providerProfile.businessProfile) {
             await prisma.providerBusinessProfile.update({
                 where: { id: providerProfile.businessProfile.id },
+                data: businessData
+            });
+        } else if (Object.keys(businessData).length > 0) {
+            await prisma.providerBusinessProfile.create({
                 data: {
-                    ...(data.businessName !== undefined && { businessName: data.businessName }),
-                    ...(data.providerType !== undefined && { providerType: data.providerType }),
-                    ...(data.addressLine !== undefined && { addressLine: data.addressLine }),
-                    ...(data.district !== undefined && { district: data.district }),
-                    ...(data.cityProvince !== undefined && { cityProvince: data.cityProvince }),
-                    ...(data.about !== undefined && { description: data.about }),
-                    ...(data.logoUrl !== undefined && { logoUrl: data.logoUrl }),
-                    ...(data.latitude !== undefined && { latitude: data.latitude }),
-                    ...(data.longitude !== undefined && { longitude: data.longitude }),
-                    ...(data.coverageSummary !== undefined && { coverageSummary: data.coverageSummary }),
-                    ...(data.detectedAddress !== undefined && { detectedAddress: data.detectedAddress }),
+                    providerProfileId: providerProfile.id,
+                    businessName: data.businessName || 'Business',
+                    ...businessData,
                 }
             });
         }
@@ -317,7 +354,10 @@ export class VendorAuthenticationService {
         await prisma.providerProfile.update({
             where: { id: providerProfile.id },
             data: {
-                ...(data.contactName !== undefined && { contactName: data.contactName })
+                ...(data.contactName !== undefined && { contactName: data.contactName }),
+                ...(data.serviceAreaIds !== undefined && {
+                    primaryAreaId: primaryAreaId || null,
+                }),
             }
         });
 

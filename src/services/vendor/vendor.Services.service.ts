@@ -18,10 +18,123 @@ interface CreateServiceData {
     maxQuantity?: number;
     availabilitySummary?: string;
     areaIds?: string[];
+    serviceArea?: string;
+    active?: boolean;
+    serviceStatus?: ServiceStatus;
 }
 
-interface UpdateServiceData extends Partial<CreateServiceData> {
-    serviceStatus?: ServiceStatus;
+interface UpdateServiceData extends Partial<CreateServiceData> {}
+
+function resolveServiceStatus(payload: { active?: boolean; serviceStatus?: ServiceStatus }) {
+    if (typeof payload.active === "boolean") {
+        return payload.active ? ServiceStatus.ACTIVE : ServiceStatus.DISABLED;
+    }
+    return payload.serviceStatus;
+}
+
+async function resolveCategory(categoryId?: string) {
+    const token = categoryId?.trim();
+    if (!token) return null;
+
+    const byId = await prisma.serviceCategory.findUnique({ where: { id: token } });
+    if (byId) return byId;
+
+    const byPublicId = await prisma.serviceCategory.findUnique({ where: { publicId: token } });
+    if (byPublicId) return byPublicId;
+
+    const bySlug = await prisma.serviceCategory.findUnique({ where: { slug: token } });
+    if (bySlug) return bySlug;
+
+    return prisma.serviceCategory.findFirst({
+        where: {
+            OR: [
+                { nameEn: { equals: token, mode: "insensitive" } },
+                { nameKm: token },
+            ],
+        },
+    });
+}
+
+async function resolveAreaIds(areaIds?: string[], serviceArea?: string) {
+    const tokens = [
+        ...(areaIds ?? []),
+        ...(serviceArea
+            ? serviceArea.split(/[,|]/).map((part) => part.trim()).filter(Boolean)
+            : []),
+    ];
+    if (tokens.length === 0) return [] as string[];
+
+    const matchedAreas = await prisma.serviceArea.findMany({
+        where: {
+            OR: tokens.flatMap((token) => [
+                { id: token },
+                { publicId: token },
+                { slug: token },
+                { nameEn: { equals: token, mode: "insensitive" as const } },
+                { nameKm: token },
+            ]),
+        },
+    });
+
+    return [...new Set(matchedAreas.map((area) => area.id))];
+}
+
+function mapServiceRecord(service: {
+    id: string;
+    publicId: string;
+    name: string;
+    description: string | null;
+    category: { nameEn: string };
+    categoryId: string;
+    price: unknown;
+    priceUnit: string | null;
+    pricingType: string | null;
+    duration: string | null;
+    imageUrl: string | null;
+    quantityEnabled: boolean | null;
+    quantityUnit: string | null;
+    minQuantity: number | null;
+    maxQuantity: number | null;
+    availabilitySummary: string | null;
+    serviceStatus: ServiceStatus;
+    moderationStatus: string;
+    areas: Array<{
+        serviceAreaId: string;
+        serviceArea: { nameEn: string; publicId: string };
+    }>;
+    createdAt: Date;
+    updatedAt: Date;
+}) {
+    return {
+        id: service.id,
+        publicId: service.publicId,
+        name: service.name,
+        description: service.description,
+        category: service.category.nameEn,
+        categoryId: service.categoryId,
+        price: Number(service.price),
+        priceUnit: service.priceUnit,
+        pricingType: service.pricingType,
+        duration: service.duration,
+        imageUrl: service.imageUrl,
+        quantityEnabled: service.quantityEnabled,
+        quantityUnit: service.quantityUnit,
+        minQuantity: service.minQuantity,
+        maxQuantity: service.maxQuantity,
+        availabilitySummary: service.availabilitySummary,
+        serviceStatus: service.serviceStatus,
+        moderationStatus: service.moderationStatus,
+        active: service.serviceStatus === ServiceStatus.ACTIVE,
+        serviceArea: service.areas.map((area) => area.serviceArea.nameEn).join(", "),
+        areas: service.areas.map((area) => ({
+            id: area.serviceAreaId,
+            name: area.serviceArea.nameEn,
+            publicId: area.serviceArea.publicId,
+        })),
+        availability: service.availabilitySummary || "Not specified",
+        createdAt: service.createdAt,
+        updatedAt: service.updatedAt,
+    };
 }
 
 export class VendorServiceService {
@@ -34,54 +147,25 @@ export class VendorServiceService {
                         category: true,
                         areas: {
                             include: {
-                                serviceArea: true
-                            }
-                        }
+                                serviceArea: true,
+                            },
+                        },
                     },
-                    orderBy: { createdAt: 'desc' }
-                }
-            }
+                    orderBy: { createdAt: "desc" },
+                },
+            },
         });
 
         if (!providerProfile) {
             throw new NotFoundException("Provider profile not found");
         }
 
-        return providerProfile.serviceListings.map(service => ({
-            id: service.id,
-            publicId: service.publicId,
-            name: service.name,
-            description: service.description,
-            category: service.category.nameEn,
-            categoryId: service.categoryId,
-            price: Number(service.price),
-            priceUnit: service.priceUnit,
-            pricingType: service.pricingType,
-            duration: service.duration,
-            imageUrl: service.imageUrl,
-            quantityEnabled: service.quantityEnabled,
-            quantityUnit: service.quantityUnit,
-            minQuantity: service.minQuantity,
-            maxQuantity: service.maxQuantity,
-            availabilitySummary: service.availabilitySummary,
-            serviceStatus: service.serviceStatus,
-            moderationStatus: service.moderationStatus,
-            active: service.serviceStatus === ServiceStatus.ACTIVE,
-            serviceArea: service.areas.map(area => area.serviceArea.nameEn).join(', '),
-            areas: service.areas.map(area => ({
-                id: area.serviceAreaId,
-                name: area.serviceArea.nameEn,
-                publicId: area.serviceArea.publicId
-            })),
-            availability: service.availabilitySummary || 'Not specified',
-            createdAt: service.createdAt,
-            updatedAt: service.updatedAt
-        }));
+        return providerProfile.serviceListings.map(mapServiceRecord);
     }
 
     static async getServiceById(userId: string, serviceId: string) {
         const providerProfile = await prisma.providerProfile.findUnique({
-            where: { userId }
+            where: { userId },
         });
 
         if (!providerProfile) {
@@ -90,141 +174,73 @@ export class VendorServiceService {
 
         const service = await prisma.serviceListing.findFirst({
             where: {
-                publicId: serviceId,
-                providerProfileId: providerProfile.id
+                providerProfileId: providerProfile.id,
+                OR: [{ id: serviceId }, { publicId: serviceId }],
             },
             include: {
                 category: true,
                 areas: {
                     include: {
-                        serviceArea: true
-                    }
-                }
-            }
+                        serviceArea: true,
+                    },
+                },
+            },
         });
 
         if (!service) {
             throw new NotFoundException("Service not found");
         }
 
-        return {
-            id: service.id,
-            publicId: service.publicId,
-            name: service.name,
-            description: service.description,
-            category: service.category.nameEn,
-            categoryId: service.categoryId,
-            price: Number(service.price),
-            priceUnit: service.priceUnit,
-            pricingType: service.pricingType,
-            duration: service.duration,
-            imageUrl: service.imageUrl,
-            quantityEnabled: service.quantityEnabled,
-            quantityUnit: service.quantityUnit,
-            minQuantity: service.minQuantity,
-            maxQuantity: service.maxQuantity,
-            availabilitySummary: service.availabilitySummary,
-            serviceStatus: service.serviceStatus,
-            moderationStatus: service.moderationStatus,
-            active: service.serviceStatus === ServiceStatus.ACTIVE,
-            serviceArea: service.areas.map(area => area.serviceArea.nameEn).join(', '),
-            areas: service.areas.map(area => ({
-                id: area.serviceAreaId,
-                name: area.serviceArea.nameEn,
-                publicId: area.serviceArea.publicId
-            })),
-            availability: service.availabilitySummary || 'Not specified',
-            createdAt: service.createdAt,
-            updatedAt: service.updatedAt
-        };
+        return mapServiceRecord(service);
     }
 
-    static async createService(userId: string, data: CreateServiceData) {
+    static async createService(userId: string, payload: CreateServiceData) {
         const providerProfile = await prisma.providerProfile.findUnique({
-            where: { userId }
+            where: { userId },
         });
 
         if (!providerProfile) {
             throw new NotFoundException("Provider profile not found");
         }
 
-        // Handle category - accept both ID and name
-        let category;
-        if (data.categoryId) {
-            // Try to find by ID first
-            category = await prisma.serviceCategory.findUnique({
-                where: { id: data.categoryId }
-            });
-        }
-        
-        // If not found by ID, try to find by publicId
-        if (!category && data.categoryId) {
-            category = await prisma.serviceCategory.findUnique({
-                where: { publicId: data.categoryId }
-            });
-        }
-
-        // If not found by ID or publicId, try to find by name
-        if (!category && data.categoryId) {
-            category = await prisma.serviceCategory.findFirst({
-                where: { 
-                    OR: [
-                        { nameEn: data.categoryId },
-                        { slug: data.categoryId }
-                    ]
-                }
-            });
-        }
-
+        const category = await resolveCategory(payload.categoryId);
         if (!category) {
-            console.error('Category not found for categoryId:', data.categoryId);
             throw new BadRequestException("Invalid category");
         }
 
-        // Verify areas if provided
-        if (data.areaIds && data.areaIds.length > 0) {
-            const areas = await prisma.serviceArea.findMany({
-                where: { id: { in: data.areaIds } }
-            });
-
-            if (areas.length !== data.areaIds.length) {
-                throw new BadRequestException("One or more invalid service areas");
-            }
-        }
+        const areaIds = await resolveAreaIds(payload.areaIds, payload.serviceArea);
 
         const service = await prisma.serviceListing.create({
             data: {
                 publicId: crypto.randomUUID(),
                 providerProfileId: providerProfile.id,
                 categoryId: category.id,
-                name: data.name,
-                description: data.description,
-                price: data.price,
-                priceUnit: data.priceUnit,
-                pricingType: data.pricingType,
-                duration: data.duration,
-                imageUrl: data.imageUrl,
-                quantityEnabled: data.quantityEnabled,
-                quantityUnit: data.quantityUnit,
-                minQuantity: data.minQuantity,
-                maxQuantity: data.maxQuantity,
-                availabilitySummary: data.availabilitySummary,
-                serviceStatus: ServiceStatus.DISABLED,
+                name: payload.name,
+                description: payload.description,
+                price: payload.price,
+                priceUnit: payload.priceUnit,
+                pricingType: payload.pricingType,
+                duration: payload.duration,
+                imageUrl: payload.imageUrl,
+                quantityEnabled: payload.quantityEnabled,
+                quantityUnit: payload.quantityUnit,
+                minQuantity: payload.minQuantity,
+                maxQuantity: payload.maxQuantity,
+                availabilitySummary: payload.availabilitySummary,
+                serviceStatus: resolveServiceStatus(payload) ?? ServiceStatus.ACTIVE,
                 moderationStatus: ServiceModerationStatus.NORMAL,
-                areas: data.areaIds && data.areaIds.length > 0 ? {
-                    create: data.areaIds.map(areaId => ({
-                        serviceAreaId: areaId
-                    }))
-                } : undefined
+                areas: {
+                    create: areaIds.map((serviceAreaId) => ({ serviceAreaId })),
+                },
             },
             include: {
                 category: true,
                 areas: {
                     include: {
-                        serviceArea: true
-                    }
-                }
-            }
+                        serviceArea: true,
+                    },
+                },
+            },
         });
 
         return {
@@ -235,13 +251,13 @@ export class VendorServiceService {
             price: Number(service.price),
             priceUnit: service.priceUnit,
             active: service.serviceStatus === ServiceStatus.ACTIVE,
-            createdAt: service.createdAt
+            createdAt: service.createdAt,
         };
     }
 
-    static async updateService(userId: string, serviceId: string, data: UpdateServiceData) {
+    static async updateService(userId: string, serviceId: string, payload: UpdateServiceData) {
         const providerProfile = await prisma.providerProfile.findUnique({
-            where: { userId }
+            where: { userId },
         });
 
         if (!providerProfile) {
@@ -250,95 +266,73 @@ export class VendorServiceService {
 
         const existingService = await prisma.serviceListing.findFirst({
             where: {
-                publicId: serviceId,
-                providerProfileId: providerProfile.id
-            }
+                providerProfileId: providerProfile.id,
+                OR: [{ id: serviceId }, { publicId: serviceId }],
+            },
         });
 
         if (!existingService) {
             throw new NotFoundException("Service not found");
         }
 
-        // Handle category - accept both ID and name
-        let category;
-        if (data.categoryId) {
-            // Try to find by ID first
-            category = await prisma.serviceCategory.findUnique({
-                where: { id: data.categoryId }
-            });
-            
-            // If not found by ID, try to find by name
-            if (!category) {
-                category = await prisma.serviceCategory.findFirst({
-                    where: { 
-                        OR: [
-                            { nameEn: data.categoryId },
-                            { slug: data.categoryId }
-                        ]
-                    }
-                });
-            }
+        const category = payload.categoryId
+            ? await resolveCategory(payload.categoryId)
+            : null;
 
-            if (!category) {
-                throw new BadRequestException("Invalid category");
-            }
+        if (payload.categoryId && !category) {
+            console.warn(
+                "Unknown category token on update, keeping existing category:",
+                payload.categoryId
+            );
         }
 
-        // Update areas if provided
-        if (data.areaIds !== undefined) {
-            // Verify areas
-            if (data.areaIds.length > 0) {
-                const areas = await prisma.serviceArea.findMany({
-                    where: { id: { in: data.areaIds } }
-                });
+        if (payload.areaIds !== undefined || payload.serviceArea !== undefined) {
+            const areaIds = await resolveAreaIds(payload.areaIds, payload.serviceArea);
 
-                if (areas.length !== data.areaIds.length) {
-                    throw new BadRequestException("One or more invalid service areas");
-                }
-            }
-
-            // Remove existing areas
             await prisma.serviceListingArea.deleteMany({
-                where: { serviceListingId: existingService.id }
+                where: { serviceListingId: existingService.id },
             });
 
-            // Add new areas
-            if (data.areaIds.length > 0) {
+            if (areaIds.length > 0) {
                 await prisma.serviceListingArea.createMany({
-                    data: data.areaIds.map(areaId => ({
+                    data: areaIds.map((serviceAreaId) => ({
                         serviceListingId: existingService.id,
-                        serviceAreaId: areaId
-                    }))
+                        serviceAreaId,
+                    })),
                 });
             }
         }
+
+        const nextStatus = resolveServiceStatus(payload);
 
         const service = await prisma.serviceListing.update({
             where: { id: existingService.id },
             data: {
-                ...(data.name && { name: data.name }),
+                ...(payload.name && { name: payload.name }),
                 ...(category && { categoryId: category.id }),
-                ...(data.description !== undefined && { description: data.description }),
-                ...(data.price !== undefined && { price: data.price }),
-                ...(data.priceUnit !== undefined && { priceUnit: data.priceUnit }),
-                ...(data.pricingType !== undefined && { pricingType: data.pricingType }),
-                ...(data.duration !== undefined && { duration: data.duration }),
-                ...(data.imageUrl !== undefined && { imageUrl: data.imageUrl }),
-                ...(data.quantityEnabled !== undefined && { quantityEnabled: data.quantityEnabled }),
-                ...(data.quantityUnit !== undefined && { quantityUnit: data.quantityUnit }),
-                ...(data.minQuantity !== undefined && { minQuantity: data.minQuantity }),
-                ...(data.maxQuantity !== undefined && { maxQuantity: data.maxQuantity }),
-                ...(data.availabilitySummary !== undefined && { availabilitySummary: data.availabilitySummary }),
-                ...(data.serviceStatus && { serviceStatus: data.serviceStatus })
+                ...(payload.description !== undefined && { description: payload.description }),
+                ...(payload.price !== undefined && { price: payload.price }),
+                ...(payload.priceUnit !== undefined && { priceUnit: payload.priceUnit }),
+                ...(payload.pricingType !== undefined && { pricingType: payload.pricingType }),
+                ...(payload.duration !== undefined && { duration: payload.duration }),
+                ...(payload.imageUrl !== undefined && { imageUrl: payload.imageUrl }),
+                ...(payload.quantityEnabled !== undefined && { quantityEnabled: payload.quantityEnabled }),
+                ...(payload.quantityUnit !== undefined && { quantityUnit: payload.quantityUnit }),
+                ...(payload.minQuantity !== undefined && { minQuantity: payload.minQuantity }),
+                ...(payload.maxQuantity !== undefined && { maxQuantity: payload.maxQuantity }),
+                ...(payload.availabilitySummary !== undefined && {
+                    availabilitySummary: payload.availabilitySummary,
+                }),
+                ...(nextStatus && { serviceStatus: nextStatus }),
             },
             include: {
                 category: true,
                 areas: {
                     include: {
-                        serviceArea: true
-                    }
-                }
-            }
+                        serviceArea: true,
+                    },
+                },
+            },
         });
 
         return {
@@ -349,13 +343,13 @@ export class VendorServiceService {
             price: Number(service.price),
             priceUnit: service.priceUnit,
             active: service.serviceStatus === ServiceStatus.ACTIVE,
-            updatedAt: service.updatedAt
+            updatedAt: service.updatedAt,
         };
     }
 
     static async deleteService(userId: string, serviceId: string) {
         const providerProfile = await prisma.providerProfile.findUnique({
-            where: { userId }
+            where: { userId },
         });
 
         if (!providerProfile) {
@@ -364,23 +358,22 @@ export class VendorServiceService {
 
         const existingService = await prisma.serviceListing.findFirst({
             where: {
-                publicId: serviceId,
-                providerProfileId: providerProfile.id
-            }
+                providerProfileId: providerProfile.id,
+                OR: [{ id: serviceId }, { publicId: serviceId }],
+            },
         });
 
         if (!existingService) {
             throw new NotFoundException("Service not found");
         }
 
-        // Check if service has active bookings
         const activeBookings = await prisma.booking.count({
             where: {
                 serviceListingId: existingService.id,
                 status: {
-                    in: ['PENDING', 'ACCEPTED', 'IN_PROGRESS']
-                }
-            }
+                    in: ["PENDING", "ACCEPTED", "IN_PROGRESS"],
+                },
+            },
         });
 
         if (activeBookings > 0) {
@@ -388,18 +381,18 @@ export class VendorServiceService {
         }
 
         await prisma.serviceListing.delete({
-            where: { id: existingService.id }
+            where: { id: existingService.id },
         });
 
         return {
             success: true,
-            message: "Service deleted successfully"
+            message: "Service deleted successfully",
         };
     }
 
     static async toggleServiceStatus(userId: string, serviceId: string, active: boolean) {
         const providerProfile = await prisma.providerProfile.findUnique({
-            where: { userId }
+            where: { userId },
         });
 
         if (!providerProfile) {
@@ -408,9 +401,9 @@ export class VendorServiceService {
 
         const existingService = await prisma.serviceListing.findFirst({
             where: {
-                publicId: serviceId,
-                providerProfileId: providerProfile.id
-            }
+                providerProfileId: providerProfile.id,
+                OR: [{ id: serviceId }, { publicId: serviceId }],
+            },
         });
 
         if (!existingService) {
@@ -420,8 +413,8 @@ export class VendorServiceService {
         const service = await prisma.serviceListing.update({
             where: { id: existingService.id },
             data: {
-                serviceStatus: active ? ServiceStatus.ACTIVE : ServiceStatus.DISABLED
-            }
+                serviceStatus: active ? ServiceStatus.ACTIVE : ServiceStatus.DISABLED,
+            },
         });
 
         return {
@@ -429,40 +422,40 @@ export class VendorServiceService {
             publicId: service.publicId,
             name: service.name,
             active: service.serviceStatus === ServiceStatus.ACTIVE,
-            serviceStatus: service.serviceStatus
+            serviceStatus: service.serviceStatus,
         };
     }
 
     static async getServiceCategories() {
         const categories = await prisma.serviceCategory.findMany({
             where: { isActive: true },
-            orderBy: { nameEn: 'asc' }
+            orderBy: { nameEn: "asc" },
         });
 
-        return categories.map(cat => ({
+        return categories.map((cat) => ({
             id: cat.id,
             publicId: cat.publicId,
             name: cat.nameEn,
             nameKm: cat.nameKm,
             slug: cat.slug,
             description: cat.descriptionEn,
-            iconName: cat.iconName
+            iconName: cat.iconName,
         }));
     }
 
     static async getServiceAreas() {
-        const areas = await prisma.serviceArea.findMany({
+        const matchedAreas = await prisma.serviceArea.findMany({
             where: { isActive: true },
-            orderBy: { nameEn: 'asc' }
+            orderBy: { nameEn: "asc" },
         });
 
-        return areas.map(area => ({
+        return matchedAreas.map((area) => ({
             id: area.id,
             publicId: area.publicId,
             name: area.nameEn,
             nameKm: area.nameKm,
             slug: area.slug,
-            provinceOrCity: area.provinceOrCity
+            provinceOrCity: area.provinceOrCity,
         }));
     }
 }
