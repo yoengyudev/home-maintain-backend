@@ -4,7 +4,14 @@ import { authenticate } from "../middlewares/auth.middlerware";
 import { authorize } from "../middlewares/role.middlerware";
 import { UserRole } from "../generated/prisma/enums";
 import { validate } from "../validators/validate";
-import { adminLoginSchema } from "../validators/admin/admin.auth.validator";
+import {
+    adminLoginSchema,
+    adminForgotPasswordSchema,
+    adminVerifyOtpSchema,
+    adminResetPasswordSchema,
+} from "../validators/admin/admin.auth.validator";
+import { createAdminNoteSchema } from "../validators/admin/admin.notes.validator";
+import * as notesController from "../controllers/admin/admin.notes.controller";
 import { uploadImage } from "../utils/upload-image.util";
 
 import * as authController from "../controllers/admin/admin.authentication.controller";
@@ -18,6 +25,13 @@ import * as categoriesController from "../controllers/admin/admin.categories.con
 import * as serviceAreasController from "../controllers/admin/admin.service.areas.controller";
 import * as notificationsController from "../controllers/admin/admin.notifications.controller";
 import * as auditController from "../controllers/admin/admin.audit.controller";
+import * as helpController from "../controllers/admin/admin.help.controller";
+import {
+    createFaqSchema,
+    updateFaqSchema,
+    updateSupportPageSchema,
+    updateSupportRequestSchema,
+} from "../validators/admin/admin.help.validator";
 
 const router = Router();
 
@@ -30,6 +44,9 @@ const categoryImageUpload = uploadImage.fields([
 // Authentication
 // ==========================================
 router.post("/auth/login", validate(adminLoginSchema), asyncHandler(authController.login));
+router.post("/auth/forgot-password", validate(adminForgotPasswordSchema), asyncHandler(authController.forgotPassword));
+router.post("/auth/verify-otp", validate(adminVerifyOtpSchema), asyncHandler(authController.verifyResetOtp));
+router.post("/auth/reset-password", validate(adminResetPasswordSchema), asyncHandler(authController.resetPassword));
 
 // All routes below require ADMIN role
 router.use(authenticate);
@@ -117,12 +134,42 @@ router.patch("/service-areas/:id/restore", asyncHandler(serviceAreasController.r
 router.delete("/service-areas/:id", asyncHandler(serviceAreasController.deleteServiceArea));
 
 // ==========================================
+// Help Center — FAQs, support pages, tickets
+// ==========================================
+router.get("/faqs", asyncHandler(helpController.listFaqs));
+router.get("/faqs/:id", asyncHandler(helpController.getFaqById));
+router.post("/faqs", validate(createFaqSchema), asyncHandler(helpController.createFaq));
+router.patch("/faqs/:id", validate(updateFaqSchema), asyncHandler(helpController.updateFaq));
+router.patch("/faqs/:id/disable", asyncHandler(helpController.disableFaq));
+router.patch("/faqs/:id/restore", asyncHandler(helpController.restoreFaq));
+router.delete("/faqs/:id", asyncHandler(helpController.deleteFaq));
+
+router.get("/support-pages", asyncHandler(helpController.listSupportPages));
+router.get("/support-pages/:pageKey", asyncHandler(helpController.getSupportPage));
+router.patch(
+    "/support-pages/:pageKey",
+    validate(updateSupportPageSchema),
+    asyncHandler(helpController.updateSupportPage)
+);
+
+router.get("/support-requests", asyncHandler(helpController.listSupportRequests));
+router.patch(
+    "/support-requests/:id",
+    validate(updateSupportRequestSchema),
+    asyncHandler(helpController.updateSupportRequest)
+);
+
+// ==========================================
 // Notifications
 // ==========================================
 router.get("/notifications", asyncHandler(notificationsController.listNotifications));
 router.get("/notifications/unread-count", asyncHandler(notificationsController.getUnreadCount));
 router.post("/notifications/read-all", asyncHandler(notificationsController.markAllRead));
 router.post("/notifications/:id/read", asyncHandler(notificationsController.markRead));
+router.post("/notifications/:id/unread", asyncHandler(notificationsController.markUnread));
+
+router.get("/notes", asyncHandler(notesController.listNotes));
+router.post("/notes", validate(createAdminNoteSchema), asyncHandler(notesController.createNote));
 
 // ==========================================
 // Audit Log

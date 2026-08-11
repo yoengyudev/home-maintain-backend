@@ -43,6 +43,15 @@ export const messages = {
         ADMIN_PASSWORD_CHANGED: "Password changed successfully",
         ADMIN_PASSWORD_NOT_SET: "User does not have a password set",
         ADMIN_PASSWORD_CURRENT_INVALID: "Current password is incorrect",
+        ADMIN_OTP_SENT: "A verification code was sent to your email",
+        ADMIN_OTP_VERIFIED: "Verification code confirmed",
+        ADMIN_INVALID_OTP: "The verification code is incorrect",
+        ADMIN_PASSWORD_RESET: "Password reset successfully",
+        ADMIN_NOTES_RETRIEVED: "Internal notes retrieved",
+        ADMIN_NOTE_CREATED: "Internal note saved",
+        ADMIN_NOTE_BODY_REQUIRED: "Note content cannot be empty",
+        ADMIN_NOTE_TARGET_REQUIRED: "Note target is required",
+        ADMIN_NOTIFICATION_MARKED_UNREAD: "Notification marked unread",
 
         // admin providers
         ADMIN_PROVIDERS_RETRIEVED: "Providers retrieved",
@@ -108,6 +117,23 @@ export const messages = {
         ADMIN_SERVICE_AREA_DELETED: "Service area deleted",
         ADMIN_SERVICE_AREA_NOT_FOUND: "Service area not found",
         ADMIN_SERVICE_AREA_DELETE_HAS_LINKS: "Cannot delete service area: it has {providers} provider(s) linked to it",
+
+        // admin help
+        ADMIN_FAQS_RETRIEVED: "FAQs retrieved",
+        ADMIN_FAQ_RETRIEVED: "FAQ retrieved",
+        ADMIN_FAQ_CREATED: "FAQ created",
+        ADMIN_FAQ_UPDATED: "FAQ updated",
+        ADMIN_FAQ_DISABLED: "FAQ disabled",
+        ADMIN_FAQ_RESTORED: "FAQ restored",
+        ADMIN_FAQ_DELETED: "FAQ deleted",
+        ADMIN_FAQ_NOT_FOUND: "FAQ not found",
+        ADMIN_SUPPORT_PAGES_RETRIEVED: "Support pages retrieved",
+        ADMIN_SUPPORT_PAGE_RETRIEVED: "Support page retrieved",
+        ADMIN_SUPPORT_PAGE_UPDATED: "Support page updated",
+        ADMIN_SUPPORT_PAGE_NOT_FOUND: "Support page not found",
+        ADMIN_SUPPORT_REQUESTS_RETRIEVED: "Support tickets retrieved",
+        ADMIN_SUPPORT_REQUEST_UPDATED: "Support ticket updated",
+        ADMIN_SUPPORT_REQUEST_NOT_FOUND: "Support ticket not found",
 
         // admin notifications
         ADMIN_NOTIFICATIONS_RETRIEVED: "Notifications retrieved",
@@ -329,6 +355,15 @@ export const messages = {
         ADMIN_PASSWORD_CHANGED: "បានផ្លាស់ប្តូរពាក្យសម្ងាត់ដោយជោគជ័យ",
         ADMIN_PASSWORD_NOT_SET: "អ្នកប្រើមិនទាន់មានពាក្យសម្ងាត់",
         ADMIN_PASSWORD_CURRENT_INVALID: "ពាក្យសម្ងាត់បច្ចុប្បន្នមិនត្រឹមត្រូវ",
+        ADMIN_OTP_SENT: "លេខកូដផ្ទៀងផ្ទាត់ត្រូវបានផ្ញើទៅអ៊ីមែលរបស់អ្នក",
+        ADMIN_OTP_VERIFIED: "បានបញ្ជាក់លេខកូដផ្ទៀងផ្ទាត់",
+        ADMIN_INVALID_OTP: "លេខកូដផ្ទៀងផ្ទាត់មិនត្រឹមត្រូវទេ",
+        ADMIN_PASSWORD_RESET: "បានកំណត់ពាក្យសម្ងាត់ឡើងវិញដោយជោគជ័យ",
+        ADMIN_NOTES_RETRIEVED: "បានទាញយកកំណត់ត្រាផ្ទៃក្នុង",
+        ADMIN_NOTE_CREATED: "បានរក្សាទុកកំណត់ត្រាផ្ទៃក្នុង",
+        ADMIN_NOTE_BODY_REQUIRED: "ខ្លឹមសារកំណត់ត្រាមិនអាចទទេបានទេ",
+        ADMIN_NOTE_TARGET_REQUIRED: "ត្រូវការគោលដៅកំណត់ត្រា",
+        ADMIN_NOTIFICATION_MARKED_UNREAD: "បានសម្គាល់ការជូនដំណឹងថាមិនទាន់អាន",
 
         // admin providers
         ADMIN_PROVIDERS_RETRIEVED: "បានទាញយកបញ្ជីអ្នកផ្តល់សេវា",
@@ -394,6 +429,23 @@ export const messages = {
         ADMIN_SERVICE_AREA_DELETED: "បានលុបតំបន់សេវា",
         ADMIN_SERVICE_AREA_NOT_FOUND: "រកមិនឃើញតំបន់សេវា",
         ADMIN_SERVICE_AREA_DELETE_HAS_LINKS: "មិនអាចលុបតំបន់សេវាបានទេ៖ មានអ្នកផ្តល់សេវា {providers} ភ្ជាប់ជាមួយវា",
+
+        // admin help
+        ADMIN_FAQS_RETRIEVED: "បានទាញយកសំណួរគេសួរញឹកញាប់",
+        ADMIN_FAQ_RETRIEVED: "បានទាញយកសំណួរគេសួរញឹកញាប់",
+        ADMIN_FAQ_CREATED: "បានបង្កើតសំណួរគេសួរញឹកញាប់",
+        ADMIN_FAQ_UPDATED: "បានធ្វើបច្ចុប្បន្នភាពសំណួរគេសួរញឹកញាប់",
+        ADMIN_FAQ_DISABLED: "បានបិទសំណួរគេសួរញឹកញាប់",
+        ADMIN_FAQ_RESTORED: "បានស្តារសំណួរគេសួរញឹកញាប់",
+        ADMIN_FAQ_DELETED: "បានលុបសំណួរគេសួរញឹកញាប់",
+        ADMIN_FAQ_NOT_FOUND: "រកមិនឃើញសំណួរគេសួរញឹកញាប់",
+        ADMIN_SUPPORT_PAGES_RETRIEVED: "បានទាញយកទំព័រជំនួយ",
+        ADMIN_SUPPORT_PAGE_RETRIEVED: "បានទាញយកទំព័រជំនួយ",
+        ADMIN_SUPPORT_PAGE_UPDATED: "បានធ្វើបច្ចុប្បន្នភាពទំព័រជំនួយ",
+        ADMIN_SUPPORT_PAGE_NOT_FOUND: "រកមិនឃើញទំព័រជំនួយ",
+        ADMIN_SUPPORT_REQUESTS_RETRIEVED: "បានទាញយកសំណើគាំទ្រ",
+        ADMIN_SUPPORT_REQUEST_UPDATED: "បានធ្វើបច្ចុប្បន្នភាពសំណើគាំទ្រ",
+        ADMIN_SUPPORT_REQUEST_NOT_FOUND: "រកមិនឃើញសំណើគាំទ្រ",
 
         // admin notifications
         ADMIN_NOTIFICATIONS_RETRIEVED: "បានទាញយកបញ្ជីការជូនដំណឹង",

@@ -27,6 +27,11 @@ const serviceInclude = {
         orderBy: { createdAt: "desc" as const },
         take: 10,
     },
+    reviews: {
+        include: { customerProfile: { select: { fullName: true } } },
+        orderBy: { createdAt: "desc" as const },
+        take: 20,
+    },
 } as const;
 
 function formatService(s: any) {
@@ -59,6 +64,24 @@ function formatService(s: any) {
             createdAt: h.createdAt.toISOString(),
             adminName: h.adminProfile?.fullName ?? null,
         })),
+        reviews: Array.isArray(s.reviews)
+            ? s.reviews.map((r: any) => ({
+                  id: r.publicId || r.id,
+                  rating: Number(r.rating),
+                  comment: r.comment || "",
+                  customerName: r.customerProfile?.fullName || "",
+                  createdAt: r.createdAt.toISOString(),
+              }))
+            : [],
+        reviewCount: Array.isArray(s.reviews) ? s.reviews.length : 0,
+        averageRating: Array.isArray(s.reviews) && s.reviews.length
+            ? Number(
+                  (
+                      s.reviews.reduce((sum: number, r: any) => sum + Number(r.rating), 0) /
+                      s.reviews.length
+                  ).toFixed(1)
+              )
+            : 0,
     };
 }
 

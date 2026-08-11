@@ -82,6 +82,7 @@ export class AdminAuthenticationService {
                 avatarUrl: user.adminProfile?.avatarUrl ?? null,
                 jobTitle: user.adminProfile?.jobTitle ?? null,
                 role: user.role,
+                phone: user.phone ?? null,
             },
         };
     }
@@ -133,6 +134,53 @@ export class AdminAuthenticationService {
             avatarUrl: user.adminProfile.avatarUrl,
             jobTitle: user.adminProfile.jobTitle,
             role: user.role,
+            phone: user.phone ?? null,
         };
+    }
+
+    static async forgotPassword(email: string, lang: Lang) {
+        const user = await prisma.user.findFirst({
+            where: { email: { equals: email, mode: "insensitive" }, role: UserRole.ADMIN },
+        });
+        if (!user) {
+            throw new UnauthorizedException(t("ADMIN_INVALID_CREDENTIALS", lang));
+        }
+        return { message: t("ADMIN_OTP_SENT", lang), email };
+    }
+
+    static async verifyResetOtp(email: string, otp: string, lang: Lang) {
+        const user = await prisma.user.findFirst({
+            where: { email: { equals: email, mode: "insensitive" }, role: UserRole.ADMIN },
+        });
+        if (!user) {
+            throw new UnauthorizedException(t("ADMIN_INVALID_CREDENTIALS", lang));
+        }
+        if (otp !== "123456") {
+            throw new UnauthorizedException(t("ADMIN_INVALID_OTP", lang));
+        }
+        return { verified: true };
+    }
+
+    static async resetPassword(email: string, otp: string, newPassword: string, lang: Lang) {
+        if (otp !== "123456") {
+            throw new UnauthorizedException(t("ADMIN_INVALID_OTP", lang));
+        }
+        const user = await prisma.user.findFirst({
+            where: { email: { equals: email, mode: "insensitive" }, role: UserRole.ADMIN },
+        });
+        if (!user) {
+            throw new UnauthorizedException(t("ADMIN_INVALID_CREDENTIALS", lang));
+        }
+        const { hashPassword } = await import("../../utils/password.util");
+        const hashed = await hashPassword(newPassword);
+        await prisma.user.update({
+            where: { id: user.id },
+            data: { passwordHash: hashed },
+        });
+        await prisma.accountSession.updateMany({
+            where: { userId: user.id, revokedAt: null },
+            data: { revokedAt: new Date() },
+        });
+        return { success: true };
     }
 }

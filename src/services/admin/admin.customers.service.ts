@@ -9,8 +9,40 @@ import {
 import type { Lang } from "../../i18n/messages";
 import { t } from "../../i18n/translate";
 
-const customerInclude = {
+const customerListInclude = {
     user: { select: { email: true, phone: true, accountStatus: true } },
+} as const;
+
+const customerDetailInclude = {
+    user: {
+        select: {
+            email: true,
+            phone: true,
+            accountStatus: true,
+            preference: { select: { language: true, preferredContactMethod: true } },
+        },
+    },
+    addresses: {
+        orderBy: { isDefault: "desc" as const },
+        select: {
+            id: true,
+            publicId: true,
+            label: true,
+            addressLine: true,
+            notes: true,
+            detectedLocation: true,
+            isDefault: true,
+        },
+    },
+    reviews: {
+        orderBy: { createdAt: "desc" as const },
+        take: 20,
+        include: {
+            providerProfile: {
+                include: { businessProfile: { select: { businessName: true } } },
+            },
+        },
+    },
 } as const;
 
 function formatCustomer(c: any) {
@@ -24,6 +56,30 @@ function formatCustomer(c: any) {
         accountStatus: c.user?.accountStatus ?? "ACTIVE",
         suspendedAt: c.suspendedAt?.toISOString() ?? null,
         createdAt: c.createdAt.toISOString(),
+        preferredLanguage: c.user?.preference?.language ?? null,
+        preferredContactMethod: c.user?.preference?.preferredContactMethod ?? null,
+        addresses: Array.isArray(c.addresses)
+            ? c.addresses.map((a: any) => ({
+                  id: a.publicId || a.id,
+                  label: a.label,
+                  address: a.addressLine,
+                  area: a.detectedLocation || a.notes || "",
+                  city: a.detectedLocation || "",
+                  isDefault: Boolean(a.isDefault),
+              }))
+            : [],
+        reviews: Array.isArray(c.reviews)
+            ? c.reviews.map((r: any) => ({
+                  id: r.publicId || r.id,
+                  providerName:
+                      r.providerProfile?.businessProfile?.businessName ||
+                      r.providerProfile?.contactName ||
+                      "",
+                  rating: Number(r.rating),
+                  date: r.createdAt.toISOString(),
+                  text: r.comment || "",
+              }))
+            : [],
     };
 }
 
@@ -64,7 +120,7 @@ export class AdminCustomersService {
         const [customers, total] = await Promise.all([
             prisma.customerProfile.findMany({
                 where,
-                include: customerInclude,
+                include: customerListInclude,
                 orderBy: { createdAt: "desc" },
                 skip,
                 take,
@@ -81,7 +137,7 @@ export class AdminCustomersService {
     static async getById(id: string, lang: Lang) {
         const customer = await prisma.customerProfile.findFirst({
             where: { OR: [{ id }, { publicId: id }] },
-            include: customerInclude,
+            include: customerDetailInclude,
         });
         if (!customer) throw new NotFoundException(t("ADMIN_CUSTOMER_NOT_FOUND", lang));
         return formatCustomer(customer);
@@ -125,7 +181,7 @@ export class AdminCustomersService {
 
         const updated = await prisma.customerProfile.findUnique({
             where: { id: customer.id },
-            include: customerInclude,
+            include: customerDetailInclude,
         });
         return formatCustomer(updated!);
     }
@@ -167,7 +223,7 @@ export class AdminCustomersService {
 
         const updated = await prisma.customerProfile.findUnique({
             where: { id: customer.id },
-            include: customerInclude,
+            include: customerDetailInclude,
         });
         return formatCustomer(updated!);
     }

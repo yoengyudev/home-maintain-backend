@@ -24,6 +24,7 @@ export class AdminProfileService {
             department: user.adminProfile.jobTitle ?? null,
             avatarUrl: user.adminProfile.avatarUrl ?? null,
             createdAt: user.createdAt.toISOString(),
+            lastSignedInAt: user.lastSignedInAt?.toISOString() ?? null,
         };
     }
 

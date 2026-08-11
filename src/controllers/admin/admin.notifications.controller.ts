@@ -39,6 +39,18 @@ export const markRead = async (req: Request, res: Response) => {
     });
 };
 
+export const markUnread = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const id = req.params.id as string;
+    const adminUserId = (req as any).user.userId;
+    const data = await AdminNotificationsService.markUnread(adminUserId, id, lang);
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: t("ADMIN_NOTIFICATION_MARKED_UNREAD", lang),
+        data,
+    });
+};
+
 export const markAllRead = async (req: Request, res: Response) => {
     const lang = getLang(req);
     const adminUserId = (req as any).user.userId;

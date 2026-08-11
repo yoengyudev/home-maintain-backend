@@ -12,6 +12,33 @@ const devicePlatformSchema = z.preprocess(
         .optional()
 );
 
+export const adminForgotPasswordSchema = z.object({
+    email: z
+        .string()
+        .min(1, "Email is required")
+        .email("Invalid email address")
+        .refine(validateEmail, "Invalid email address format"),
+});
+
+export const adminVerifyOtpSchema = z.object({
+    email: z
+        .string()
+        .min(1, "Email is required")
+        .email("Invalid email address")
+        .refine(validateEmail, "Invalid email address format"),
+    otp: z.string().trim().length(6),
+});
+
+export const adminResetPasswordSchema = z.object({
+    email: z
+        .string()
+        .min(1, "Email is required")
+        .email("Invalid email address")
+        .refine(validateEmail, "Invalid email address format"),
+    otp: z.string().trim().length(6),
+    newPassword: z.string().min(8),
+});
+
 export const adminLoginSchema = z.object({
     email: z
         .string()

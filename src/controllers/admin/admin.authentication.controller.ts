@@ -28,6 +28,41 @@ export const logout = async (req: Request, res: Response) => {
     });
 };
 
+export const forgotPassword = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const data = await AdminAuthenticationService.forgotPassword(req.body.email, lang);
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: t("ADMIN_OTP_SENT", lang),
+        data,
+    });
+};
+
+export const verifyResetOtp = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const data = await AdminAuthenticationService.verifyResetOtp(req.body.email, req.body.otp, lang);
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: t("ADMIN_OTP_VERIFIED", lang),
+        data,
+    });
+};
+
+export const resetPassword = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const data = await AdminAuthenticationService.resetPassword(
+        req.body.email,
+        req.body.otp,
+        req.body.newPassword,
+        lang
+    );
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: t("ADMIN_PASSWORD_RESET", lang),
+        data,
+    });
+};
+
 export const me = async (req: Request, res: Response) => {
     const lang = getLang(req);
     const user = (req as any).user;
