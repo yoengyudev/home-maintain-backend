@@ -8,6 +8,7 @@ import type { z } from "zod";
 import type { vendorRegisterSchema, vendorLoginSchema, forgotPasswordSchema, resetPasswordSchema } from "../../validators/vendor/vendor.auth.validator";
 import { normalizeCambodiaPhone } from "../../validators/phone.validate";
 import { UserRole, ProviderStatus } from "../../generated/prisma/enums";
+import { deactivateFcmToken, upsertFcmToken } from "../../helper/customer/auth.helper";
 
 type RegisterDto = z.infer<typeof vendorRegisterSchema>;
 type LoginDto = z.infer<typeof vendorLoginSchema>;
@@ -102,7 +103,7 @@ export class VendorAuthenticationService {
     }
 
     static async login(data: LoginDto) {
-        const { phone, password } = data;
+        const { phone, password, fcmToken, platform, deviceName } = data;
         const normalizedPhone = normalizeCambodiaPhone(phone);
 
         const user = await prisma.user.findUnique({
@@ -141,6 +142,18 @@ export class VendorAuthenticationService {
                 tokenHash,
                 expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
             }
+        });
+
+        await upsertFcmToken({
+            userId: user.id,
+            token: fcmToken,
+            platform,
+            deviceName,
+        });
+
+        await prisma.user.update({
+            where: { id: user.id },
+            data: { lastSignedInAt: new Date() },
         });
 
         return {
@@ -228,6 +241,8 @@ export class VendorAuthenticationService {
                 revokedAt: new Date()
             }
         });
+
+        await deactivateFcmToken(userId);
     }
 
     static async me(userId: string) {
@@ -263,9 +278,11 @@ export class VendorAuthenticationService {
         district?: string;
         cityProvince?: string;
         about?: string;
-        logoUrl?: string;
-        latitude?: number;
-        longitude?: number;
+        logoUrl?: string | null;
+        latitude?: number | null;
+        longitude?: number | null;
+        coverageSummary?: string;
+        detectedAddress?: string;
     }) {
         const providerProfile = await prisma.providerProfile.findUnique({
             where: { userId },
@@ -281,15 +298,17 @@ export class VendorAuthenticationService {
             await prisma.providerBusinessProfile.update({
                 where: { id: providerProfile.businessProfile.id },
                 data: {
-                    ...(data.businessName && { businessName: data.businessName }),
-                    ...(data.providerType && { providerType: data.providerType }),
-                    ...(data.addressLine && { addressLine: data.addressLine }),
-                    ...(data.district && { district: data.district }),
-                    ...(data.cityProvince && { cityProvince: data.cityProvince }),
-                    ...(data.about && { description: data.about }),
-                    ...(data.logoUrl && { logoUrl: data.logoUrl }),
+                    ...(data.businessName !== undefined && { businessName: data.businessName }),
+                    ...(data.providerType !== undefined && { providerType: data.providerType }),
+                    ...(data.addressLine !== undefined && { addressLine: data.addressLine }),
+                    ...(data.district !== undefined && { district: data.district }),
+                    ...(data.cityProvince !== undefined && { cityProvince: data.cityProvince }),
+                    ...(data.about !== undefined && { description: data.about }),
+                    ...(data.logoUrl !== undefined && { logoUrl: data.logoUrl }),
                     ...(data.latitude !== undefined && { latitude: data.latitude }),
-                    ...(data.longitude !== undefined && { longitude: data.longitude })
+                    ...(data.longitude !== undefined && { longitude: data.longitude }),
+                    ...(data.coverageSummary !== undefined && { coverageSummary: data.coverageSummary }),
+                    ...(data.detectedAddress !== undefined && { detectedAddress: data.detectedAddress }),
                 }
             });
         }
@@ -298,7 +317,7 @@ export class VendorAuthenticationService {
         await prisma.providerProfile.update({
             where: { id: providerProfile.id },
             data: {
-                ...(data.contactName && { contactName: data.contactName })
+                ...(data.contactName !== undefined && { contactName: data.contactName })
             }
         });
 

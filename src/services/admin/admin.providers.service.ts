@@ -8,6 +8,7 @@ import {
 } from "../../utils/pagination.util";
 import type { Lang } from "../../i18n/messages";
 import { t } from "../../i18n/translate";
+import { formatCambodiaPhone } from "../../validators/phone.validate";
 
 const providerInclude = {
     user: { select: { email: true, phone: true } },
@@ -22,6 +23,7 @@ const providerInclude = {
             addressLine: true,
             district: true,
             cityProvince: true,
+            coverageSummary: true,
         },
     },
     verifications: {
@@ -37,7 +39,7 @@ function formatProvider(p: any) {
         publicId: p.publicId,
         contactName: p.contactName,
         email: p.user?.email ?? "",
-        phone: p.user?.phone ?? null,
+        phone: formatCambodiaPhone(p.user?.phone),
         status: p.status,
         avatarUrl: p.avatarUrl,
         primaryCategory: p.primaryCategory,

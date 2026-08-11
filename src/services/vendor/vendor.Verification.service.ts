@@ -15,7 +15,10 @@ interface VerificationSubmissionData {
     logoUrl?: string;
     latitude?: number;
     longitude?: number;
-    serviceCategories: string[];
+    serviceCategories?: string[];
+    serviceAreas?: string[];
+    primaryCategoryId?: string;
+    primaryAreaId?: string;
     documents: Array<{
         documentType: string;
         fileName: string;
@@ -23,6 +26,83 @@ interface VerificationSubmissionData {
         mimeType?: string;
         documentNumber?: string;
     }>;
+}
+
+function pushRefValue(keys: string[], value: unknown) {
+    if (!value) return;
+    if (typeof value === "string" && value.trim()) {
+        keys.push(value.trim());
+        return;
+    }
+    if (Array.isArray(value)) {
+        value.forEach((item) => pushRefValue(keys, item));
+        return;
+    }
+    if (typeof value === "object") {
+        const record = value as Record<string, unknown>;
+        pushRefValue(keys, record.publicId);
+        pushRefValue(keys, record.id);
+        pushRefValue(keys, record.slug);
+        pushRefValue(keys, record.name);
+        pushRefValue(keys, record.nameEn);
+        pushRefValue(keys, record.nameKm);
+    }
+}
+
+function collectRefKeys(data: Record<string, unknown> | Partial<VerificationSubmissionData>, fieldNames: string[]): string[] {
+    const keys: string[] = [];
+    const record = data as Record<string, unknown>;
+    for (const field of fieldNames) {
+        pushRefValue(keys, record[field]);
+    }
+    return [...new Set(keys)];
+}
+
+function matchesCatalogRef(
+    key: string,
+    item: { id: string; publicId: string; slug: string; nameEn: string; nameKm: string }
+) {
+    const lower = key.toLowerCase();
+    return (
+        item.id === key ||
+        item.publicId === key ||
+        item.slug === key ||
+        item.slug?.toLowerCase() === lower ||
+        item.nameEn === key ||
+        item.nameKm === key ||
+        item.nameEn.toLowerCase() === lower ||
+        item.nameKm.toLowerCase() === lower
+    );
+}
+
+async function resolveCategoryId(keys: string[]): Promise<string | null> {
+    if (keys.length === 0) return null;
+
+    const categories = await prisma.serviceCategory.findMany({
+        select: { id: true, publicId: true, slug: true, nameEn: true, nameKm: true },
+    });
+
+    for (const key of keys) {
+        const match = categories.find((item) => matchesCatalogRef(key, item));
+        if (match) return match.id;
+    }
+
+    return null;
+}
+
+async function resolveAreaId(keys: string[]): Promise<string | null> {
+    if (keys.length === 0) return null;
+
+    const areas = await prisma.serviceArea.findMany({
+        select: { id: true, publicId: true, slug: true, nameEn: true, nameKm: true },
+    });
+
+    for (const key of keys) {
+        const match = areas.find((item) => matchesCatalogRef(key, item));
+        if (match) return match.id;
+    }
+
+    return null;
 }
 
 interface VerificationDraftData extends Partial<VerificationSubmissionData> {
@@ -195,12 +275,57 @@ export class VendorVerificationService {
             });
         }
 
+        const documents = Array.isArray(data.documents) ? data.documents : [];
+        const rawData = data as unknown as Record<string, unknown>;
+        const [primaryCategoryId, primaryAreaId] = await Promise.all([
+            resolveCategoryId(collectRefKeys(rawData, [
+                "primaryCategoryId",
+                "serviceCategories",
+                "categories",
+                "serviceCategoryIds",
+                "primaryCategory",
+            ])),
+            resolveAreaId(collectRefKeys(rawData, [
+                "primaryAreaId",
+                "serviceAreas",
+                "areas",
+                "serviceAreaIds",
+                "primaryArea",
+            ])),
+        ]);
+
         await prisma.providerProfile.update({
             where: { id: providerProfile.id },
             data: {
-                contactName: data.contactName
+                contactName: data.contactName,
+                ...(primaryCategoryId ? { primaryCategoryId } : {}),
+                ...(primaryAreaId ? { primaryAreaId } : {}),
             }
         });
+
+        if (providerProfile.businessProfile && (primaryCategoryId || primaryAreaId)) {
+            const [category, area] = await Promise.all([
+                primaryCategoryId
+                    ? prisma.serviceCategory.findUnique({
+                        where: { id: primaryCategoryId },
+                        select: { nameEn: true },
+                    })
+                    : Promise.resolve(null),
+                primaryAreaId
+                    ? prisma.serviceArea.findUnique({
+                        where: { id: primaryAreaId },
+                        select: { nameEn: true },
+                    })
+                    : Promise.resolve(null),
+            ]);
+            const coverageSummary = [category?.nameEn, area?.nameEn].filter(Boolean).join(' · ');
+            if (coverageSummary) {
+                await prisma.providerBusinessProfile.update({
+                    where: { id: providerProfile.businessProfile.id },
+                    data: { coverageSummary },
+                });
+            }
+        }
 
         // Create verification record
         const verification = await prisma.$transaction(async (tx) => {
@@ -220,7 +345,7 @@ export class VendorVerificationService {
                     status: ProviderVerificationStatus.UNDER_REVIEW,
                     submittedAt: new Date(),
                     documents: {
-                        create: data.documents.map(doc => ({
+                        create: documents.map(doc => ({
                             publicId: crypto.randomUUID(),
                             documentType: doc.documentType,
                             fileName: doc.fileName,
@@ -369,15 +494,36 @@ export class VendorVerificationService {
             });
         }
 
+        const rawUpdateData = data as Record<string, unknown>;
+        const [primaryCategoryId, primaryAreaId] = await Promise.all([
+            resolveCategoryId(collectRefKeys(rawUpdateData, [
+                "primaryCategoryId",
+                "serviceCategories",
+                "categories",
+                "serviceCategoryIds",
+                "primaryCategory",
+            ])),
+            resolveAreaId(collectRefKeys(rawUpdateData, [
+                "primaryAreaId",
+                "serviceAreas",
+                "areas",
+                "serviceAreaIds",
+                "primaryArea",
+            ])),
+        ]);
+
         await prisma.providerProfile.update({
             where: { id: providerProfile.id },
             data: {
-                ...(data.contactName && { contactName: data.contactName })
+                ...(data.contactName && { contactName: data.contactName }),
+                ...(primaryCategoryId ? { primaryCategoryId } : {}),
+                ...(primaryAreaId ? { primaryAreaId } : {}),
             }
         });
 
         // Update documents if provided
-        if (data.documents && data.documents.length > 0) {
+        const documents = data.documents;
+        if (documents && documents.length > 0) {
             await prisma.$transaction(async (tx) => {
                 // Delete existing documents
                 await tx.providerVerificationDocument.deleteMany({
@@ -386,7 +532,7 @@ export class VendorVerificationService {
 
                 // Create new documents
                 await tx.providerVerificationDocument.createMany({
-                    data: data.documents.map(doc => ({
+                    data: documents.map(doc => ({
                         publicId: crypto.randomUUID(),
                         providerVerificationId: verification.id,
                         documentType: doc.documentType,

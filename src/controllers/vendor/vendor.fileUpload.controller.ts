@@ -10,16 +10,21 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET || 'abcdefghijklmnopqrstuvwxyz',
 });
 
-// Configure Multer for memory storage
 const storage = multer.memoryStorage();
 
-// File filter to accept only images
+const ALLOWED_MIME_TYPES = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+  'application/pdf',
+];
+
 const fileFilter = (req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-  if (allowedTypes.includes(file.mimetype)) {
+  if (ALLOWED_MIME_TYPES.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new BadRequestException('Only image files (JPEG, PNG, WebP) are allowed'));
+    cb(new BadRequestException('Only JPEG, PNG, WebP, or PDF files are allowed'));
   }
 };
 
@@ -31,6 +36,10 @@ const upload = multer({
   },
 });
 
+function isPdf(file: Express.Multer.File) {
+  return file.mimetype === 'application/pdf' || file.originalname.toLowerCase().endsWith('.pdf');
+}
+
 export class VendorFileUploadController {
   static uploadSingle = upload.single('file');
 
@@ -40,55 +49,80 @@ export class VendorFileUploadController {
         throw new BadRequestException('No file uploaded');
       }
 
-      // Upload to Cloudinary
+      const pdf = isPdf(req.file);
+      // PDFs must use raw; images use image + light transforms
+      const resourceType = pdf ? 'raw' : 'image';
+
       const result = await new Promise((resolve, reject) => {
         cloudinary.uploader.upload_stream(
           {
-            resource_type: 'image',
-            folder: 'provider-profiles',
-            transformation: [
-              { width: 500, height: 500, crop: 'limit' },
-              { quality: 'auto' },
-            ],
+            resource_type: resourceType,
+            folder: pdf ? 'provider-documents' : 'provider-profiles',
+            ...(pdf
+              ? {}
+              : {
+                  transformation: [
+                    { width: 1600, height: 1600, crop: 'limit' },
+                    { quality: 'auto' },
+                  ],
+                }),
           },
-          (error, result) => {
+          (error, uploadResult) => {
             if (error) reject(error);
-            else resolve(result);
+            else resolve(uploadResult);
           }
         ).end(req.file!.buffer);
       });
 
+      const uploaded = result as {
+        secure_url: string;
+        public_id: string;
+        resource_type?: string;
+        format?: string;
+        bytes?: number;
+      };
+
       res.status(200).json({
         success: true,
-        message: 'Image uploaded successfully',
+        message: pdf ? 'Document uploaded successfully' : 'Image uploaded successfully',
         data: {
-          url: (result as any).secure_url,
-          publicId: (result as any).public_id,
+          url: uploaded.secure_url,
+          publicId: uploaded.public_id,
+          resourceType: uploaded.resource_type || resourceType,
+          format: uploaded.format || (pdf ? 'pdf' : undefined),
+          mimeType: req.file.mimetype,
+          originalName: req.file.originalname,
+          bytes: uploaded.bytes,
         },
       });
     } catch (error) {
       console.error('File upload error:', error);
-      throw new BadRequestException('Failed to upload image');
+      throw new BadRequestException('Failed to upload file');
     }
   }
 
   static async deleteImage(req: Request, res: Response) {
     try {
-      const { publicId } = req.body;
+      const { publicId, resourceType } = req.body as {
+        publicId?: string;
+        resourceType?: string;
+      };
 
       if (!publicId) {
         throw new BadRequestException('Public ID is required');
       }
 
-      await cloudinary.uploader.destroy(publicId);
+      await cloudinary.uploader.destroy(publicId, {
+        resource_type: resourceType === 'raw' ? 'raw' : 'image',
+      });
 
       res.status(200).json({
         success: true,
-        message: 'Image deleted successfully',
+        message: 'File deleted successfully',
       });
     } catch (error) {
-      console.error('Image deletion error:', error);
-      throw new BadRequestException('Failed to delete image');
+      console.error('File deletion error:', error);
+      throw new BadRequestException('Failed to delete file');
     }
   }
 }

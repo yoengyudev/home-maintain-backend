@@ -3,6 +3,17 @@ import { validateEmail } from "../email.validate";
 import { validatePassword } from "../password.validate";
 import { normalizeCambodiaPhone, validateCambodiaPhone } from "../phone.validate";
 
+const fcmTokenSchema = z.string().min(1, "FCM token is required");
+
+const devicePlatformSchema = z.preprocess(
+    (value) => (typeof value === "string" ? value.trim().toUpperCase() : value),
+    z
+        .enum(["ANDROID", "IOS", "WEB", "UNKNOWN"], {
+            message: "Platform must be one of: ANDROID, IOS, WEB, UNKNOWN",
+        })
+        .optional()
+);
+
 export const vendorRegisterSchema = z.object({
     businessName: z.string().min(2, "Business name must be at least 2 characters"),
     contactName: z.string().min(2, "Contact name must be at least 2 characters"),
@@ -18,6 +29,9 @@ export const vendorLoginSchema = z.object({
         .transform(normalizeCambodiaPhone)
         .refine(validateCambodiaPhone, "Invalid Cambodia phone number"),
     password: z.string().min(1, "Password is required"),
+    fcmToken: fcmTokenSchema,
+    platform: devicePlatformSchema,
+    deviceName: z.string().min(1, "Device name cannot be empty").optional(),
 });
 
 export const forgotPasswordSchema = z.object({

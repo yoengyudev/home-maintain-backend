@@ -27,7 +27,14 @@ export const saveDraft = async (req: Request, res: Response) => {
 
 export const submit = async (req: Request, res: Response) => {
     const userId = (req as any).user?.userId;
-    const data = await VendorVerificationService.submitVerification(userId, req.body);
+    const body = req.body || {};
+    const data = await VendorVerificationService.submitVerification(userId, {
+        ...body,
+        serviceCategories: body.serviceCategories ?? body.categories ?? body.serviceCategoryIds,
+        serviceAreas: body.serviceAreas ?? body.areas ?? body.serviceAreaIds,
+        primaryCategoryId: body.primaryCategoryId ?? body.categoryId ?? body.primaryCategory,
+        primaryAreaId: body.primaryAreaId ?? body.areaId ?? body.primaryArea,
+    });
 
     return sendResponse(res, {
         statusCode: HTTPSTATUS.CREATED,

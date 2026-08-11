@@ -8,14 +8,25 @@ import {
 } from "../../utils/pagination.util";
 import type { Lang } from "../../i18n/messages";
 import { t } from "../../i18n/translate";
+import { formatCambodiaPhone } from "../../validators/phone.validate";
 
 const verificationInclude = {
     providerProfile: {
         include: {
-            user: { select: { email: true } },
-            businessProfile: { select: { businessName: true } },
-            primaryCategory: { select: { nameEn: true, nameKm: true } },
-            primaryArea: { select: { nameEn: true, nameKm: true } },
+            user: { select: { email: true, phone: true } },
+            businessProfile: {
+                select: {
+                    businessName: true,
+                    providerType: true,
+                    description: true,
+                    coverageSummary: true,
+                    addressLine: true,
+                    district: true,
+                    cityProvince: true,
+                },
+            },
+            primaryCategory: { select: { publicId: true, nameEn: true, nameKm: true } },
+            primaryArea: { select: { publicId: true, nameEn: true, nameKm: true } },
         },
     },
     documents: {
@@ -24,6 +35,7 @@ const verificationInclude = {
             documentType: true,
             fileName: true,
             fileUrl: true,
+            mimeType: true,
             isVerified: true,
             uploadedAt: true,
         },
@@ -51,7 +63,14 @@ function formatVerification(v: any) {
             publicId: v.providerProfile.publicId,
             contactName: v.providerProfile.contactName,
             email: v.providerProfile.user?.email ?? "",
+            phone: formatCambodiaPhone(v.providerProfile.user?.phone),
             businessName: v.providerProfile.businessProfile?.businessName ?? null,
+            providerType: v.providerProfile.businessProfile?.providerType ?? null,
+            about: v.providerProfile.businessProfile?.description ?? null,
+            coverageSummary: v.providerProfile.businessProfile?.coverageSummary ?? null,
+            addressLine: v.providerProfile.businessProfile?.addressLine ?? null,
+            district: v.providerProfile.businessProfile?.district ?? null,
+            cityProvince: v.providerProfile.businessProfile?.cityProvince ?? null,
             primaryCategory: v.providerProfile.primaryCategory,
             primaryArea: v.providerProfile.primaryArea,
         },

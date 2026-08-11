@@ -29,6 +29,31 @@ export const normalizeCambodiaPhone = (phone: string): string => {
     return localPhone;
 };
 
+/**
+ * Display format for API responses.
+ *   +85512345678  → +855 12 345 678
+ *   +855123456789 → +855 12 345 6789
+ */
+export const formatCambodiaPhone = (phone: string | null | undefined): string | null => {
+    if (!phone) return phone ?? null;
+
+    const trimmed = phone.trim();
+    if (!trimmed) return trimmed;
+
+    const digits = trimmed.replace(/\D/g, "");
+    if (!digits.startsWith("855")) return trimmed;
+
+    const national = digits.slice(3);
+    if (national.length === 8) {
+        return `+855 ${national.slice(0, 2)} ${national.slice(2, 5)} ${national.slice(5)}`;
+    }
+    if (national.length === 9) {
+        return `+855 ${national.slice(0, 2)} ${national.slice(2, 5)} ${national.slice(5)}`;
+    }
+
+    return trimmed;
+};
+
 export const validateCambodiaPhone = (phone: string): boolean => {
     if (typeof phone !== "string") return false;
 
