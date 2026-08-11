@@ -2,6 +2,8 @@ import crypto from "crypto";
 import { prisma } from "../../database/prisma.client";
 import { BadRequestException, NotFoundException } from "../../utils/app-error.util";
 import { ServiceStatus, ServiceModerationStatus } from "../../generated/prisma/enums";
+import { Lang } from "../../i18n/messages";
+import { t } from "../../i18n/translate";
 
 interface CreateServiceData {
     name: string;
@@ -25,7 +27,7 @@ interface UpdateServiceData extends Partial<CreateServiceData> {
 }
 
 export class VendorServiceService {
-    static async getServices(userId: string) {
+    static async getServices(userId: string, lang: Lang = "en") {
         const providerProfile = await prisma.providerProfile.findUnique({
             where: { userId },
             include: {
@@ -44,7 +46,7 @@ export class VendorServiceService {
         });
 
         if (!providerProfile) {
-            throw new NotFoundException("Provider profile not found");
+            throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
         }
 
         return providerProfile.serviceListings.map(service => ({
@@ -79,13 +81,13 @@ export class VendorServiceService {
         }));
     }
 
-    static async getServiceById(userId: string, serviceId: string) {
+    static async getServiceById(userId: string, serviceId: string, lang: Lang = "en") {
         const providerProfile = await prisma.providerProfile.findUnique({
             where: { userId }
         });
 
         if (!providerProfile) {
-            throw new NotFoundException("Provider profile not found");
+            throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
         }
 
         const service = await prisma.serviceListing.findFirst({
@@ -104,7 +106,7 @@ export class VendorServiceService {
         });
 
         if (!service) {
-            throw new NotFoundException("Service not found");
+            throw new NotFoundException(t("VENDOR_SERVICE_NOT_FOUND", lang));
         }
 
         return {
@@ -139,13 +141,13 @@ export class VendorServiceService {
         };
     }
 
-    static async createService(userId: string, data: CreateServiceData) {
+    static async createService(userId: string, data: CreateServiceData, lang: Lang = "en") {
         const providerProfile = await prisma.providerProfile.findUnique({
             where: { userId }
         });
 
         if (!providerProfile) {
-            throw new NotFoundException("Provider profile not found");
+            throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
         }
 
         // Handle category - accept both ID and name
@@ -170,7 +172,7 @@ export class VendorServiceService {
         }
 
         if (!category) {
-            throw new BadRequestException("Invalid category");
+            throw new BadRequestException(t("VENDOR_INVALID_CATEGORY", lang));
         }
 
         // Verify areas if provided
@@ -180,7 +182,7 @@ export class VendorServiceService {
             });
 
             if (areas.length !== data.areaIds.length) {
-                throw new BadRequestException("One or more invalid service areas");
+                throw new BadRequestException(t("VENDOR_INVALID_SERVICE_AREAS", lang));
             }
         }
 
@@ -231,13 +233,13 @@ export class VendorServiceService {
         };
     }
 
-    static async updateService(userId: string, serviceId: string, data: UpdateServiceData) {
+    static async updateService(userId: string, serviceId: string, data: UpdateServiceData, lang: Lang = "en") {
         const providerProfile = await prisma.providerProfile.findUnique({
             where: { userId }
         });
 
         if (!providerProfile) {
-            throw new NotFoundException("Provider profile not found");
+            throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
         }
 
         const existingService = await prisma.serviceListing.findFirst({
@@ -248,7 +250,7 @@ export class VendorServiceService {
         });
 
         if (!existingService) {
-            throw new NotFoundException("Service not found");
+            throw new NotFoundException(t("VENDOR_SERVICE_NOT_FOUND", lang));
         }
 
         // Handle category - accept both ID and name
@@ -272,7 +274,7 @@ export class VendorServiceService {
             }
 
             if (!category) {
-                throw new BadRequestException("Invalid category");
+                throw new BadRequestException(t("VENDOR_INVALID_CATEGORY", lang));
             }
         }
 
@@ -285,7 +287,7 @@ export class VendorServiceService {
                 });
 
                 if (areas.length !== data.areaIds.length) {
-                    throw new BadRequestException("One or more invalid service areas");
+                    throw new BadRequestException(t("VENDOR_INVALID_SERVICE_AREAS", lang));
                 }
             }
 
@@ -345,13 +347,13 @@ export class VendorServiceService {
         };
     }
 
-    static async deleteService(userId: string, serviceId: string) {
+    static async deleteService(userId: string, serviceId: string, lang: Lang = "en") {
         const providerProfile = await prisma.providerProfile.findUnique({
             where: { userId }
         });
 
         if (!providerProfile) {
-            throw new NotFoundException("Provider profile not found");
+            throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
         }
 
         const existingService = await prisma.serviceListing.findFirst({
@@ -362,7 +364,7 @@ export class VendorServiceService {
         });
 
         if (!existingService) {
-            throw new NotFoundException("Service not found");
+            throw new NotFoundException(t("VENDOR_SERVICE_NOT_FOUND", lang));
         }
 
         // Check if service has active bookings
@@ -376,7 +378,7 @@ export class VendorServiceService {
         });
 
         if (activeBookings > 0) {
-            throw new BadRequestException("Cannot delete service with active bookings");
+            throw new BadRequestException(t("VENDOR_SERVICE_HAS_ACTIVE_BOOKINGS", lang));
         }
 
         await prisma.serviceListing.delete({
@@ -385,17 +387,17 @@ export class VendorServiceService {
 
         return {
             success: true,
-            message: "Service deleted successfully"
+            message: t("VENDOR_SERVICE_DELETED", lang)
         };
     }
 
-    static async toggleServiceStatus(userId: string, serviceId: string, active: boolean) {
+    static async toggleServiceStatus(userId: string, serviceId: string, active: boolean, lang: Lang = "en") {
         const providerProfile = await prisma.providerProfile.findUnique({
             where: { userId }
         });
 
         if (!providerProfile) {
-            throw new NotFoundException("Provider profile not found");
+            throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
         }
 
         const existingService = await prisma.serviceListing.findFirst({
@@ -406,7 +408,7 @@ export class VendorServiceService {
         });
 
         if (!existingService) {
-            throw new NotFoundException("Service not found");
+            throw new NotFoundException(t("VENDOR_SERVICE_NOT_FOUND", lang));
         }
 
         const service = await prisma.serviceListing.update({

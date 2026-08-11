@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
 import { BadRequestException } from '../../utils/app-error.util';
+import { getLang } from '../../utils/get-lang.util';
+import { t } from '../../i18n/translate';
 
 // Configure Cloudinary
 cloudinary.config({
@@ -24,7 +26,7 @@ const fileFilter = (req: Request, file: Express.Multer.File, cb: multer.FileFilt
   if (ALLOWED_MIME_TYPES.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new BadRequestException('Only JPEG, PNG, WebP, or PDF files are allowed'));
+    cb(new BadRequestException(t('VENDOR_INVALID_FILE_TYPE', getLang(req))));
   }
 };
 
@@ -44,9 +46,10 @@ export class VendorFileUploadController {
   static uploadSingle = upload.single('file');
 
   static async uploadImage(req: Request, res: Response) {
+    const lang = getLang(req);
     try {
       if (!req.file) {
-        throw new BadRequestException('No file uploaded');
+        throw new BadRequestException(t('VENDOR_NO_FILE_UPLOADED', lang));
       }
 
       const pdf = isPdf(req.file);
@@ -84,7 +87,7 @@ export class VendorFileUploadController {
 
       res.status(200).json({
         success: true,
-        message: pdf ? 'Document uploaded successfully' : 'Image uploaded successfully',
+        message: pdf ? t('VENDOR_DOCUMENT_UPLOADED', lang) : t('VENDOR_IMAGE_UPLOADED', lang),
         data: {
           url: uploaded.secure_url,
           publicId: uploaded.public_id,
@@ -97,11 +100,12 @@ export class VendorFileUploadController {
       });
     } catch (error) {
       console.error('File upload error:', error);
-      throw new BadRequestException('Failed to upload file');
+      throw new BadRequestException(t('VENDOR_FILE_UPLOAD_FAILED', lang));
     }
   }
 
   static async deleteImage(req: Request, res: Response) {
+    const lang = getLang(req);
     try {
       const { publicId, resourceType } = req.body as {
         publicId?: string;
@@ -109,7 +113,7 @@ export class VendorFileUploadController {
       };
 
       if (!publicId) {
-        throw new BadRequestException('Public ID is required');
+        throw new BadRequestException(t('VENDOR_PUBLIC_ID_REQUIRED', lang));
       }
 
       await cloudinary.uploader.destroy(publicId, {
@@ -118,11 +122,11 @@ export class VendorFileUploadController {
 
       res.status(200).json({
         success: true,
-        message: 'File deleted successfully',
+        message: t('VENDOR_FILE_DELETED', lang),
       });
     } catch (error) {
       console.error('File deletion error:', error);
-      throw new BadRequestException('Failed to delete file');
+      throw new BadRequestException(t('VENDOR_FILE_DELETE_FAILED', lang));
     }
   }
 }

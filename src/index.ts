@@ -13,6 +13,8 @@ import { notFoundHandler } from "./middlewares/not-found.middlerware";
 import { errorHandler } from "./middlewares/error.handler.middleware";
 import connectDatabase from "./database/prisma.client";
 import { logger } from "./utils/logger.util";
+import { getLang } from "./utils/get-lang.util";
+import { t } from "./i18n/translate";
 const app = express();
 
 const server = http.createServer(app);
@@ -53,7 +55,7 @@ app.get(
   asyncHandler(async (req: Request, res: Response) => {
     return sendResponse(res, {
       statusCode: HTTPSTATUS.OK,
-      message: "Server is running",
+      message: t("SERVER_RUNNING", getLang(req)),
     });
   })
 );

@@ -2,30 +2,35 @@ import { Request, Response } from "express";
 import { HTTPSTATUS } from "../../config/http.config";
 import { VendorVerificationService } from "../../services/vendor/vendor.Verification.service";
 import { sendResponse } from "../../utils/response.util";
+import { getLang } from "../../utils/get-lang.util";
+import { t } from "../../i18n/translate";
 
 export const getDraft = async (req: Request, res: Response) => {
+    const lang = getLang(req);
     const userId = (req as any).user?.userId;
-    const data = await VendorVerificationService.getDraftVerification(userId);
+    const data = await VendorVerificationService.getDraftVerification(userId, lang);
 
     return sendResponse(res, {
         statusCode: HTTPSTATUS.OK,
-        message: "Draft verification retrieved successfully",
+        message: t("VENDOR_VERIFICATION_DRAFT_RETRIEVED", lang),
         data,
     });
 };
 
 export const saveDraft = async (req: Request, res: Response) => {
+    const lang = getLang(req);
     const userId = (req as any).user?.userId;
-    const data = await VendorVerificationService.saveDraftVerification(userId, req.body);
+    const data = await VendorVerificationService.saveDraftVerification(userId, req.body, lang);
 
     return sendResponse(res, {
         statusCode: HTTPSTATUS.OK,
-        message: "Draft saved successfully",
+        message: t("VENDOR_VERIFICATION_DRAFT_SAVED", lang),
         data,
     });
 };
 
 export const submit = async (req: Request, res: Response) => {
+    const lang = getLang(req);
     const userId = (req as any).user?.userId;
     const body = req.body || {};
     const data = await VendorVerificationService.submitVerification(userId, {
@@ -34,44 +39,47 @@ export const submit = async (req: Request, res: Response) => {
         serviceAreas: body.serviceAreas ?? body.areas ?? body.serviceAreaIds,
         primaryCategoryId: body.primaryCategoryId ?? body.categoryId ?? body.primaryCategory,
         primaryAreaId: body.primaryAreaId ?? body.areaId ?? body.primaryArea,
-    });
+    }, lang);
 
     return sendResponse(res, {
         statusCode: HTTPSTATUS.CREATED,
-        message: "Verification submitted successfully",
+        message: t("VENDOR_VERIFICATION_SUBMITTED", lang),
         data,
     });
 };
 
 export const getStatus = async (req: Request, res: Response) => {
+    const lang = getLang(req);
     const userId = (req as any).user?.userId;
-    const data = await VendorVerificationService.getVerificationStatus(userId);
+    const data = await VendorVerificationService.getVerificationStatus(userId, lang);
 
     return sendResponse(res, {
         statusCode: HTTPSTATUS.OK,
-        message: "Verification status retrieved successfully",
+        message: t("VENDOR_VERIFICATION_STATUS_RETRIEVED", lang),
         data,
     });
 };
 
 export const updateForChanges = async (req: Request, res: Response) => {
+    const lang = getLang(req);
     const userId = (req as any).user?.userId;
-    const data = await VendorVerificationService.updateVerificationForChanges(userId, req.body);
+    const data = await VendorVerificationService.updateVerificationForChanges(userId, req.body, lang);
 
     return sendResponse(res, {
         statusCode: HTTPSTATUS.OK,
-        message: "Verification updated successfully",
+        message: t("VENDOR_VERIFICATION_UPDATED", lang),
         data,
     });
 };
 
 export const deleteDraft = async (req: Request, res: Response) => {
+    const lang = getLang(req);
     const userId = (req as any).user?.userId;
-    const data = await VendorVerificationService.deleteDraftVerification(userId);
+    const data = await VendorVerificationService.deleteDraftVerification(userId, lang);
 
     return sendResponse(res, {
         statusCode: HTTPSTATUS.OK,
-        message: "Draft deleted successfully",
+        message: t("VENDOR_VERIFICATION_DRAFT_DELETED", lang),
         data,
     });
 };

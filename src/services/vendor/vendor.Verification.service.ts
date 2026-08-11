@@ -2,6 +2,8 @@ import crypto from "crypto";
 import { prisma } from "../../database/prisma.client";
 import { BadRequestException, NotFoundException } from "../../utils/app-error.util";
 import { ProviderVerificationStatus } from "../../generated/prisma/enums";
+import { Lang } from "../../i18n/messages";
+import { t } from "../../i18n/translate";
 
 interface VerificationSubmissionData {
     businessName: string;
@@ -110,7 +112,7 @@ interface VerificationDraftData extends Partial<VerificationSubmissionData> {
 }
 
 export class VendorVerificationService {
-    static async getDraftVerification(userId: string) {
+    static async getDraftVerification(userId: string, lang: Lang = "en") {
         const providerProfile = await prisma.providerProfile.findUnique({
             where: { userId },
             include: {
@@ -129,7 +131,7 @@ export class VendorVerificationService {
         });
 
         if (!providerProfile) {
-            throw new NotFoundException("Provider profile not found");
+            throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
         }
 
         const draft = providerProfile.verifications[0];
@@ -173,14 +175,14 @@ export class VendorVerificationService {
         };
     }
 
-    static async saveDraftVerification(userId: string, data: VerificationDraftData) {
+    static async saveDraftVerification(userId: string, data: VerificationDraftData, lang: Lang = "en") {
         const providerProfile = await prisma.providerProfile.findUnique({
             where: { userId },
             include: { businessProfile: true, verifications: true }
         });
 
         if (!providerProfile) {
-            throw new NotFoundException("Provider profile not found");
+            throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
         }
 
         // Update business profile if data provided
@@ -228,19 +230,19 @@ export class VendorVerificationService {
 
         return {
             success: true,
-            message: "Draft saved successfully",
+            message: t("VENDOR_VERIFICATION_DRAFT_SAVED", lang),
             verificationId: draftVerification.publicId
         };
     }
 
-    static async submitVerification(userId: string, data: VerificationSubmissionData) {
+    static async submitVerification(userId: string, data: VerificationSubmissionData, lang: Lang = "en") {
         const providerProfile = await prisma.providerProfile.findUnique({
             where: { userId },
             include: { businessProfile: true, user: true }
         });
 
         if (!providerProfile) {
-            throw new NotFoundException("Provider profile not found");
+            throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
         }
 
         // Check if there's already a pending verification
@@ -254,7 +256,7 @@ export class VendorVerificationService {
         });
 
         if (existingVerification) {
-            throw new BadRequestException("You already have a verification under review. Please wait for the current process to complete.");
+            throw new BadRequestException(t("VENDOR_VERIFICATION_ALREADY_UNDER_REVIEW", lang));
         }
 
         // Update business profile
@@ -379,13 +381,13 @@ export class VendorVerificationService {
 
         return {
             success: true,
-            message: "Verification submitted successfully",
+            message: t("VENDOR_VERIFICATION_SUBMITTED", lang),
             verificationId: verification.publicId,
             status: verification.status
         };
     }
 
-    static async getVerificationStatus(userId: string) {
+    static async getVerificationStatus(userId: string, lang: Lang = "en") {
         const providerProfile = await prisma.providerProfile.findUnique({
             where: { userId },
             include: {
@@ -409,7 +411,7 @@ export class VendorVerificationService {
         });
 
         if (!providerProfile) {
-            throw new NotFoundException("Provider profile not found");
+            throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
         }
 
         const verification = providerProfile.verifications[0];
@@ -454,14 +456,14 @@ export class VendorVerificationService {
         };
     }
 
-    static async updateVerificationForChanges(userId: string, data: Partial<VerificationSubmissionData>) {
+    static async updateVerificationForChanges(userId: string, data: Partial<VerificationSubmissionData>, lang: Lang = "en") {
         const providerProfile = await prisma.providerProfile.findUnique({
             where: { userId },
             include: { businessProfile: true }
         });
 
         if (!providerProfile) {
-            throw new NotFoundException("Provider profile not found");
+            throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
         }
 
         // Find verification with CHANGES_REQUIRED status
@@ -473,7 +475,7 @@ export class VendorVerificationService {
         });
 
         if (!verification) {
-            throw new BadRequestException("No verification requiring changes found");
+            throw new BadRequestException(t("VENDOR_VERIFICATION_NO_CHANGES_REQUIRED", lang));
         }
 
         // Update business profile
@@ -564,19 +566,19 @@ export class VendorVerificationService {
 
         return {
             success: true,
-            message: "Verification updated successfully",
+            message: t("VENDOR_VERIFICATION_UPDATED", lang),
             verificationId: updatedVerification.publicId,
             status: updatedVerification.status
         };
     }
 
-    static async deleteDraftVerification(userId: string) {
+    static async deleteDraftVerification(userId: string, lang: Lang = "en") {
         const providerProfile = await prisma.providerProfile.findUnique({
             where: { userId }
         });
 
         if (!providerProfile) {
-            throw new NotFoundException("Provider profile not found");
+            throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
         }
 
         await prisma.providerVerification.deleteMany({
@@ -588,7 +590,7 @@ export class VendorVerificationService {
 
         return {
             success: true,
-            message: "Draft deleted successfully"
+            message: t("VENDOR_VERIFICATION_DRAFT_DELETED", lang)
         };
     }
 }

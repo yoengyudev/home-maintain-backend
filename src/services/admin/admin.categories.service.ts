@@ -300,9 +300,10 @@ export class AdminCategoriesService {
 
         if (providerCount > 0 || serviceCount > 0) {
             throw new BadRequestException(
-                t("ADMIN_CATEGORY_DELETE_HAS_LINKS", lang)
-                    .replace("{providers}", String(providerCount))
-                    .replace("{services}", String(serviceCount))
+                t("ADMIN_CATEGORY_DELETE_HAS_LINKS", lang, {
+                    providers: providerCount,
+                    services: serviceCount,
+                })
             );
         }
 

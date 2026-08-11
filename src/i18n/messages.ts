@@ -191,6 +191,86 @@ export const messages = {
         OTP_EXPIRED_OR_NOT_FOUND: "OTP expired or not found. Please request a new code",
         OTP_TOO_MANY_ATTEMPTS: "Too many invalid attempts. Please request a new code",
         OTP_INVALID_CODE: "Invalid verification code",
+
+        // shared / middleware
+        ERROR_INVALID_TOKEN: "Invalid token",
+        ERROR_ROUTE_NOT_FOUND: "Route {method} {path} not found",
+        ERROR_PAYLOAD_TOO_LARGE: "Request is too large. Upload images separately instead of embedding them.",
+        ERROR_UNEXPECTED_FILE_FIELD: "Unexpected file field \"{field}\". Use \"avatar\" or \"avatarUrl\"",
+        ERROR_FILE_TOO_LARGE: "Image file is too large. Max size is 5MB",
+        SERVER_RUNNING: "Server is running",
+
+        // vendor auth / profile
+        VENDOR_PHONE_OR_EMAIL_EXISTS: "Phone or email already exists",
+        VENDOR_INVALID_CREDENTIALS: "Incorrect phone number or password",
+        VENDOR_USER_NOT_FOUND: "User not found",
+        VENDOR_INVALID_VERIFICATION_CODE: "Invalid verification code",
+        VENDOR_PROVIDER_PROFILE_NOT_FOUND: "Provider profile not found",
+        VENDOR_REGISTERED_SUCCESSFULLY: "Provider registered successfully",
+        VENDOR_LOGGED_IN_SUCCESSFULLY: "Logged in successfully",
+        VENDOR_LOGGED_OUT_SUCCESSFULLY: "Logged out successfully",
+        VENDOR_PROFILE_RETRIEVED: "Provider profile retrieved successfully",
+        VENDOR_PROFILE_UPDATED: "Profile updated successfully",
+        VENDOR_OTP_SENT: "Password reset OTP sent",
+        VENDOR_PASSWORD_RESET_SUCCESSFULLY: "Password has been reset successfully",
+        VENDOR_USER_NOT_AUTHENTICATED: "User not authenticated",
+
+        // vendor availability
+        VENDOR_AVAILABILITY_RETRIEVED: "Availability retrieved successfully",
+        VENDOR_AVAILABILITY_UPDATED: "Availability updated successfully",
+
+        // vendor services
+        VENDOR_SERVICES_RETRIEVED: "Services retrieved successfully",
+        VENDOR_SERVICE_RETRIEVED: "Service retrieved successfully",
+        VENDOR_SERVICE_CREATED: "Service created successfully",
+        VENDOR_SERVICE_UPDATED: "Service updated successfully",
+        VENDOR_SERVICE_DELETED: "Service deleted successfully",
+        VENDOR_SERVICE_STATUS_UPDATED: "Service status updated successfully",
+        VENDOR_SERVICE_NOT_FOUND: "Service not found",
+        VENDOR_INVALID_CATEGORY: "Invalid category",
+        VENDOR_INVALID_SERVICE_AREAS: "One or more invalid service areas",
+        VENDOR_SERVICE_HAS_ACTIVE_BOOKINGS: "Cannot delete service with active bookings",
+        VENDOR_CATEGORIES_RETRIEVED: "Service categories retrieved successfully",
+        VENDOR_SERVICE_AREAS_RETRIEVED: "Service areas retrieved successfully",
+
+        // vendor bookings
+        VENDOR_BOOKINGS_RETRIEVED: "Bookings retrieved successfully",
+        VENDOR_BOOKING_RETRIEVED: "Booking retrieved successfully",
+        VENDOR_BOOKING_NOT_FOUND: "Booking not found",
+        VENDOR_BOOKING_ACCEPTED: "Booking accepted successfully",
+        VENDOR_BOOKING_REJECTED: "Booking rejected successfully",
+        VENDOR_BOOKING_STARTED: "Service started successfully",
+        VENDOR_BOOKING_COMPLETED: "Service completed successfully",
+        VENDOR_BOOKING_INVALID_TRANSITION: "This booking cannot move from {from} to {to}.",
+
+        // vendor reviews
+        VENDOR_REVIEWS_RETRIEVED: "Reviews retrieved successfully",
+        VENDOR_REVIEW_STATS_RETRIEVED: "Review stats retrieved successfully",
+        VENDOR_REVIEW_RETRIEVED: "Review retrieved successfully",
+        VENDOR_REVIEW_NOT_FOUND: "Review not found",
+        VENDOR_REVIEW_ID_REQUIRED: "Review ID is required",
+
+        // vendor verification
+        VENDOR_VERIFICATION_DRAFT_RETRIEVED: "Draft verification retrieved successfully",
+        VENDOR_VERIFICATION_DRAFT_SAVED: "Draft saved successfully",
+        VENDOR_VERIFICATION_SUBMITTED: "Verification submitted successfully",
+        VENDOR_VERIFICATION_STATUS_RETRIEVED: "Verification status retrieved successfully",
+        VENDOR_VERIFICATION_UPDATED: "Verification updated successfully",
+        VENDOR_VERIFICATION_DRAFT_DELETED: "Draft deleted successfully",
+        VENDOR_VERIFICATION_ALREADY_UNDER_REVIEW: "You already have a verification under review. Please wait for the current process to complete.",
+        VENDOR_VERIFICATION_NO_CHANGES_REQUIRED: "No verification requiring changes found",
+
+        // vendor notifications / upload
+        VENDOR_NOTIFICATIONS_RETRIEVED: "Notifications retrieved successfully",
+        VENDOR_NO_FILE_UPLOADED: "No file uploaded",
+        VENDOR_FILE_UPLOAD_FAILED: "Failed to upload file",
+        VENDOR_PUBLIC_ID_REQUIRED: "Public ID is required",
+        VENDOR_FILE_DELETE_FAILED: "Failed to delete file",
+        VENDOR_FILE_DELETED: "File deleted successfully",
+        VENDOR_INVALID_FILE_TYPE: "Only JPEG, PNG, WebP, or PDF files are allowed",
+        VENDOR_DOCUMENT_UPLOADED: "Document uploaded successfully",
+        VENDOR_IMAGE_UPLOADED: "Image uploaded successfully",
+        VENDOR_OTP_SENT_TO_PHONE: "OTP sent to phone",
     },
     kh: {
         ERROR_INTERNAL: "កំហុសម៉ាស៊ីនមេខាងក្នុង",
@@ -383,6 +463,86 @@ export const messages = {
         OTP_EXPIRED_OR_NOT_FOUND: "OTP ផុតកំណត់ ឬរកមិនឃើញ។ សូមស្នើសុំលេខកូដថ្មី",
         OTP_TOO_MANY_ATTEMPTS: "បានបញ្ចូលលេខកូដខុសច្រើនដងពេក។ សូមស្នើសុំលេខកូដថ្មី",
         OTP_INVALID_CODE: "លេខកូដផ្ទៀងផ្ទាត់មិនត្រឹមត្រូវ",
+
+        // shared / middleware
+        ERROR_INVALID_TOKEN: "លេខសម្គាល់ចូលប្រើមិនត្រឹមត្រូវ",
+        ERROR_ROUTE_NOT_FOUND: "រកមិនឃើញផ្លូវ {method} {path}",
+        ERROR_PAYLOAD_TOO_LARGE: "ទំហំសំណើធំពេក។ សូមអាប់ឡូតរូបភាពដោយឡែក កុំបញ្ចូលក្នុងសំណើ។",
+        ERROR_UNEXPECTED_FILE_FIELD: "វាលឯកសារ \"{field}\" មិនត្រឹមត្រូវ។ សូមប្រើ \"avatar\" ឬ \"avatarUrl\"",
+        ERROR_FILE_TOO_LARGE: "ឯកសាររូបភាពធំពេក។ ទំហំអតិបរមា 5MB",
+        SERVER_RUNNING: "ម៉ាស៊ីនមេកំពុងដំណើរការ",
+
+        // vendor auth / profile
+        VENDOR_PHONE_OR_EMAIL_EXISTS: "លេខទូរស័ព្ទ ឬអ៊ីមែលមានរួចហើយ",
+        VENDOR_INVALID_CREDENTIALS: "លេខទូរស័ព្ទ ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវ",
+        VENDOR_USER_NOT_FOUND: "រកមិនឃើញអ្នកប្រើ",
+        VENDOR_INVALID_VERIFICATION_CODE: "លេខកូដផ្ទៀងផ្ទាត់មិនត្រឹមត្រូវ",
+        VENDOR_PROVIDER_PROFILE_NOT_FOUND: "រកមិនឃើញប្រវត្តិរូបអ្នកផ្តល់សេវា",
+        VENDOR_REGISTERED_SUCCESSFULLY: "បានចុះឈ្មោះអ្នកផ្តល់សេវាដោយជោគជ័យ",
+        VENDOR_LOGGED_IN_SUCCESSFULLY: "បានចូលប្រើប្រាស់ដោយជោគជ័យ",
+        VENDOR_LOGGED_OUT_SUCCESSFULLY: "បានចាកចេញដោយជោគជ័យ",
+        VENDOR_PROFILE_RETRIEVED: "បានទាញយកប្រវត្តិរូបអ្នកផ្តល់សេវាដោយជោគជ័យ",
+        VENDOR_PROFILE_UPDATED: "បានធ្វើបច្ចុប្បន្នភាពប្រវត្តិរូបដោយជោគជ័យ",
+        VENDOR_OTP_SENT: "បានផ្ញើ OTP សម្រាប់កំណត់ពាក្យសម្ងាត់ឡើងវិញ",
+        VENDOR_PASSWORD_RESET_SUCCESSFULLY: "បានកំណត់ពាក្យសម្ងាត់ឡើងវិញដោយជោគជ័យ",
+        VENDOR_USER_NOT_AUTHENTICATED: "អ្នកប្រើមិនទាន់បានផ្ទៀងផ្ទាត់",
+
+        // vendor availability
+        VENDOR_AVAILABILITY_RETRIEVED: "បានទាញយកពេលវេលាទំនេរដោយជោគជ័យ",
+        VENDOR_AVAILABILITY_UPDATED: "បានធ្វើបច្ចុប្បន្នភាពពេលវេលាទំនេរដោយជោគជ័យ",
+
+        // vendor services
+        VENDOR_SERVICES_RETRIEVED: "បានទាញយកសេវាកម្មដោយជោគជ័យ",
+        VENDOR_SERVICE_RETRIEVED: "បានទាញយកសេវាកម្មដោយជោគជ័យ",
+        VENDOR_SERVICE_CREATED: "បានបង្កើតសេវាកម្មដោយជោគជ័យ",
+        VENDOR_SERVICE_UPDATED: "បានធ្វើបច្ចុប្បន្នភាពសេវាកម្មដោយជោគជ័យ",
+        VENDOR_SERVICE_DELETED: "បានលុបសេវាកម្មដោយជោគជ័យ",
+        VENDOR_SERVICE_STATUS_UPDATED: "បានធ្វើបច្ចុប្បន្នភាពស្ថានភាពសេវាកម្មដោយជោគជ័យ",
+        VENDOR_SERVICE_NOT_FOUND: "រកមិនឃើញសេវាកម្ម",
+        VENDOR_INVALID_CATEGORY: "ប្រភេទសេវាមិនត្រឹមត្រូវ",
+        VENDOR_INVALID_SERVICE_AREAS: "មានតំបន់សេវាមួយ ឬច្រើនមិនត្រឹមត្រូវ",
+        VENDOR_SERVICE_HAS_ACTIVE_BOOKINGS: "មិនអាចលុបសេវាកម្មដែលមានការកក់សកម្មបានទេ",
+        VENDOR_CATEGORIES_RETRIEVED: "បានទាញយកប្រភេទសេវាដោយជោគជ័យ",
+        VENDOR_SERVICE_AREAS_RETRIEVED: "បានទាញយកតំបន់សេវាដោយជោគជ័យ",
+
+        // vendor bookings
+        VENDOR_BOOKINGS_RETRIEVED: "បានទាញយកការកក់ដោយជោគជ័យ",
+        VENDOR_BOOKING_RETRIEVED: "បានទាញយកការកក់ដោយជោគជ័យ",
+        VENDOR_BOOKING_NOT_FOUND: "រកមិនឃើញការកក់",
+        VENDOR_BOOKING_ACCEPTED: "បានទទួលយកការកក់ដោយជោគជ័យ",
+        VENDOR_BOOKING_REJECTED: "បានបដិសេធការកក់ដោយជោគជ័យ",
+        VENDOR_BOOKING_STARTED: "បានចាប់ផ្តើមសេវាកម្មដោយជោគជ័យ",
+        VENDOR_BOOKING_COMPLETED: "បានបញ្ចប់សេវាកម្មដោយជោគជ័យ",
+        VENDOR_BOOKING_INVALID_TRANSITION: "មិនអាចប្តូរការកក់ពី {from} ទៅ {to} បានទេ។",
+
+        // vendor reviews
+        VENDOR_REVIEWS_RETRIEVED: "បានទាញយកការវាយតម្លៃដោយជោគជ័យ",
+        VENDOR_REVIEW_STATS_RETRIEVED: "បានទាញយកស្ថិតិការវាយតម្លៃដោយជោគជ័យ",
+        VENDOR_REVIEW_RETRIEVED: "បានទាញយកការវាយតម្លៃដោយជោគជ័យ",
+        VENDOR_REVIEW_NOT_FOUND: "រកមិនឃើញការវាយតម្លៃ",
+        VENDOR_REVIEW_ID_REQUIRED: "ត្រូវការលេខសម្គាល់ការវាយតម្លៃ",
+
+        // vendor verification
+        VENDOR_VERIFICATION_DRAFT_RETRIEVED: "បានទាញយកសេចក្តីព្រាងការផ្ទៀងផ្ទាត់ដោយជោគជ័យ",
+        VENDOR_VERIFICATION_DRAFT_SAVED: "បានរក្សាទុកសេចក្តីព្រាងដោយជោគជ័យ",
+        VENDOR_VERIFICATION_SUBMITTED: "បានដាក់ស្នើការផ្ទៀងផ្ទាត់ដោយជោគជ័យ",
+        VENDOR_VERIFICATION_STATUS_RETRIEVED: "បានទាញយកស្ថានភាពការផ្ទៀងផ្ទាត់ដោយជោគជ័យ",
+        VENDOR_VERIFICATION_UPDATED: "បានធ្វើបច្ចុប្បន្នភាពការផ្ទៀងផ្ទាត់ដោយជោគជ័យ",
+        VENDOR_VERIFICATION_DRAFT_DELETED: "បានលុបសេចក្តីព្រាងដោយជោគជ័យ",
+        VENDOR_VERIFICATION_ALREADY_UNDER_REVIEW: "អ្នកមានការផ្ទៀងផ្ទាត់កំពុងពិនិត្យរួចហើយ។ សូមរង់ចាំដំណើរការបច្ចុប្បន្នបញ្ចប់។",
+        VENDOR_VERIFICATION_NO_CHANGES_REQUIRED: "រកមិនឃើញការផ្ទៀងផ្ទាត់ដែលត្រូវកែប្រែ",
+
+        // vendor notifications / upload
+        VENDOR_NOTIFICATIONS_RETRIEVED: "បានទាញយកការជូនដំណឹងដោយជោគជ័យ",
+        VENDOR_NO_FILE_UPLOADED: "មិនមានឯកសារត្រូវបានអាប់ឡូត",
+        VENDOR_FILE_UPLOAD_FAILED: "បរាជ័យក្នុងការអាប់ឡូតឯកសារ",
+        VENDOR_PUBLIC_ID_REQUIRED: "ត្រូវការលេខសម្គាល់សាធារណៈ",
+        VENDOR_FILE_DELETE_FAILED: "បរាជ័យក្នុងការលុបឯកសារ",
+        VENDOR_FILE_DELETED: "បានលុបឯកសារដោយជោគជ័យ",
+        VENDOR_INVALID_FILE_TYPE: "អនុញ្ញាតតែឯកសារ JPEG, PNG, WebP ឬ PDF ប៉ុណ្ណោះ",
+        VENDOR_DOCUMENT_UPLOADED: "បានអាប់ឡូតឯកសារដោយជោគជ័យ",
+        VENDOR_IMAGE_UPLOADED: "បានអាប់ឡូតរូបភាពដោយជោគជ័យ",
+        VENDOR_OTP_SENT_TO_PHONE: "បានផ្ញើ OTP ទៅលេខទូរស័ព្ទ",
     },
 } as const;
 

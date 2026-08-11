@@ -1,6 +1,8 @@
 import { prisma } from "../../database/prisma.client";
 import { NotFoundException } from "../../utils/app-error.util";
 import { resolveSchedule } from "../../utils/provider-availability.util";
+import { Lang } from "../../i18n/messages";
+import { t } from "../../i18n/translate";
 
 interface UpdateAvailabilityData {
   workingDays?: string[];
@@ -10,7 +12,7 @@ interface UpdateAvailabilityData {
 }
 
 export class VendorAvailabilityService {
-  static async getAvailability(userId: string) {
+  static async getAvailability(userId: string, lang: Lang = "en") {
     const providerProfile = await prisma.providerProfile.findUnique({
       where: { userId },
       include: {
@@ -19,7 +21,7 @@ export class VendorAvailabilityService {
     });
 
     if (!providerProfile) {
-      throw new NotFoundException("Provider profile not found");
+      throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
     }
 
     if (!providerProfile.businessProfile) {
@@ -41,7 +43,7 @@ export class VendorAvailabilityService {
     };
   }
 
-  static async updateAvailability(userId: string, data: UpdateAvailabilityData) {
+  static async updateAvailability(userId: string, data: UpdateAvailabilityData, lang: Lang = "en") {
     const providerProfile = await prisma.providerProfile.findUnique({
       where: { userId },
       include: {
@@ -50,7 +52,7 @@ export class VendorAvailabilityService {
     });
 
     if (!providerProfile) {
-      throw new NotFoundException("Provider profile not found");
+      throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
     }
 
     // Convert unavailable dates from strings to Date objects

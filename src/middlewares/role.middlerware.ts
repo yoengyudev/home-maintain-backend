@@ -4,6 +4,7 @@ import { getLang } from "../utils/get-lang.util";
 import { UnauthorizedException } from "../utils/app-error.util";
 import { assertRole } from "../utils/auth-token.util";
 import { UserRole } from "../generated/prisma/enums";
+import { t } from "../i18n/translate";
 
 export const authorize = (role: UserRole) => {
     return (req: Request, _res: Response, next: NextFunction) => {  
@@ -11,7 +12,7 @@ export const authorize = (role: UserRole) => {
         const lang = getLang(req);
 
         if (!user) {
-            throw new UnauthorizedException("Unauthorized");
+            throw new UnauthorizedException(t("UNAUTHORIZED", lang));
         }
 
         assertRole(user.role, role, lang, "UNAUTHORIZED");

@@ -186,10 +186,9 @@ export class AdminServiceAreasService {
         if (providerCount > 0) {
             const { BadRequestException } = await import("../../utils/app-error.util");
             throw new BadRequestException(
-                t("ADMIN_SERVICE_AREA_DELETE_HAS_LINKS", lang).replace(
-                    "{providers}",
-                    String(providerCount)
-                )
+                t("ADMIN_SERVICE_AREA_DELETE_HAS_LINKS", lang, {
+                    providers: providerCount,
+                })
             );
         }
 

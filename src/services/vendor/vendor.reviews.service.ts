@@ -1,14 +1,16 @@
 import { prisma } from "../../database/prisma.client";
 import { NotFoundException } from "../../utils/app-error.util";
+import { Lang } from "../../i18n/messages";
+import { t } from "../../i18n/translate";
 
 export class VendorReviewsService {
-    static async getProviderReviews(userId: string) {
+    static async getProviderReviews(userId: string, lang: Lang = "en") {
         const providerProfile = await prisma.providerProfile.findUnique({
             where: { userId }
         });
 
         if (!providerProfile) {
-            throw new NotFoundException("Provider profile not found");
+            throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
         }
 
         const reviews = await prisma.review.findMany({
@@ -42,13 +44,13 @@ export class VendorReviewsService {
         }));
     }
 
-    static async getProviderReviewStats(userId: string) {
+    static async getProviderReviewStats(userId: string, lang: Lang = "en") {
         const providerProfile = await prisma.providerProfile.findUnique({
             where: { userId }
         });
 
         if (!providerProfile) {
-            throw new NotFoundException("Provider profile not found");
+            throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
         }
 
         const reviews = await prisma.review.findMany({
@@ -78,7 +80,7 @@ export class VendorReviewsService {
         };
     }
 
-    static async getReviewById(reviewId: string, userId: string) {
+    static async getReviewById(reviewId: string, userId: string, lang: Lang = "en") {
         const review = await prisma.review.findUnique({
             where: { publicId: reviewId },
             include: {
@@ -97,7 +99,7 @@ export class VendorReviewsService {
         });
 
         if (!review) {
-            throw new NotFoundException("Review not found");
+            throw new NotFoundException(t("VENDOR_REVIEW_NOT_FOUND", lang));
         }
 
         // Verify the review belongs to this provider
@@ -106,7 +108,7 @@ export class VendorReviewsService {
         });
 
         if (!providerProfile || review.providerProfileId !== providerProfile.id) {
-            throw new NotFoundException("Review not found");
+            throw new NotFoundException(t("VENDOR_REVIEW_NOT_FOUND", lang));
         }
 
         return {

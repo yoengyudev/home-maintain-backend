@@ -9,6 +9,8 @@ import type { vendorRegisterSchema, vendorLoginSchema, forgotPasswordSchema, res
 import { normalizeCambodiaPhone } from "../../validators/phone.validate";
 import { UserRole, ProviderStatus } from "../../generated/prisma/enums";
 import { deactivateFcmToken, upsertFcmToken } from "../../helper/customer/auth.helper";
+import { Lang } from "../../i18n/messages";
+import { t } from "../../i18n/translate";
 
 type RegisterDto = z.infer<typeof vendorRegisterSchema>;
 type LoginDto = z.infer<typeof vendorLoginSchema>;
@@ -16,7 +18,7 @@ type ForgotPasswordDto = z.infer<typeof forgotPasswordSchema>;
 type ResetPasswordDto = z.infer<typeof resetPasswordSchema>;
 
 export class VendorAuthenticationService {
-    static async register(data: RegisterDto) {
+    static async register(data: RegisterDto, lang: Lang = "en") {
         const { businessName, email, password, contactName, phone } = data;
         const normalizedPhone = normalizeCambodiaPhone(phone);
 
@@ -30,7 +32,7 @@ export class VendorAuthenticationService {
         });
 
         if (existingUser) {
-            throw new BadRequestException("Phone or email already exists");
+            throw new BadRequestException(t("VENDOR_PHONE_OR_EMAIL_EXISTS", lang));
         }
 
         const hashedPassword = await hashPassword(password);
@@ -102,7 +104,7 @@ export class VendorAuthenticationService {
         };
     }
 
-    static async login(data: LoginDto) {
+    static async login(data: LoginDto, lang: Lang = "en") {
         const { phone, password, fcmToken, platform, deviceName } = data;
         const normalizedPhone = normalizeCambodiaPhone(phone);
 
@@ -118,12 +120,12 @@ export class VendorAuthenticationService {
         });
 
         if (!user || user.role !== UserRole.PROVIDER || !user.passwordHash) {
-            throw new UnauthorizedException("Incorrect phone number or password");
+            throw new UnauthorizedException(t("VENDOR_INVALID_CREDENTIALS", lang));
         }
 
         const isValid = await verifyPassword(password, user.passwordHash);
         if (!isValid) {
-            throw new UnauthorizedException("Incorrect phone number or password");
+            throw new UnauthorizedException(t("VENDOR_INVALID_CREDENTIALS", lang));
         }
 
         const tokenPayload = {
@@ -169,7 +171,7 @@ export class VendorAuthenticationService {
         };
     }
 
-    static async forgotPassword(data: ForgotPasswordDto) {
+    static async forgotPassword(data: ForgotPasswordDto, lang: Lang = "en") {
         const { phone } = data;
         const normalizedPhone = normalizeCambodiaPhone(phone);
 
@@ -179,25 +181,25 @@ export class VendorAuthenticationService {
 
         if (!user || user.role !== UserRole.PROVIDER) {
             // We shouldn't throw error to prevent user enumeration, but for simplicity:
-            throw new NotFoundException("User not found");
+            throw new NotFoundException(t("VENDOR_USER_NOT_FOUND", lang));
         }
 
         // Mock sending OTP
         const otp = "123456";
         
         return {
-            message: "OTP sent to phone",
+            message: t("VENDOR_OTP_SENT_TO_PHONE", lang),
             phone
         };
     }
 
-    static async resetPassword(data: ResetPasswordDto) {
+    static async resetPassword(data: ResetPasswordDto, lang: Lang = "en") {
         const { phone, otp, newPassword } = data;
         const normalizedPhone = normalizeCambodiaPhone(phone);
 
         // Mock verification
         if (otp !== "123456") {
-            throw new BadRequestException("Invalid verification code");
+            throw new BadRequestException(t("VENDOR_INVALID_VERIFICATION_CODE", lang));
         }
 
         const user = await prisma.user.findUnique({
@@ -205,7 +207,7 @@ export class VendorAuthenticationService {
         });
 
         if (!user || user.role !== UserRole.PROVIDER) {
-            throw new NotFoundException("User not found");
+            throw new NotFoundException(t("VENDOR_USER_NOT_FOUND", lang));
         }
 
         const hashedPassword = await hashPassword(newPassword);
@@ -222,7 +224,7 @@ export class VendorAuthenticationService {
         });
 
         return {
-            message: "Password reset successfully"
+            message: t("VENDOR_PASSWORD_RESET_SUCCESSFULLY", lang)
         };
     }
 
@@ -245,7 +247,7 @@ export class VendorAuthenticationService {
         await deactivateFcmToken(userId);
     }
 
-    static async me(userId: string) {
+    static async me(userId: string, lang: Lang = "en") {
         const user = await prisma.user.findUnique({
             where: { id: userId },
             include: { 
@@ -265,7 +267,7 @@ export class VendorAuthenticationService {
         });
 
         if (!user || user.role !== UserRole.PROVIDER) {
-            throw new NotFoundException("User not found");
+            throw new NotFoundException(t("VENDOR_USER_NOT_FOUND", lang));
         }
 
         return {
@@ -291,14 +293,14 @@ export class VendorAuthenticationService {
         coverageSummary?: string;
         detectedAddress?: string;
         serviceAreaIds?: string[];
-    }) {
+    }, lang: Lang = "en") {
         const providerProfile = await prisma.providerProfile.findUnique({
             where: { userId },
             include: { businessProfile: true }
         });
 
         if (!providerProfile) {
-            throw new NotFoundException("Provider profile not found");
+            throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
         }
 
         let primaryAreaId: string | null | undefined;
@@ -362,7 +364,7 @@ export class VendorAuthenticationService {
         });
 
         // Return updated profile
-        return this.me(userId);
+        return this.me(userId, lang);
     }
 
     static async updateAvailability(userId: string, data: {
@@ -373,14 +375,14 @@ export class VendorAuthenticationService {
         unavailableDates?: string[];
         temporaryPause?: boolean;
         status?: string;
-    }) {
+    }, lang: Lang = "en") {
         const providerProfile = await prisma.providerProfile.findUnique({
             where: { userId },
             include: { businessProfile: true }
         });
 
         if (!providerProfile) {
-            throw new NotFoundException("Provider profile not found");
+            throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
         }
 
         if (providerProfile.businessProfile) {
@@ -409,7 +411,7 @@ export class VendorAuthenticationService {
 
         return {
             success: true,
-            message: "Availability updated successfully"
+            message: t("VENDOR_AVAILABILITY_UPDATED", lang)
         };
     }
 }

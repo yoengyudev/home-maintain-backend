@@ -1,5 +1,7 @@
 import { prisma } from "../../database/prisma.client";
 import { BadRequestException, NotFoundException } from "../../utils/app-error.util";
+import { Lang } from "../../i18n/messages";
+import { t } from "../../i18n/translate";
 import {
     buildPaginationMeta,
     firstQueryString,
@@ -84,13 +86,13 @@ function formatBooking(booking: any) {
 }
 
 export class VendorBookingsService {
-    private static async requireProvider(userId: string) {
+    private static async requireProvider(userId: string, lang: Lang = "en") {
         const provider = await prisma.providerProfile.findUnique({
             where: { userId },
             select: { id: true },
         });
         if (!provider) {
-            throw new NotFoundException("Provider profile not found");
+            throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
         }
         return provider;
     }
@@ -112,8 +114,8 @@ export class VendorBookingsService {
         return map[statusRaw] ?? null;
     }
 
-    static async list(userId: string, query: BookingsQuery) {
-        const provider = await this.requireProvider(userId);
+    static async list(userId: string, query: BookingsQuery, lang: Lang = "en") {
+        const provider = await this.requireProvider(userId, lang);
         const { page, limit, skip, take } = parsePaginationQuery(query.page, query.limit);
         const statusFilter = this.parseStatusFilter(firstQueryString(query.status)?.trim().toUpperCase());
 
@@ -139,8 +141,8 @@ export class VendorBookingsService {
         };
     }
 
-    static async getById(userId: string, id: string) {
-        const provider = await this.requireProvider(userId);
+    static async getById(userId: string, id: string, lang: Lang = "en") {
+        const provider = await this.requireProvider(userId, lang);
         const booking = await prisma.booking.findFirst({
             where: {
                 providerProfileId: provider.id,
@@ -150,13 +152,13 @@ export class VendorBookingsService {
         });
 
         if (!booking) {
-            throw new NotFoundException("Booking not found");
+            throw new NotFoundException(t("VENDOR_BOOKING_NOT_FOUND", lang));
         }
 
         return formatBooking(booking);
     }
 
-    static async accept(userId: string, id: string) {
+    static async accept(userId: string, id: string, lang: Lang = "en") {
         return this.transition(userId, id, {
             allowed: [BookingStatus.PENDING, BookingStatus.RESCHEDULED],
             next: BookingStatus.ACCEPTED,
@@ -170,10 +172,10 @@ export class VendorBookingsService {
                 messageEn: "Your provider accepted the booking and will arrive at the scheduled time.",
                 messageKm: "អ្នកផ្តល់សេវាបានទទួលយកការកក់ ហើយនឹងមកដល់តាមពេលកំណត់។",
             },
-        });
+        }, lang);
     }
 
-    static async reject(userId: string, id: string, reason?: string) {
+    static async reject(userId: string, id: string, reason?: string, lang: Lang = "en") {
         const rejectionReason = reason?.trim() || "Rejected by provider";
         return this.transition(userId, id, {
             allowed: [BookingStatus.PENDING, BookingStatus.RESCHEDULED],
@@ -189,10 +191,10 @@ export class VendorBookingsService {
                 messageEn: `Your booking was declined. ${rejectionReason}`,
                 messageKm: `ការកក់របស់អ្នកត្រូវបានបដិសេធ។ ${rejectionReason}`,
             },
-        });
+        }, lang);
     }
 
-    static async start(userId: string, id: string) {
+    static async start(userId: string, id: string, lang: Lang = "en") {
         return this.transition(userId, id, {
             allowed: [BookingStatus.ACCEPTED],
             next: BookingStatus.IN_PROGRESS,
@@ -206,10 +208,10 @@ export class VendorBookingsService {
                 messageEn: "Your provider has started the service.",
                 messageKm: "អ្នកផ្តល់សេវាបានចាប់ផ្តើមការងារ។",
             },
-        });
+        }, lang);
     }
 
-    static async complete(userId: string, id: string) {
+    static async complete(userId: string, id: string, lang: Lang = "en") {
         return this.transition(userId, id, {
             allowed: [BookingStatus.IN_PROGRESS],
             next: BookingStatus.COMPLETED,
@@ -223,11 +225,11 @@ export class VendorBookingsService {
                 messageEn: "Your booking was marked complete. You can leave a review.",
                 messageKm: "ការកក់របស់អ្នកត្រូវបានបញ្ចប់។ អ្នកអាចវាយតម្លៃបាន។",
             },
-        });
+        }, lang);
     }
 
-    private static async findOwned(userId: string, id: string) {
-        const provider = await this.requireProvider(userId);
+    private static async findOwned(userId: string, id: string, lang: Lang = "en") {
+        const provider = await this.requireProvider(userId, lang);
         const booking = await prisma.booking.findFirst({
             where: {
                 providerProfileId: provider.id,
@@ -236,7 +238,7 @@ export class VendorBookingsService {
             include: bookingInclude,
         });
         if (!booking) {
-            throw new NotFoundException("Booking not found");
+            throw new NotFoundException(t("VENDOR_BOOKING_NOT_FOUND", lang));
         }
         return booking;
     }
@@ -258,12 +260,16 @@ export class VendorBookingsService {
                 messageEn: string;
                 messageKm: string;
             };
-        }
+        },
+        lang: Lang = "en"
     ) {
-        const booking = await this.findOwned(userId, id);
+        const booking = await this.findOwned(userId, id, lang);
         if (!options.allowed.includes(booking.status)) {
             throw new BadRequestException(
-                `This booking cannot move from ${STATUS_UI[booking.status]} to ${STATUS_UI[options.next]}.`
+                t("VENDOR_BOOKING_INVALID_TRANSITION", lang, {
+                    from: STATUS_UI[booking.status],
+                    to: STATUS_UI[options.next],
+                })
             );
         }
 
