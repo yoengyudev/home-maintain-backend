@@ -41,6 +41,22 @@ const serviceInclude = {
     },
 } as const;
 
+const serviceDetailInclude = {
+    ...serviceInclude,
+    reviews: {
+        orderBy: { createdAt: "desc" as const },
+        take: 8,
+        include: {
+            customerProfile: {
+                select: {
+                    fullName: true,
+                    avatarUrl: true,
+                },
+            },
+        },
+    },
+} as const;
+
 export class CustomerServicesService {
     static async getServices(query: ServicesQuery, lang: Lang) {
         const { page, limit, skip, take } = parsePaginationQuery(query.page, query.limit);
@@ -205,7 +221,7 @@ export class CustomerServicesService {
                 },
                 providerProfile: availableToCustomersWhere,
             },
-            include: serviceInclude,
+            include: serviceDetailInclude,
         });
 
         if (!service) {
@@ -299,6 +315,16 @@ export class CustomerServicesService {
             _count: {
                 reviews: number;
             };
+            reviews?: Array<{
+                publicId: string;
+                rating: { toNumber?: () => number } | number | string;
+                comment: string | null;
+                createdAt: Date;
+                customerProfile?: {
+                    fullName: string | null;
+                    avatarUrl: string | null;
+                } | null;
+            }>;
         },
         lang: Lang
     ) {
@@ -321,6 +347,14 @@ export class CustomerServicesService {
             availabilitySummary: service.availabilitySummary,
             serviceStatus: service.serviceStatus,
             reviewCount: service._count.reviews,
+            reviews: (service.reviews || []).map((review) => ({
+                publicId: review.publicId,
+                rating: this.toNumber(review.rating) ?? 0,
+                comment: review.comment,
+                createdAt: review.createdAt.toISOString(),
+                authorName: review.customerProfile?.fullName || "Customer",
+                authorAvatarUrl: review.customerProfile?.avatarUrl ?? null,
+            })),
             category: {
                 id: service.category.id,
                 publicId: service.category.publicId,

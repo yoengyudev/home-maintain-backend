@@ -248,7 +248,15 @@ export class CustomerCatalogService {
                 category: true,
                 providerProfile: { include: { businessProfile: true } },
                 areas: { include: { serviceArea: true } },
-                reviews: true,
+                reviews: {
+                    orderBy: { createdAt: "desc" },
+                    take: 8,
+                    include: {
+                        customerProfile: {
+                            select: { fullName: true, avatarUrl: true },
+                        },
+                    },
+                },
                 bookings: true,
             },
         });
@@ -274,6 +282,14 @@ export class CustomerCatalogService {
             availabilitySummary: item.availabilitySummary,
             serviceStatus: item.serviceStatus,
             reviewCount: item.reviews.length,
+            reviews: item.reviews.map((review) => ({
+                publicId: review.publicId,
+                rating: Number(review.rating),
+                comment: review.comment,
+                createdAt: review.createdAt.toISOString(),
+                authorName: review.customerProfile?.fullName ?? "Customer",
+                authorAvatarUrl: review.customerProfile?.avatarUrl ?? null,
+            })),
             bookingCount: item.bookings.length,
             isTopBooked: item.bookings.length > 0,
             category: {
