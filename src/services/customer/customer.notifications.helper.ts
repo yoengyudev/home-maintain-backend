@@ -1,10 +1,8 @@
-import { prisma } from "../../database/prisma.client";
 import {
     NotificationStatus,
     NotificationType,
 } from "../../generated/prisma/enums";
-import { nextPublicId } from "../../utils/public-id.util";
-import { sendPushToUserSafe } from "../fcm-push.service";
+import { NotificationsHelper } from "../notifications.helper";
 
 type CreateNotificationInput = {
     userId: string;
@@ -21,39 +19,17 @@ type CreateNotificationInput = {
 
 export class CustomerNotificationsHelper {
     static async create(input: CreateNotificationInput) {
-        const publicId = await nextPublicId("NTF", "notification");
-
-        const notification = await prisma.notification.create({
-            data: {
-                publicId,
-                userId: input.userId,
-                type: input.type ?? NotificationType.BOOKING,
-                status: NotificationStatus.UNREAD,
-                titleEn: input.titleEn,
-                titleKm: input.titleKm ?? null,
-                messageEn: input.messageEn,
-                messageKm: input.messageKm ?? null,
-                priority: input.priority ?? null,
-                relatedModule: input.relatedModule ?? "booking",
-                relatedRecordId: input.relatedRecordId ?? null,
-                relatedRoute: input.relatedRoute ?? null,
-            },
+        return NotificationsHelper.notifyUser(input.userId, {
+            type: input.type ?? NotificationType.BOOKING,
+            titleEn: input.titleEn,
+            titleKm: input.titleKm || input.titleEn,
+            messageEn: input.messageEn,
+            messageKm: input.messageKm || input.messageEn,
+            priority: input.priority ?? null,
+            relatedModule: input.relatedModule ?? "booking",
+            relatedRecordId: input.relatedRecordId ?? null,
+            relatedRoute: input.relatedRoute ?? null,
         });
-
-        const route = input.relatedRoute || "/notifications";
-        sendPushToUserSafe(input.userId, {
-            title: input.titleEn,
-            body: input.messageEn,
-            data: {
-                notificationPublicId: notification.publicId,
-                relatedModule: input.relatedModule ?? "booking",
-                relatedRecordId: input.relatedRecordId ?? "",
-                url: route,
-                type: String(input.type ?? NotificationType.BOOKING),
-            },
-        });
-
-        return notification;
     }
 
     static format(

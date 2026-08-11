@@ -1,9 +1,10 @@
 import crypto from "crypto";
 import { prisma } from "../../database/prisma.client";
 import { BadRequestException, NotFoundException } from "../../utils/app-error.util";
-import { ProviderVerificationStatus } from "../../generated/prisma/enums";
+import { NotificationType, ProviderVerificationStatus } from "../../generated/prisma/enums";
 import { Lang } from "../../i18n/messages";
 import { t } from "../../i18n/translate";
+import { NotificationsHelper, VerificationNotificationCopy } from "../notifications.helper";
 
 interface VerificationSubmissionData {
     businessName: string;
@@ -379,6 +380,20 @@ export class VendorVerificationService {
             return newVerification;
         });
 
+        const businessName =
+            data.businessName ||
+            providerProfile.businessProfile?.businessName ||
+            providerProfile.contactName ||
+            "";
+        await NotificationsHelper.notifyAdmins({
+            ...VerificationNotificationCopy.submitted(businessName),
+            type: NotificationType.VERIFICATION,
+            priority: "high",
+            relatedModule: "verifications",
+            relatedRecordId: verification.publicId,
+            relatedRoute: `/admin/verifications/${verification.publicId}`,
+        });
+
         return {
             success: true,
             message: t("VENDOR_VERIFICATION_SUBMITTED", lang),
@@ -562,6 +577,20 @@ export class VendorVerificationService {
                     }
                 }
             }
+        });
+
+        const businessName =
+            data.businessName ||
+            providerProfile.businessProfile?.businessName ||
+            providerProfile.contactName ||
+            "";
+        await NotificationsHelper.notifyAdmins({
+            ...VerificationNotificationCopy.resubmitted(businessName),
+            type: NotificationType.VERIFICATION,
+            priority: "high",
+            relatedModule: "verifications",
+            relatedRecordId: updatedVerification.publicId,
+            relatedRoute: `/admin/verifications/${updatedVerification.publicId}`,
         });
 
         return {

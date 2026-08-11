@@ -5,6 +5,9 @@ import {
     parsePaginationQuery,
 } from "../../utils/pagination.util";
 import { NotificationStatus } from "../../generated/prisma/enums";
+import type { Lang } from "../../i18n/messages";
+import { t } from "../../i18n/translate";
+import { NotFoundException } from "../../utils/app-error.util";
 
 type NotificationsQuery = {
     page?: unknown;
@@ -75,5 +78,48 @@ export class VendorNotificationsService {
             items: rows.map(formatNotification),
             meta: buildPaginationMeta(page, limit, total),
         };
+    }
+
+    static async markRead(userId: string, id: string, lang: Lang) {
+        const notification = await prisma.notification.findFirst({
+            where: {
+                userId,
+                OR: [{ id }, { publicId: id }],
+            },
+        });
+
+        if (!notification) {
+            throw new NotFoundException(t("VENDOR_NOTIFICATION_NOT_FOUND", lang));
+        }
+
+        if (notification.status === NotificationStatus.READ) {
+            return formatNotification(notification);
+        }
+
+        const updated = await prisma.notification.update({
+            where: { id: notification.id },
+            data: {
+                status: NotificationStatus.READ,
+                readAt: new Date(),
+            },
+        });
+
+        return formatNotification(updated);
+    }
+
+    static async markAllRead(userId: string) {
+        await prisma.notification.updateMany({
+            where: { userId, status: NotificationStatus.UNREAD },
+            data: {
+                status: NotificationStatus.READ,
+                readAt: new Date(),
+            },
+        });
+
+        const count = await prisma.notification.count({
+            where: { userId, status: NotificationStatus.UNREAD },
+        });
+
+        return { count };
     }
 }

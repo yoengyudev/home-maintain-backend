@@ -16,3 +16,28 @@ export const listNotifications = async (req: Request, res: Response) => {
         data,
     });
 };
+
+export const markNotificationRead = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const userId = (req as any).user?.userId;
+    const id = String(req.params.id ?? "");
+    const data = await VendorNotificationsService.markRead(userId, id, lang);
+
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: t("VENDOR_NOTIFICATION_MARKED_READ", lang),
+        data,
+    });
+};
+
+export const markAllNotificationsRead = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const userId = (req as any).user?.userId;
+    const data = await VendorNotificationsService.markAllRead(userId);
+
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: t("VENDOR_NOTIFICATIONS_MARKED_READ", lang),
+        data,
+    });
+};

@@ -245,6 +245,7 @@ export type UserWhereInput = {
   accountSessions?: Prisma.AccountSessionListRelationFilter
   fcmTokens?: Prisma.FcmTokenListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
+  supportRequests?: Prisma.SupportRequestListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -267,6 +268,7 @@ export type UserOrderByWithRelationInput = {
   accountSessions?: Prisma.AccountSessionOrderByRelationAggregateInput
   fcmTokens?: Prisma.FcmTokenOrderByRelationAggregateInput
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
+  supportRequests?: Prisma.SupportRequestOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -292,6 +294,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   accountSessions?: Prisma.AccountSessionListRelationFilter
   fcmTokens?: Prisma.FcmTokenListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
+  supportRequests?: Prisma.SupportRequestListRelationFilter
 }, "id" | "publicId" | "email" | "phone">
 
 export type UserOrderByWithAggregationInput = {
@@ -350,6 +353,7 @@ export type UserCreateInput = {
   accountSessions?: Prisma.AccountSessionCreateNestedManyWithoutUserInput
   fcmTokens?: Prisma.FcmTokenCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -372,6 +376,7 @@ export type UserUncheckedCreateInput = {
   accountSessions?: Prisma.AccountSessionUncheckedCreateNestedManyWithoutUserInput
   fcmTokens?: Prisma.FcmTokenUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -394,6 +399,7 @@ export type UserUpdateInput = {
   accountSessions?: Prisma.AccountSessionUpdateManyWithoutUserNestedInput
   fcmTokens?: Prisma.FcmTokenUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -416,6 +422,7 @@ export type UserUncheckedUpdateInput = {
   accountSessions?: Prisma.AccountSessionUncheckedUpdateManyWithoutUserNestedInput
   fcmTokens?: Prisma.FcmTokenUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -635,6 +642,20 @@ export type UserUpdateOneRequiredWithoutNotificationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutNotificationsInput, Prisma.UserUpdateWithoutNotificationsInput>, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
 }
 
+export type UserCreateNestedOneWithoutSupportRequestsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSupportRequestsInput, Prisma.UserUncheckedCreateWithoutSupportRequestsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSupportRequestsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutSupportRequestsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSupportRequestsInput, Prisma.UserUncheckedCreateWithoutSupportRequestsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSupportRequestsInput
+  upsert?: Prisma.UserUpsertWithoutSupportRequestsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSupportRequestsInput, Prisma.UserUpdateWithoutSupportRequestsInput>, Prisma.UserUncheckedUpdateWithoutSupportRequestsInput>
+}
+
 export type UserCreateWithoutAdminProfileInput = {
   id?: string
   publicId: string
@@ -654,6 +675,7 @@ export type UserCreateWithoutAdminProfileInput = {
   accountSessions?: Prisma.AccountSessionCreateNestedManyWithoutUserInput
   fcmTokens?: Prisma.FcmTokenCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAdminProfileInput = {
@@ -675,6 +697,7 @@ export type UserUncheckedCreateWithoutAdminProfileInput = {
   accountSessions?: Prisma.AccountSessionUncheckedCreateNestedManyWithoutUserInput
   fcmTokens?: Prisma.FcmTokenUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAdminProfileInput = {
@@ -712,6 +735,7 @@ export type UserUpdateWithoutAdminProfileInput = {
   accountSessions?: Prisma.AccountSessionUpdateManyWithoutUserNestedInput
   fcmTokens?: Prisma.FcmTokenUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAdminProfileInput = {
@@ -733,6 +757,7 @@ export type UserUncheckedUpdateWithoutAdminProfileInput = {
   accountSessions?: Prisma.AccountSessionUncheckedUpdateManyWithoutUserNestedInput
   fcmTokens?: Prisma.FcmTokenUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCustomerProfileInput = {
@@ -754,6 +779,7 @@ export type UserCreateWithoutCustomerProfileInput = {
   accountSessions?: Prisma.AccountSessionCreateNestedManyWithoutUserInput
   fcmTokens?: Prisma.FcmTokenCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCustomerProfileInput = {
@@ -775,6 +801,7 @@ export type UserUncheckedCreateWithoutCustomerProfileInput = {
   accountSessions?: Prisma.AccountSessionUncheckedCreateNestedManyWithoutUserInput
   fcmTokens?: Prisma.FcmTokenUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCustomerProfileInput = {
@@ -812,6 +839,7 @@ export type UserUpdateWithoutCustomerProfileInput = {
   accountSessions?: Prisma.AccountSessionUpdateManyWithoutUserNestedInput
   fcmTokens?: Prisma.FcmTokenUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCustomerProfileInput = {
@@ -833,6 +861,7 @@ export type UserUncheckedUpdateWithoutCustomerProfileInput = {
   accountSessions?: Prisma.AccountSessionUncheckedUpdateManyWithoutUserNestedInput
   fcmTokens?: Prisma.FcmTokenUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutProviderProfileInput = {
@@ -854,6 +883,7 @@ export type UserCreateWithoutProviderProfileInput = {
   accountSessions?: Prisma.AccountSessionCreateNestedManyWithoutUserInput
   fcmTokens?: Prisma.FcmTokenCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutProviderProfileInput = {
@@ -875,6 +905,7 @@ export type UserUncheckedCreateWithoutProviderProfileInput = {
   accountSessions?: Prisma.AccountSessionUncheckedCreateNestedManyWithoutUserInput
   fcmTokens?: Prisma.FcmTokenUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutProviderProfileInput = {
@@ -912,6 +943,7 @@ export type UserUpdateWithoutProviderProfileInput = {
   accountSessions?: Prisma.AccountSessionUpdateManyWithoutUserNestedInput
   fcmTokens?: Prisma.FcmTokenUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProviderProfileInput = {
@@ -933,6 +965,7 @@ export type UserUncheckedUpdateWithoutProviderProfileInput = {
   accountSessions?: Prisma.AccountSessionUncheckedUpdateManyWithoutUserNestedInput
   fcmTokens?: Prisma.FcmTokenUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPreferenceInput = {
@@ -954,6 +987,7 @@ export type UserCreateWithoutPreferenceInput = {
   accountSessions?: Prisma.AccountSessionCreateNestedManyWithoutUserInput
   fcmTokens?: Prisma.FcmTokenCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPreferenceInput = {
@@ -975,6 +1009,7 @@ export type UserUncheckedCreateWithoutPreferenceInput = {
   accountSessions?: Prisma.AccountSessionUncheckedCreateNestedManyWithoutUserInput
   fcmTokens?: Prisma.FcmTokenUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPreferenceInput = {
@@ -1012,6 +1047,7 @@ export type UserUpdateWithoutPreferenceInput = {
   accountSessions?: Prisma.AccountSessionUpdateManyWithoutUserNestedInput
   fcmTokens?: Prisma.FcmTokenUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPreferenceInput = {
@@ -1033,6 +1069,7 @@ export type UserUncheckedUpdateWithoutPreferenceInput = {
   accountSessions?: Prisma.AccountSessionUncheckedUpdateManyWithoutUserNestedInput
   fcmTokens?: Prisma.FcmTokenUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAccountSessionsInput = {
@@ -1054,6 +1091,7 @@ export type UserCreateWithoutAccountSessionsInput = {
   preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
   fcmTokens?: Prisma.FcmTokenCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAccountSessionsInput = {
@@ -1075,6 +1113,7 @@ export type UserUncheckedCreateWithoutAccountSessionsInput = {
   preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
   fcmTokens?: Prisma.FcmTokenUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAccountSessionsInput = {
@@ -1112,6 +1151,7 @@ export type UserUpdateWithoutAccountSessionsInput = {
   preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
   fcmTokens?: Prisma.FcmTokenUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAccountSessionsInput = {
@@ -1133,6 +1173,7 @@ export type UserUncheckedUpdateWithoutAccountSessionsInput = {
   preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
   fcmTokens?: Prisma.FcmTokenUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutFcmTokensInput = {
@@ -1154,6 +1195,7 @@ export type UserCreateWithoutFcmTokensInput = {
   preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
   accountSessions?: Prisma.AccountSessionCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutFcmTokensInput = {
@@ -1175,6 +1217,7 @@ export type UserUncheckedCreateWithoutFcmTokensInput = {
   preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
   accountSessions?: Prisma.AccountSessionUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutFcmTokensInput = {
@@ -1212,6 +1255,7 @@ export type UserUpdateWithoutFcmTokensInput = {
   preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
   accountSessions?: Prisma.AccountSessionUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFcmTokensInput = {
@@ -1233,6 +1277,7 @@ export type UserUncheckedUpdateWithoutFcmTokensInput = {
   preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
   accountSessions?: Prisma.AccountSessionUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -1254,6 +1299,7 @@ export type UserCreateWithoutNotificationsInput = {
   preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
   accountSessions?: Prisma.AccountSessionCreateNestedManyWithoutUserInput
   fcmTokens?: Prisma.FcmTokenCreateNestedManyWithoutUserInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -1275,6 +1321,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
   accountSessions?: Prisma.AccountSessionUncheckedCreateNestedManyWithoutUserInput
   fcmTokens?: Prisma.FcmTokenUncheckedCreateNestedManyWithoutUserInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -1312,6 +1359,7 @@ export type UserUpdateWithoutNotificationsInput = {
   preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
   accountSessions?: Prisma.AccountSessionUpdateManyWithoutUserNestedInput
   fcmTokens?: Prisma.FcmTokenUpdateManyWithoutUserNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -1333,6 +1381,111 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
   accountSessions?: Prisma.AccountSessionUncheckedUpdateManyWithoutUserNestedInput
   fcmTokens?: Prisma.FcmTokenUncheckedUpdateManyWithoutUserNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutSupportRequestsInput = {
+  id?: string
+  publicId: string
+  email: string
+  phone?: string | null
+  passwordHash?: string | null
+  role: $Enums.UserRole
+  accountStatus?: $Enums.AccountStatus
+  emailVerifiedAt?: Date | string | null
+  phoneVerifiedAt?: Date | string | null
+  lastSignedInAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
+  customerProfile?: Prisma.CustomerProfileCreateNestedOneWithoutUserInput
+  providerProfile?: Prisma.ProviderProfileCreateNestedOneWithoutUserInput
+  preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  accountSessions?: Prisma.AccountSessionCreateNestedManyWithoutUserInput
+  fcmTokens?: Prisma.FcmTokenCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutSupportRequestsInput = {
+  id?: string
+  publicId: string
+  email: string
+  phone?: string | null
+  passwordHash?: string | null
+  role: $Enums.UserRole
+  accountStatus?: $Enums.AccountStatus
+  emailVerifiedAt?: Date | string | null
+  phoneVerifiedAt?: Date | string | null
+  lastSignedInAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
+  customerProfile?: Prisma.CustomerProfileUncheckedCreateNestedOneWithoutUserInput
+  providerProfile?: Prisma.ProviderProfileUncheckedCreateNestedOneWithoutUserInput
+  preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  accountSessions?: Prisma.AccountSessionUncheckedCreateNestedManyWithoutUserInput
+  fcmTokens?: Prisma.FcmTokenUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutSupportRequestsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSupportRequestsInput, Prisma.UserUncheckedCreateWithoutSupportRequestsInput>
+}
+
+export type UserUpsertWithoutSupportRequestsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSupportRequestsInput, Prisma.UserUncheckedUpdateWithoutSupportRequestsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSupportRequestsInput, Prisma.UserUncheckedCreateWithoutSupportRequestsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSupportRequestsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSupportRequestsInput, Prisma.UserUncheckedUpdateWithoutSupportRequestsInput>
+}
+
+export type UserUpdateWithoutSupportRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  accountStatus?: Prisma.EnumAccountStatusFieldUpdateOperationsInput | $Enums.AccountStatus
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSignedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
+  customerProfile?: Prisma.CustomerProfileUpdateOneWithoutUserNestedInput
+  providerProfile?: Prisma.ProviderProfileUpdateOneWithoutUserNestedInput
+  preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  accountSessions?: Prisma.AccountSessionUpdateManyWithoutUserNestedInput
+  fcmTokens?: Prisma.FcmTokenUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSupportRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  accountStatus?: Prisma.EnumAccountStatusFieldUpdateOperationsInput | $Enums.AccountStatus
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  phoneVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSignedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
+  customerProfile?: Prisma.CustomerProfileUncheckedUpdateOneWithoutUserNestedInput
+  providerProfile?: Prisma.ProviderProfileUncheckedUpdateOneWithoutUserNestedInput
+  preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  accountSessions?: Prisma.AccountSessionUncheckedUpdateManyWithoutUserNestedInput
+  fcmTokens?: Prisma.FcmTokenUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -1344,12 +1497,14 @@ export type UserCountOutputType = {
   accountSessions: number
   fcmTokens: number
   notifications: number
+  supportRequests: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accountSessions?: boolean | UserCountOutputTypeCountAccountSessionsArgs
   fcmTokens?: boolean | UserCountOutputTypeCountFcmTokensArgs
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
+  supportRequests?: boolean | UserCountOutputTypeCountSupportRequestsArgs
 }
 
 /**
@@ -1383,6 +1538,13 @@ export type UserCountOutputTypeCountNotificationsArgs<ExtArgs extends runtime.Ty
   where?: Prisma.NotificationWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountSupportRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SupportRequestWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1404,6 +1566,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   accountSessions?: boolean | Prisma.User$accountSessionsArgs<ExtArgs>
   fcmTokens?: boolean | Prisma.User$fcmTokensArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
+  supportRequests?: boolean | Prisma.User$supportRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1461,6 +1624,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   accountSessions?: boolean | Prisma.User$accountSessionsArgs<ExtArgs>
   fcmTokens?: boolean | Prisma.User$fcmTokensArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
+  supportRequests?: boolean | Prisma.User$supportRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1476,6 +1640,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     accountSessions: Prisma.$AccountSessionPayload<ExtArgs>[]
     fcmTokens: Prisma.$FcmTokenPayload<ExtArgs>[]
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
+    supportRequests: Prisma.$SupportRequestPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1891,6 +2056,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   accountSessions<T extends Prisma.User$accountSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$accountSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AccountSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   fcmTokens<T extends Prisma.User$fcmTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$fcmTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FcmTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  supportRequests<T extends Prisma.User$supportRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$supportRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SupportRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2470,6 +2636,30 @@ export type User$notificationsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.NotificationScalarFieldEnum | Prisma.NotificationScalarFieldEnum[]
+}
+
+/**
+ * User.supportRequests
+ */
+export type User$supportRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SupportRequest
+   */
+  select?: Prisma.SupportRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SupportRequest
+   */
+  omit?: Prisma.SupportRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SupportRequestInclude<ExtArgs> | null
+  where?: Prisma.SupportRequestWhereInput
+  orderBy?: Prisma.SupportRequestOrderByWithRelationInput | Prisma.SupportRequestOrderByWithRelationInput[]
+  cursor?: Prisma.SupportRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SupportRequestScalarFieldEnum | Prisma.SupportRequestScalarFieldEnum[]
 }
 
 /**

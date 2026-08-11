@@ -158,6 +158,11 @@ export type InternalAdminNote = Prisma.InternalAdminNoteModel
  */
 export type Faq = Prisma.FaqModel
 /**
+ * Model SupportRequest
+ * 
+ */
+export type SupportRequest = Prisma.SupportRequestModel
+/**
  * Model SupportPage
  * 
  */

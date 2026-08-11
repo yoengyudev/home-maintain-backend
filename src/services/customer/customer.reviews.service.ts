@@ -6,10 +6,10 @@ import {
     NotFoundException,
 } from "../../utils/app-error.util";
 import { nextPublicId } from "../../utils/public-id.util";
-import { BookingStatus } from "../../generated/prisma/enums";
+import { BookingStatus, NotificationType } from "../../generated/prisma/enums";
 import type { z } from "zod";
 import type { customerCreateReviewSchema } from "../../validators/customer/review.validator";
-import { CustomerNotificationsHelper } from "./customer.notifications.helper";
+import { BookingNotificationCopy, NotificationsHelper } from "../notifications.helper";
 
 type CreateReviewDto = z.infer<typeof customerCreateReviewSchema>;
 
@@ -83,17 +83,30 @@ export class CustomerReviewsService {
         const providerName =
             booking.providerProfile.businessProfile?.businessName?.trim() ||
             booking.providerProfile.contactName;
+        const bookingCtx = {
+            bookingPublicId: booking.publicId,
+            serviceName: booking.serviceListing?.name,
+            providerName,
+            customerName: customer.fullName,
+        };
+        const bookingRef = booking.publicId || booking.id;
 
-        await CustomerNotificationsHelper.create({
-            userId,
-            titleEn: "Review submitted",
-            titleKm: "បានដាក់ការវាយតម្លៃ",
-            messageEn: `Thanks for reviewing ${providerName}. Your feedback helps other customers.`,
-            messageKm: `អរគុណសម្រាប់ការវាយតម្លៃ ${providerName}។ មតិរបស់អ្នកជួយអតិថិជនផ្សេងទៀត។`,
+        await NotificationsHelper.notifyUser(userId, {
+            ...BookingNotificationCopy.reviewedForCustomer(bookingCtx),
+            type: NotificationType.BOOKING,
             relatedModule: "booking",
-            relatedRecordId: booking.id,
-            relatedRoute: `/bookings/${booking.id}`,
+            relatedRecordId: bookingRef,
+            relatedRoute: `/bookings/${bookingRef}`,
             priority: "normal",
+        });
+
+        await NotificationsHelper.notifyUser(booking.providerProfile.userId, {
+            ...BookingNotificationCopy.reviewedForVendor(bookingCtx),
+            type: NotificationType.BOOKING,
+            relatedModule: "booking",
+            relatedRecordId: bookingRef,
+            relatedRoute: "/provider/reviews",
+            priority: "high",
         });
 
         return this.format(review);

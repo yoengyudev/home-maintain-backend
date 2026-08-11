@@ -79,6 +79,7 @@ export const ModelName = {
   AuditLog: 'AuditLog',
   InternalAdminNote: 'InternalAdminNote',
   Faq: 'Faq',
+  SupportRequest: 'SupportRequest',
   SupportPage: 'SupportPage'
 } as const
 
@@ -559,10 +560,16 @@ export type InternalAdminNoteScalarFieldEnum = (typeof InternalAdminNoteScalarFi
 export const FaqScalarFieldEnum = {
   id: 'id',
   publicId: 'publicId',
+  audience: 'audience',
+  category: 'category',
   questionEn: 'questionEn',
   questionKm: 'questionKm',
   answerEn: 'answerEn',
   answerKm: 'answerKm',
+  keywords: 'keywords',
+  relatedRoute: 'relatedRoute',
+  relatedRouteLabelEn: 'relatedRouteLabelEn',
+  relatedRouteLabelKm: 'relatedRouteLabelKm',
   sortOrder: 'sortOrder',
   isActive: 'isActive',
   createdAt: 'createdAt',
@@ -570,6 +577,24 @@ export const FaqScalarFieldEnum = {
 } as const
 
 export type FaqScalarFieldEnum = (typeof FaqScalarFieldEnum)[keyof typeof FaqScalarFieldEnum]
+
+
+export const SupportRequestScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  userId: 'userId',
+  audience: 'audience',
+  category: 'category',
+  subject: 'subject',
+  description: 'description',
+  relatedBookingId: 'relatedBookingId',
+  relatedServiceId: 'relatedServiceId',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SupportRequestScalarFieldEnum = (typeof SupportRequestScalarFieldEnum)[keyof typeof SupportRequestScalarFieldEnum]
 
 
 export const SupportPageScalarFieldEnum = {

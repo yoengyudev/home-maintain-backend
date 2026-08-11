@@ -40,6 +40,21 @@ export const forgotPasswordSchema = z.object({
         .refine(validateCambodiaPhone, "Invalid Cambodia phone number"),
 });
 
+export const vendorChangePasswordSchema = z.object({
+    currentPassword: z.string().min(1, "Current password is required"),
+    newPassword: z.string().refine(
+        validatePassword,
+        "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+    ),
+}).refine((data) => data.currentPassword !== data.newPassword, {
+    message: "New password must be different from current password",
+    path: ["newPassword"],
+});
+
+export const vendorDeleteAccountSchema = z.object({
+    password: z.string().min(1, "Password is required"),
+});
+
 export const resetPasswordSchema = z.object({
     phone: z.string()
         .transform(normalizeCambodiaPhone)

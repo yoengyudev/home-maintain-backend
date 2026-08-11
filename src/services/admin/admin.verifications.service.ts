@@ -1,6 +1,7 @@
 import { prisma } from "../../database/prisma.client";
 import { NotFoundException, BadRequestException } from "../../utils/app-error.util";
-import { ProviderVerificationStatus, ProviderStatus } from "../../generated/prisma/enums";
+import { NotificationType, ProviderStatus, ProviderVerificationStatus } from "../../generated/prisma/enums";
+import { NotificationsHelper, VerificationNotificationCopy } from "../notifications.helper";
 import {
     buildPaginationMeta,
     firstQueryString,
@@ -189,6 +190,15 @@ export class AdminVerificationsService {
                 : []),
         ]);
 
+        await NotificationsHelper.notifyUser(v.providerProfile.userId, {
+            ...VerificationNotificationCopy.approved(),
+            type: NotificationType.VERIFICATION,
+            priority: "high",
+            relatedModule: "verification",
+            relatedRecordId: v.publicId,
+            relatedRoute: "/provider/verification/status",
+        });
+
         return this.getById(id, lang);
     }
 
@@ -238,6 +248,15 @@ export class AdminVerificationsService {
                 : []),
         ]);
 
+        await NotificationsHelper.notifyUser(v.providerProfile.userId, {
+            ...VerificationNotificationCopy.changesRequired(reason),
+            type: NotificationType.VERIFICATION,
+            priority: "high",
+            relatedModule: "verification",
+            relatedRecordId: v.publicId,
+            relatedRoute: "/provider/verification",
+        });
+
         return this.getById(id, lang);
     }
 
@@ -286,6 +305,15 @@ export class AdminVerificationsService {
                   ]
                 : []),
         ]);
+
+        await NotificationsHelper.notifyUser(v.providerProfile.userId, {
+            ...VerificationNotificationCopy.rejected(reason),
+            type: NotificationType.VERIFICATION,
+            priority: "high",
+            relatedModule: "verification",
+            relatedRecordId: v.publicId,
+            relatedRoute: "/provider/verification/status",
+        });
 
         return this.getById(id, lang);
     }

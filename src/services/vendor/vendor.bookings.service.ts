@@ -8,7 +8,8 @@ import {
     parsePaginationQuery,
 } from "../../utils/pagination.util";
 import { BookingStatus, NotificationType } from "../../generated/prisma/enums";
-import { CustomerNotificationsHelper } from "../customer/customer.notifications.helper";
+import { BookingNotificationCopy, NotificationsHelper } from "../notifications.helper";
+import { publishBookingUpdated } from "../../websocket/booking-events";
 
 type BookingsQuery = {
     page?: unknown;
@@ -166,12 +167,7 @@ export class VendorBookingsService {
             timelineSortOrder: 1,
             timelineTitle: "Vendor Assigned",
             timelineDescription: "The provider accepted your booking request.",
-            notify: {
-                titleEn: "Booking accepted",
-                titleKm: "ការកក់ត្រូវបានទទួលយក",
-                messageEn: "Your provider accepted the booking and will arrive at the scheduled time.",
-                messageKm: "អ្នកផ្តល់សេវាបានទទួលយកការកក់ ហើយនឹងមកដល់តាមពេលកំណត់។",
-            },
+            notify: "accepted",
         }, lang);
     }
 
@@ -185,12 +181,7 @@ export class VendorBookingsService {
             timelineSortOrder: 1,
             timelineTitle: "Request rejected",
             timelineDescription: rejectionReason,
-            notify: {
-                titleEn: "Booking rejected",
-                titleKm: "ការកក់ត្រូវបានបដិសេធ",
-                messageEn: `Your booking was declined. ${rejectionReason}`,
-                messageKm: `ការកក់របស់អ្នកត្រូវបានបដិសេធ។ ${rejectionReason}`,
-            },
+            notify: "rejected",
         }, lang);
     }
 
@@ -202,12 +193,7 @@ export class VendorBookingsService {
             timelineSortOrder: 2,
             timelineTitle: "Service in progress",
             timelineDescription: "The provider started the service.",
-            notify: {
-                titleEn: "Service started",
-                titleKm: "សេវាកម្មបានចាប់ផ្តើម",
-                messageEn: "Your provider has started the service.",
-                messageKm: "អ្នកផ្តល់សេវាបានចាប់ផ្តើមការងារ។",
-            },
+            notify: "started",
         }, lang);
     }
 
@@ -219,12 +205,7 @@ export class VendorBookingsService {
             timelineSortOrder: 3,
             timelineTitle: "Service completed",
             timelineDescription: "The provider marked this booking as completed.",
-            notify: {
-                titleEn: "Service completed",
-                titleKm: "សេវាកម្មបានបញ្ចប់",
-                messageEn: "Your booking was marked complete. You can leave a review.",
-                messageKm: "ការកក់របស់អ្នកត្រូវបានបញ្ចប់។ អ្នកអាចវាយតម្លៃបាន។",
-            },
+            notify: "completed",
         }, lang);
     }
 
@@ -254,12 +235,7 @@ export class VendorBookingsService {
             timelineSortOrder: number;
             timelineTitle: string;
             timelineDescription: string;
-            notify: {
-                titleEn: string;
-                titleKm: string;
-                messageEn: string;
-                messageKm: string;
-            };
+            notify: "accepted" | "rejected" | "started" | "completed";
         },
         lang: Lang = "en"
     ) {
@@ -308,23 +284,38 @@ export class VendorBookingsService {
             return next;
         });
 
+        publishBookingUpdated({
+            bookingId: updated.id,
+            publicId: updated.publicId,
+            status: updated.status,
+            customerUserId: booking.customerProfile?.userId,
+        });
+
         if (booking.customerProfile?.userId) {
-            try {
-                await CustomerNotificationsHelper.create({
-                    userId: booking.customerProfile.userId,
-                    type: NotificationType.BOOKING,
-                    titleEn: options.notify.titleEn,
-                    titleKm: options.notify.titleKm,
-                    messageEn: `${options.notify.messageEn} (${booking.publicId})`,
-                    messageKm: `${options.notify.messageKm} (${booking.publicId})`,
-                    relatedModule: "booking",
-                    relatedRecordId: booking.id,
-                    relatedRoute: `/bookings/${booking.id}`,
-                    priority: "high",
-                });
-            } catch (error) {
-                console.error("Failed to notify customer about booking transition", error);
-            }
+            const bookingCtx = {
+                bookingPublicId: booking.publicId,
+                serviceName: booking.serviceListing?.name,
+                customerName: booking.customerProfile?.fullName,
+                reason: options.rejectionReason,
+            };
+            const copy =
+                options.notify === "accepted"
+                    ? BookingNotificationCopy.acceptedForCustomer(bookingCtx)
+                    : options.notify === "rejected"
+                      ? BookingNotificationCopy.rejectedForCustomer(bookingCtx)
+                      : options.notify === "started"
+                        ? BookingNotificationCopy.startedForCustomer(bookingCtx)
+                        : BookingNotificationCopy.completedForCustomer(bookingCtx);
+            const bookingRef = booking.publicId || booking.id;
+
+            await NotificationsHelper.notifyUser(booking.customerProfile.userId, {
+                ...copy,
+                type: NotificationType.BOOKING,
+                relatedModule: "booking",
+                relatedRecordId: bookingRef,
+                relatedRoute: `/bookings/${bookingRef}`,
+                priority: "high",
+            });
         }
 
         return formatBooking(updated);

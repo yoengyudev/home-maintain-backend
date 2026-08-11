@@ -82,6 +82,34 @@ export const assertActiveCustomerSession = async (
     });
 };
 
+export const assertActiveProviderSession = async (
+    userId: string,
+    sessionId: string | undefined,
+    lang: Lang
+) => {
+    if (!sessionId) {
+        return;
+    }
+
+    const session = await prisma.accountSession.findFirst({
+        where: {
+            publicId: sessionId,
+            userId,
+            revokedAt: null,
+            expiresAt: { gt: new Date() },
+        },
+    });
+
+    if (!session) {
+        throw new UnauthorizedException(t("VENDOR_SESSION_INVALID", lang));
+    }
+
+    await prisma.accountSession.update({
+        where: { id: session.id },
+        data: { lastUsedAt: new Date() },
+    });
+};
+
 export const upsertFcmToken = async (params: {
     userId: string;
     token: string;

@@ -412,6 +412,7 @@ export const ModelName = {
   AuditLog: 'AuditLog',
   InternalAdminNote: 'InternalAdminNote',
   Faq: 'Faq',
+  SupportRequest: 'SupportRequest',
   SupportPage: 'SupportPage'
 } as const
 
@@ -428,7 +429,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "adminProfile" | "customerProfile" | "providerProfile" | "providerBusinessProfile" | "userPreference" | "accountSession" | "fcmToken" | "serviceCategory" | "serviceArea" | "providerVerification" | "providerVerificationDocument" | "providerVerificationChecklistItem" | "providerVerificationDecision" | "providerVerificationTimelineItem" | "serviceListing" | "serviceListingArea" | "serviceModerationHistory" | "customerAddress" | "booking" | "bookingTimelineItem" | "bookingIssue" | "bookingStatusHistory" | "review" | "notification" | "auditLog" | "internalAdminNote" | "faq" | "supportPage"
+    modelProps: "user" | "adminProfile" | "customerProfile" | "providerProfile" | "providerBusinessProfile" | "userPreference" | "accountSession" | "fcmToken" | "serviceCategory" | "serviceArea" | "providerVerification" | "providerVerificationDocument" | "providerVerificationChecklistItem" | "providerVerificationDecision" | "providerVerificationTimelineItem" | "serviceListing" | "serviceListingArea" | "serviceModerationHistory" | "customerAddress" | "booking" | "bookingTimelineItem" | "bookingIssue" | "bookingStatusHistory" | "review" | "notification" | "auditLog" | "internalAdminNote" | "faq" | "supportRequest" | "supportPage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2504,6 +2505,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    SupportRequest: {
+      payload: Prisma.$SupportRequestPayload<ExtArgs>
+      fields: Prisma.SupportRequestFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SupportRequestFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportRequestPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SupportRequestFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportRequestPayload>
+        }
+        findFirst: {
+          args: Prisma.SupportRequestFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportRequestPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SupportRequestFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportRequestPayload>
+        }
+        findMany: {
+          args: Prisma.SupportRequestFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportRequestPayload>[]
+        }
+        create: {
+          args: Prisma.SupportRequestCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportRequestPayload>
+        }
+        createMany: {
+          args: Prisma.SupportRequestCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SupportRequestCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportRequestPayload>[]
+        }
+        delete: {
+          args: Prisma.SupportRequestDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportRequestPayload>
+        }
+        update: {
+          args: Prisma.SupportRequestUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportRequestPayload>
+        }
+        deleteMany: {
+          args: Prisma.SupportRequestDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SupportRequestUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SupportRequestUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportRequestPayload>[]
+        }
+        upsert: {
+          args: Prisma.SupportRequestUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportRequestPayload>
+        }
+        aggregate: {
+          args: Prisma.SupportRequestAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSupportRequest>
+        }
+        groupBy: {
+          args: Prisma.SupportRequestGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SupportRequestGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SupportRequestCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SupportRequestCountAggregateOutputType> | number
+        }
+      }
+    }
     SupportPage: {
       payload: Prisma.$SupportPagePayload<ExtArgs>
       fields: Prisma.SupportPageFieldRefs
@@ -3078,10 +3153,16 @@ export type InternalAdminNoteScalarFieldEnum = (typeof InternalAdminNoteScalarFi
 export const FaqScalarFieldEnum = {
   id: 'id',
   publicId: 'publicId',
+  audience: 'audience',
+  category: 'category',
   questionEn: 'questionEn',
   questionKm: 'questionKm',
   answerEn: 'answerEn',
   answerKm: 'answerKm',
+  keywords: 'keywords',
+  relatedRoute: 'relatedRoute',
+  relatedRouteLabelEn: 'relatedRouteLabelEn',
+  relatedRouteLabelKm: 'relatedRouteLabelKm',
   sortOrder: 'sortOrder',
   isActive: 'isActive',
   createdAt: 'createdAt',
@@ -3089,6 +3170,24 @@ export const FaqScalarFieldEnum = {
 } as const
 
 export type FaqScalarFieldEnum = (typeof FaqScalarFieldEnum)[keyof typeof FaqScalarFieldEnum]
+
+
+export const SupportRequestScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  userId: 'userId',
+  audience: 'audience',
+  category: 'category',
+  subject: 'subject',
+  description: 'description',
+  relatedBookingId: 'relatedBookingId',
+  relatedServiceId: 'relatedServiceId',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SupportRequestScalarFieldEnum = (typeof SupportRequestScalarFieldEnum)[keyof typeof SupportRequestScalarFieldEnum]
 
 
 export const SupportPageScalarFieldEnum = {
@@ -3433,6 +3532,34 @@ export type ListEnumAuditSeverityFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
+ * Reference to a field of type 'FaqAudience'
+ */
+export type EnumFaqAudienceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FaqAudience'>
+    
+
+
+/**
+ * Reference to a field of type 'FaqAudience[]'
+ */
+export type ListEnumFaqAudienceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FaqAudience[]'>
+    
+
+
+/**
+ * Reference to a field of type 'SupportRequestStatus'
+ */
+export type EnumSupportRequestStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SupportRequestStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'SupportRequestStatus[]'
+ */
+export type ListEnumSupportRequestStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SupportRequestStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'SupportPageKey'
  */
 export type EnumSupportPageKeyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SupportPageKey'>
@@ -3597,6 +3724,7 @@ export type GlobalOmitConfig = {
   auditLog?: Prisma.AuditLogOmit
   internalAdminNote?: Prisma.InternalAdminNoteOmit
   faq?: Prisma.FaqOmit
+  supportRequest?: Prisma.SupportRequestOmit
   supportPage?: Prisma.SupportPageOmit
 }
 

@@ -579,6 +579,40 @@ export type EnumAuditSeverityWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumAuditSeverityFilter<$PrismaModel>
 }
 
+export type EnumFaqAudienceFilter<$PrismaModel = never> = {
+  equals?: $Enums.FaqAudience | Prisma.EnumFaqAudienceFieldRefInput<$PrismaModel>
+  in?: $Enums.FaqAudience[] | Prisma.ListEnumFaqAudienceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FaqAudience[] | Prisma.ListEnumFaqAudienceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFaqAudienceFilter<$PrismaModel> | $Enums.FaqAudience
+}
+
+export type EnumFaqAudienceWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.FaqAudience | Prisma.EnumFaqAudienceFieldRefInput<$PrismaModel>
+  in?: $Enums.FaqAudience[] | Prisma.ListEnumFaqAudienceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FaqAudience[] | Prisma.ListEnumFaqAudienceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFaqAudienceWithAggregatesFilter<$PrismaModel> | $Enums.FaqAudience
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumFaqAudienceFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumFaqAudienceFilter<$PrismaModel>
+}
+
+export type EnumSupportRequestStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.SupportRequestStatus | Prisma.EnumSupportRequestStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.SupportRequestStatus[] | Prisma.ListEnumSupportRequestStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SupportRequestStatus[] | Prisma.ListEnumSupportRequestStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSupportRequestStatusFilter<$PrismaModel> | $Enums.SupportRequestStatus
+}
+
+export type EnumSupportRequestStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SupportRequestStatus | Prisma.EnumSupportRequestStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.SupportRequestStatus[] | Prisma.ListEnumSupportRequestStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SupportRequestStatus[] | Prisma.ListEnumSupportRequestStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSupportRequestStatusWithAggregatesFilter<$PrismaModel> | $Enums.SupportRequestStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSupportRequestStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSupportRequestStatusFilter<$PrismaModel>
+}
+
 export type EnumSupportPageKeyFilter<$PrismaModel = never> = {
   equals?: $Enums.SupportPageKey | Prisma.EnumSupportPageKeyFieldRefInput<$PrismaModel>
   in?: $Enums.SupportPageKey[] | Prisma.ListEnumSupportPageKeyFieldRefInput<$PrismaModel>
@@ -1196,6 +1230,40 @@ export type NestedEnumAuditSeverityWithAggregatesFilter<$PrismaModel = never> = 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumAuditSeverityFilter<$PrismaModel>
   _max?: Prisma.NestedEnumAuditSeverityFilter<$PrismaModel>
+}
+
+export type NestedEnumFaqAudienceFilter<$PrismaModel = never> = {
+  equals?: $Enums.FaqAudience | Prisma.EnumFaqAudienceFieldRefInput<$PrismaModel>
+  in?: $Enums.FaqAudience[] | Prisma.ListEnumFaqAudienceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FaqAudience[] | Prisma.ListEnumFaqAudienceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFaqAudienceFilter<$PrismaModel> | $Enums.FaqAudience
+}
+
+export type NestedEnumFaqAudienceWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.FaqAudience | Prisma.EnumFaqAudienceFieldRefInput<$PrismaModel>
+  in?: $Enums.FaqAudience[] | Prisma.ListEnumFaqAudienceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FaqAudience[] | Prisma.ListEnumFaqAudienceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFaqAudienceWithAggregatesFilter<$PrismaModel> | $Enums.FaqAudience
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumFaqAudienceFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumFaqAudienceFilter<$PrismaModel>
+}
+
+export type NestedEnumSupportRequestStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.SupportRequestStatus | Prisma.EnumSupportRequestStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.SupportRequestStatus[] | Prisma.ListEnumSupportRequestStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SupportRequestStatus[] | Prisma.ListEnumSupportRequestStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSupportRequestStatusFilter<$PrismaModel> | $Enums.SupportRequestStatus
+}
+
+export type NestedEnumSupportRequestStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SupportRequestStatus | Prisma.EnumSupportRequestStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.SupportRequestStatus[] | Prisma.ListEnumSupportRequestStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SupportRequestStatus[] | Prisma.ListEnumSupportRequestStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSupportRequestStatusWithAggregatesFilter<$PrismaModel> | $Enums.SupportRequestStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSupportRequestStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSupportRequestStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumSupportPageKeyFilter<$PrismaModel = never> = {

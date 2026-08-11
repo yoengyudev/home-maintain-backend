@@ -214,6 +214,15 @@ export const messages = {
         VENDOR_OTP_SENT: "Password reset OTP sent",
         VENDOR_PASSWORD_RESET_SUCCESSFULLY: "Password has been reset successfully",
         VENDOR_USER_NOT_AUTHENTICATED: "User not authenticated",
+        VENDOR_PASSWORD_CURRENT_INVALID: "Current password is incorrect",
+        VENDOR_PASSWORD_UNCHANGED: "New password must be different from the current password",
+        VENDOR_PASSWORD_CHANGED: "Password updated successfully",
+        VENDOR_SESSIONS_RETRIEVED: "Active sessions retrieved successfully",
+        VENDOR_SESSIONS_REVOKED: "Other sessions signed out successfully",
+        VENDOR_ACCOUNT_DELETED: "Provider account deleted successfully",
+        VENDOR_ACCOUNT_HAS_ACTIVE_BOOKINGS: "Complete or cancel active bookings before deleting your account",
+        VENDOR_ACCOUNT_DISABLED: "This provider account is disabled",
+        VENDOR_SESSION_INVALID: "Session is invalid or has expired",
 
         // vendor availability
         VENDOR_AVAILABILITY_RETRIEVED: "Availability retrieved successfully",
@@ -262,6 +271,9 @@ export const messages = {
 
         // vendor notifications / upload
         VENDOR_NOTIFICATIONS_RETRIEVED: "Notifications retrieved successfully",
+        VENDOR_NOTIFICATION_NOT_FOUND: "Notification not found",
+        VENDOR_NOTIFICATION_MARKED_READ: "Notification marked as read",
+        VENDOR_NOTIFICATIONS_MARKED_READ: "Notifications marked as read",
         VENDOR_NO_FILE_UPLOADED: "No file uploaded",
         VENDOR_FILE_UPLOAD_FAILED: "Failed to upload file",
         VENDOR_PUBLIC_ID_REQUIRED: "Public ID is required",
@@ -271,6 +283,8 @@ export const messages = {
         VENDOR_DOCUMENT_UPLOADED: "Document uploaded successfully",
         VENDOR_IMAGE_UPLOADED: "Image uploaded successfully",
         VENDOR_OTP_SENT_TO_PHONE: "OTP sent to phone",
+        VENDOR_HELP_RETRIEVED: "Help content retrieved successfully",
+        VENDOR_SUPPORT_REQUEST_SUBMITTED: "Support request submitted successfully",
     },
     kh: {
         ERROR_INTERNAL: "កំហុសម៉ាស៊ីនមេខាងក្នុង",
@@ -486,6 +500,15 @@ export const messages = {
         VENDOR_OTP_SENT: "បានផ្ញើ OTP សម្រាប់កំណត់ពាក្យសម្ងាត់ឡើងវិញ",
         VENDOR_PASSWORD_RESET_SUCCESSFULLY: "បានកំណត់ពាក្យសម្ងាត់ឡើងវិញដោយជោគជ័យ",
         VENDOR_USER_NOT_AUTHENTICATED: "អ្នកប្រើមិនទាន់បានផ្ទៀងផ្ទាត់",
+        VENDOR_PASSWORD_CURRENT_INVALID: "លេខសម្ងាត់បច្ចុប្បន្នមិនត្រឹមត្រូវ",
+        VENDOR_PASSWORD_UNCHANGED: "លេខសម្ងាត់ថ្មីត្រូវតែខុសពីលេខសម្ងាត់បច្ចុប្បន្ន",
+        VENDOR_PASSWORD_CHANGED: "បានធ្វើបច្ចុប្បន្នភាពលេខសម្ងាត់ដោយជោគជ័យ",
+        VENDOR_SESSIONS_RETRIEVED: "បានទាញយកសម័យការសកម្មដោយជោគជ័យ",
+        VENDOR_SESSIONS_REVOKED: "បានចាកចេញពីសម័យការផ្សេងទៀតដោយជោគជ័យ",
+        VENDOR_ACCOUNT_DELETED: "បានលុបគណនីអ្នកផ្តល់សេវាដោយជោគជ័យ",
+        VENDOR_ACCOUNT_HAS_ACTIVE_BOOKINGS: "សូមបញ្ចប់ ឬលុបចោលការកក់សកម្មមុននឹងលុបគណនី",
+        VENDOR_ACCOUNT_DISABLED: "គណនីអ្នកផ្តល់សេវានេះត្រូវបានបិទ",
+        VENDOR_SESSION_INVALID: "សម័យការមិនត្រឹមត្រូវ ឬបានផុតកំណត់",
 
         // vendor availability
         VENDOR_AVAILABILITY_RETRIEVED: "បានទាញយកពេលវេលាទំនេរដោយជោគជ័យ",
@@ -534,6 +557,9 @@ export const messages = {
 
         // vendor notifications / upload
         VENDOR_NOTIFICATIONS_RETRIEVED: "បានទាញយកការជូនដំណឹងដោយជោគជ័យ",
+        VENDOR_NOTIFICATION_NOT_FOUND: "រកមិនឃើញការជូនដំណឹង",
+        VENDOR_NOTIFICATION_MARKED_READ: "បានសម្គាល់ការជូនដំណឹងថាបានអាន",
+        VENDOR_NOTIFICATIONS_MARKED_READ: "បានសម្គាល់ការជូនដំណឹងថាបានអាន",
         VENDOR_NO_FILE_UPLOADED: "មិនមានឯកសារត្រូវបានអាប់ឡូត",
         VENDOR_FILE_UPLOAD_FAILED: "បរាជ័យក្នុងការអាប់ឡូតឯកសារ",
         VENDOR_PUBLIC_ID_REQUIRED: "ត្រូវការលេខសម្គាល់សាធារណៈ",
@@ -543,6 +569,8 @@ export const messages = {
         VENDOR_DOCUMENT_UPLOADED: "បានអាប់ឡូតឯកសារដោយជោគជ័យ",
         VENDOR_IMAGE_UPLOADED: "បានអាប់ឡូតរូបភាពដោយជោគជ័យ",
         VENDOR_OTP_SENT_TO_PHONE: "បានផ្ញើ OTP ទៅលេខទូរស័ព្ទ",
+        VENDOR_HELP_RETRIEVED: "បានទាញយកខ្លឹមសារជំនួយដោយជោគជ័យ",
+        VENDOR_SUPPORT_REQUEST_SUBMITTED: "បានផ្ញើសំណើគាំទ្រដោយជោគជ័យ",
     },
 } as const;
 

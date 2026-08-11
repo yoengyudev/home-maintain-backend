@@ -37,10 +37,15 @@ export type FaqSumAggregateOutputType = {
 export type FaqMinAggregateOutputType = {
   id: string | null
   publicId: string | null
+  audience: $Enums.FaqAudience | null
+  category: string | null
   questionEn: string | null
   questionKm: string | null
   answerEn: string | null
   answerKm: string | null
+  relatedRoute: string | null
+  relatedRouteLabelEn: string | null
+  relatedRouteLabelKm: string | null
   sortOrder: number | null
   isActive: boolean | null
   createdAt: Date | null
@@ -50,10 +55,15 @@ export type FaqMinAggregateOutputType = {
 export type FaqMaxAggregateOutputType = {
   id: string | null
   publicId: string | null
+  audience: $Enums.FaqAudience | null
+  category: string | null
   questionEn: string | null
   questionKm: string | null
   answerEn: string | null
   answerKm: string | null
+  relatedRoute: string | null
+  relatedRouteLabelEn: string | null
+  relatedRouteLabelKm: string | null
   sortOrder: number | null
   isActive: boolean | null
   createdAt: Date | null
@@ -63,10 +73,16 @@ export type FaqMaxAggregateOutputType = {
 export type FaqCountAggregateOutputType = {
   id: number
   publicId: number
+  audience: number
+  category: number
   questionEn: number
   questionKm: number
   answerEn: number
   answerKm: number
+  keywords: number
+  relatedRoute: number
+  relatedRouteLabelEn: number
+  relatedRouteLabelKm: number
   sortOrder: number
   isActive: number
   createdAt: number
@@ -86,10 +102,15 @@ export type FaqSumAggregateInputType = {
 export type FaqMinAggregateInputType = {
   id?: true
   publicId?: true
+  audience?: true
+  category?: true
   questionEn?: true
   questionKm?: true
   answerEn?: true
   answerKm?: true
+  relatedRoute?: true
+  relatedRouteLabelEn?: true
+  relatedRouteLabelKm?: true
   sortOrder?: true
   isActive?: true
   createdAt?: true
@@ -99,10 +120,15 @@ export type FaqMinAggregateInputType = {
 export type FaqMaxAggregateInputType = {
   id?: true
   publicId?: true
+  audience?: true
+  category?: true
   questionEn?: true
   questionKm?: true
   answerEn?: true
   answerKm?: true
+  relatedRoute?: true
+  relatedRouteLabelEn?: true
+  relatedRouteLabelKm?: true
   sortOrder?: true
   isActive?: true
   createdAt?: true
@@ -112,10 +138,16 @@ export type FaqMaxAggregateInputType = {
 export type FaqCountAggregateInputType = {
   id?: true
   publicId?: true
+  audience?: true
+  category?: true
   questionEn?: true
   questionKm?: true
   answerEn?: true
   answerKm?: true
+  keywords?: true
+  relatedRoute?: true
+  relatedRouteLabelEn?: true
+  relatedRouteLabelKm?: true
   sortOrder?: true
   isActive?: true
   createdAt?: true
@@ -212,10 +244,16 @@ export type FaqGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
 export type FaqGroupByOutputType = {
   id: string
   publicId: string
+  audience: $Enums.FaqAudience
+  category: string
   questionEn: string
   questionKm: string
   answerEn: string
   answerKm: string
+  keywords: string[]
+  relatedRoute: string | null
+  relatedRouteLabelEn: string | null
+  relatedRouteLabelKm: string | null
   sortOrder: number
   isActive: boolean
   createdAt: Date
@@ -248,10 +286,16 @@ export type FaqWhereInput = {
   NOT?: Prisma.FaqWhereInput | Prisma.FaqWhereInput[]
   id?: Prisma.StringFilter<"Faq"> | string
   publicId?: Prisma.StringFilter<"Faq"> | string
+  audience?: Prisma.EnumFaqAudienceFilter<"Faq"> | $Enums.FaqAudience
+  category?: Prisma.StringFilter<"Faq"> | string
   questionEn?: Prisma.StringFilter<"Faq"> | string
   questionKm?: Prisma.StringFilter<"Faq"> | string
   answerEn?: Prisma.StringFilter<"Faq"> | string
   answerKm?: Prisma.StringFilter<"Faq"> | string
+  keywords?: Prisma.StringNullableListFilter<"Faq">
+  relatedRoute?: Prisma.StringNullableFilter<"Faq"> | string | null
+  relatedRouteLabelEn?: Prisma.StringNullableFilter<"Faq"> | string | null
+  relatedRouteLabelKm?: Prisma.StringNullableFilter<"Faq"> | string | null
   sortOrder?: Prisma.IntFilter<"Faq"> | number
   isActive?: Prisma.BoolFilter<"Faq"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Faq"> | Date | string
@@ -261,10 +305,16 @@ export type FaqWhereInput = {
 export type FaqOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   publicId?: Prisma.SortOrder
+  audience?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   questionEn?: Prisma.SortOrder
   questionKm?: Prisma.SortOrder
   answerEn?: Prisma.SortOrder
   answerKm?: Prisma.SortOrder
+  keywords?: Prisma.SortOrder
+  relatedRoute?: Prisma.SortOrderInput | Prisma.SortOrder
+  relatedRouteLabelEn?: Prisma.SortOrderInput | Prisma.SortOrder
+  relatedRouteLabelKm?: Prisma.SortOrderInput | Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -277,10 +327,16 @@ export type FaqWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.FaqWhereInput | Prisma.FaqWhereInput[]
   OR?: Prisma.FaqWhereInput[]
   NOT?: Prisma.FaqWhereInput | Prisma.FaqWhereInput[]
+  audience?: Prisma.EnumFaqAudienceFilter<"Faq"> | $Enums.FaqAudience
+  category?: Prisma.StringFilter<"Faq"> | string
   questionEn?: Prisma.StringFilter<"Faq"> | string
   questionKm?: Prisma.StringFilter<"Faq"> | string
   answerEn?: Prisma.StringFilter<"Faq"> | string
   answerKm?: Prisma.StringFilter<"Faq"> | string
+  keywords?: Prisma.StringNullableListFilter<"Faq">
+  relatedRoute?: Prisma.StringNullableFilter<"Faq"> | string | null
+  relatedRouteLabelEn?: Prisma.StringNullableFilter<"Faq"> | string | null
+  relatedRouteLabelKm?: Prisma.StringNullableFilter<"Faq"> | string | null
   sortOrder?: Prisma.IntFilter<"Faq"> | number
   isActive?: Prisma.BoolFilter<"Faq"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Faq"> | Date | string
@@ -290,10 +346,16 @@ export type FaqWhereUniqueInput = Prisma.AtLeast<{
 export type FaqOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   publicId?: Prisma.SortOrder
+  audience?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   questionEn?: Prisma.SortOrder
   questionKm?: Prisma.SortOrder
   answerEn?: Prisma.SortOrder
   answerKm?: Prisma.SortOrder
+  keywords?: Prisma.SortOrder
+  relatedRoute?: Prisma.SortOrderInput | Prisma.SortOrder
+  relatedRouteLabelEn?: Prisma.SortOrderInput | Prisma.SortOrder
+  relatedRouteLabelKm?: Prisma.SortOrderInput | Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -311,10 +373,16 @@ export type FaqScalarWhereWithAggregatesInput = {
   NOT?: Prisma.FaqScalarWhereWithAggregatesInput | Prisma.FaqScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Faq"> | string
   publicId?: Prisma.StringWithAggregatesFilter<"Faq"> | string
+  audience?: Prisma.EnumFaqAudienceWithAggregatesFilter<"Faq"> | $Enums.FaqAudience
+  category?: Prisma.StringWithAggregatesFilter<"Faq"> | string
   questionEn?: Prisma.StringWithAggregatesFilter<"Faq"> | string
   questionKm?: Prisma.StringWithAggregatesFilter<"Faq"> | string
   answerEn?: Prisma.StringWithAggregatesFilter<"Faq"> | string
   answerKm?: Prisma.StringWithAggregatesFilter<"Faq"> | string
+  keywords?: Prisma.StringNullableListFilter<"Faq">
+  relatedRoute?: Prisma.StringNullableWithAggregatesFilter<"Faq"> | string | null
+  relatedRouteLabelEn?: Prisma.StringNullableWithAggregatesFilter<"Faq"> | string | null
+  relatedRouteLabelKm?: Prisma.StringNullableWithAggregatesFilter<"Faq"> | string | null
   sortOrder?: Prisma.IntWithAggregatesFilter<"Faq"> | number
   isActive?: Prisma.BoolWithAggregatesFilter<"Faq"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Faq"> | Date | string
@@ -324,10 +392,16 @@ export type FaqScalarWhereWithAggregatesInput = {
 export type FaqCreateInput = {
   id?: string
   publicId: string
+  audience?: $Enums.FaqAudience
+  category?: string
   questionEn: string
   questionKm: string
   answerEn: string
   answerKm: string
+  keywords?: Prisma.FaqCreatekeywordsInput | string[]
+  relatedRoute?: string | null
+  relatedRouteLabelEn?: string | null
+  relatedRouteLabelKm?: string | null
   sortOrder?: number
   isActive?: boolean
   createdAt?: Date | string
@@ -337,10 +411,16 @@ export type FaqCreateInput = {
 export type FaqUncheckedCreateInput = {
   id?: string
   publicId: string
+  audience?: $Enums.FaqAudience
+  category?: string
   questionEn: string
   questionKm: string
   answerEn: string
   answerKm: string
+  keywords?: Prisma.FaqCreatekeywordsInput | string[]
+  relatedRoute?: string | null
+  relatedRouteLabelEn?: string | null
+  relatedRouteLabelKm?: string | null
   sortOrder?: number
   isActive?: boolean
   createdAt?: Date | string
@@ -350,10 +430,16 @@ export type FaqUncheckedCreateInput = {
 export type FaqUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  audience?: Prisma.EnumFaqAudienceFieldUpdateOperationsInput | $Enums.FaqAudience
+  category?: Prisma.StringFieldUpdateOperationsInput | string
   questionEn?: Prisma.StringFieldUpdateOperationsInput | string
   questionKm?: Prisma.StringFieldUpdateOperationsInput | string
   answerEn?: Prisma.StringFieldUpdateOperationsInput | string
   answerKm?: Prisma.StringFieldUpdateOperationsInput | string
+  keywords?: Prisma.FaqUpdatekeywordsInput | string[]
+  relatedRoute?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  relatedRouteLabelEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  relatedRouteLabelKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -363,10 +449,16 @@ export type FaqUpdateInput = {
 export type FaqUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  audience?: Prisma.EnumFaqAudienceFieldUpdateOperationsInput | $Enums.FaqAudience
+  category?: Prisma.StringFieldUpdateOperationsInput | string
   questionEn?: Prisma.StringFieldUpdateOperationsInput | string
   questionKm?: Prisma.StringFieldUpdateOperationsInput | string
   answerEn?: Prisma.StringFieldUpdateOperationsInput | string
   answerKm?: Prisma.StringFieldUpdateOperationsInput | string
+  keywords?: Prisma.FaqUpdatekeywordsInput | string[]
+  relatedRoute?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  relatedRouteLabelEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  relatedRouteLabelKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -376,10 +468,16 @@ export type FaqUncheckedUpdateInput = {
 export type FaqCreateManyInput = {
   id?: string
   publicId: string
+  audience?: $Enums.FaqAudience
+  category?: string
   questionEn: string
   questionKm: string
   answerEn: string
   answerKm: string
+  keywords?: Prisma.FaqCreatekeywordsInput | string[]
+  relatedRoute?: string | null
+  relatedRouteLabelEn?: string | null
+  relatedRouteLabelKm?: string | null
   sortOrder?: number
   isActive?: boolean
   createdAt?: Date | string
@@ -389,10 +487,16 @@ export type FaqCreateManyInput = {
 export type FaqUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  audience?: Prisma.EnumFaqAudienceFieldUpdateOperationsInput | $Enums.FaqAudience
+  category?: Prisma.StringFieldUpdateOperationsInput | string
   questionEn?: Prisma.StringFieldUpdateOperationsInput | string
   questionKm?: Prisma.StringFieldUpdateOperationsInput | string
   answerEn?: Prisma.StringFieldUpdateOperationsInput | string
   answerKm?: Prisma.StringFieldUpdateOperationsInput | string
+  keywords?: Prisma.FaqUpdatekeywordsInput | string[]
+  relatedRoute?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  relatedRouteLabelEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  relatedRouteLabelKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -402,10 +506,16 @@ export type FaqUpdateManyMutationInput = {
 export type FaqUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  audience?: Prisma.EnumFaqAudienceFieldUpdateOperationsInput | $Enums.FaqAudience
+  category?: Prisma.StringFieldUpdateOperationsInput | string
   questionEn?: Prisma.StringFieldUpdateOperationsInput | string
   questionKm?: Prisma.StringFieldUpdateOperationsInput | string
   answerEn?: Prisma.StringFieldUpdateOperationsInput | string
   answerKm?: Prisma.StringFieldUpdateOperationsInput | string
+  keywords?: Prisma.FaqUpdatekeywordsInput | string[]
+  relatedRoute?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  relatedRouteLabelEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  relatedRouteLabelKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -415,10 +525,16 @@ export type FaqUncheckedUpdateManyInput = {
 export type FaqCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   publicId?: Prisma.SortOrder
+  audience?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   questionEn?: Prisma.SortOrder
   questionKm?: Prisma.SortOrder
   answerEn?: Prisma.SortOrder
   answerKm?: Prisma.SortOrder
+  keywords?: Prisma.SortOrder
+  relatedRoute?: Prisma.SortOrder
+  relatedRouteLabelEn?: Prisma.SortOrder
+  relatedRouteLabelKm?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -432,10 +548,15 @@ export type FaqAvgOrderByAggregateInput = {
 export type FaqMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   publicId?: Prisma.SortOrder
+  audience?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   questionEn?: Prisma.SortOrder
   questionKm?: Prisma.SortOrder
   answerEn?: Prisma.SortOrder
   answerKm?: Prisma.SortOrder
+  relatedRoute?: Prisma.SortOrder
+  relatedRouteLabelEn?: Prisma.SortOrder
+  relatedRouteLabelKm?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -445,10 +566,15 @@ export type FaqMaxOrderByAggregateInput = {
 export type FaqMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   publicId?: Prisma.SortOrder
+  audience?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   questionEn?: Prisma.SortOrder
   questionKm?: Prisma.SortOrder
   answerEn?: Prisma.SortOrder
   answerKm?: Prisma.SortOrder
+  relatedRoute?: Prisma.SortOrder
+  relatedRouteLabelEn?: Prisma.SortOrder
+  relatedRouteLabelKm?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -459,15 +585,34 @@ export type FaqSumOrderByAggregateInput = {
   sortOrder?: Prisma.SortOrder
 }
 
+export type FaqCreatekeywordsInput = {
+  set: string[]
+}
+
+export type EnumFaqAudienceFieldUpdateOperationsInput = {
+  set?: $Enums.FaqAudience
+}
+
+export type FaqUpdatekeywordsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
 
 
 export type FaqSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   publicId?: boolean
+  audience?: boolean
+  category?: boolean
   questionEn?: boolean
   questionKm?: boolean
   answerEn?: boolean
   answerKm?: boolean
+  keywords?: boolean
+  relatedRoute?: boolean
+  relatedRouteLabelEn?: boolean
+  relatedRouteLabelKm?: boolean
   sortOrder?: boolean
   isActive?: boolean
   createdAt?: boolean
@@ -477,10 +622,16 @@ export type FaqSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
 export type FaqSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   publicId?: boolean
+  audience?: boolean
+  category?: boolean
   questionEn?: boolean
   questionKm?: boolean
   answerEn?: boolean
   answerKm?: boolean
+  keywords?: boolean
+  relatedRoute?: boolean
+  relatedRouteLabelEn?: boolean
+  relatedRouteLabelKm?: boolean
   sortOrder?: boolean
   isActive?: boolean
   createdAt?: boolean
@@ -490,10 +641,16 @@ export type FaqSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
 export type FaqSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   publicId?: boolean
+  audience?: boolean
+  category?: boolean
   questionEn?: boolean
   questionKm?: boolean
   answerEn?: boolean
   answerKm?: boolean
+  keywords?: boolean
+  relatedRoute?: boolean
+  relatedRouteLabelEn?: boolean
+  relatedRouteLabelKm?: boolean
   sortOrder?: boolean
   isActive?: boolean
   createdAt?: boolean
@@ -503,17 +660,23 @@ export type FaqSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extension
 export type FaqSelectScalar = {
   id?: boolean
   publicId?: boolean
+  audience?: boolean
+  category?: boolean
   questionEn?: boolean
   questionKm?: boolean
   answerEn?: boolean
   answerKm?: boolean
+  keywords?: boolean
+  relatedRoute?: boolean
+  relatedRouteLabelEn?: boolean
+  relatedRouteLabelKm?: boolean
   sortOrder?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type FaqOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "questionEn" | "questionKm" | "answerEn" | "answerKm" | "sortOrder" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["faq"]>
+export type FaqOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "audience" | "category" | "questionEn" | "questionKm" | "answerEn" | "answerKm" | "keywords" | "relatedRoute" | "relatedRouteLabelEn" | "relatedRouteLabelKm" | "sortOrder" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["faq"]>
 
 export type $FaqPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Faq"
@@ -521,10 +684,16 @@ export type $FaqPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     publicId: string
+    audience: $Enums.FaqAudience
+    category: string
     questionEn: string
     questionKm: string
     answerEn: string
     answerKm: string
+    keywords: string[]
+    relatedRoute: string | null
+    relatedRouteLabelEn: string | null
+    relatedRouteLabelKm: string | null
     sortOrder: number
     isActive: boolean
     createdAt: Date
@@ -954,10 +1123,16 @@ export interface Prisma__FaqClient<T, Null = never, ExtArgs extends runtime.Type
 export interface FaqFieldRefs {
   readonly id: Prisma.FieldRef<"Faq", 'String'>
   readonly publicId: Prisma.FieldRef<"Faq", 'String'>
+  readonly audience: Prisma.FieldRef<"Faq", 'FaqAudience'>
+  readonly category: Prisma.FieldRef<"Faq", 'String'>
   readonly questionEn: Prisma.FieldRef<"Faq", 'String'>
   readonly questionKm: Prisma.FieldRef<"Faq", 'String'>
   readonly answerEn: Prisma.FieldRef<"Faq", 'String'>
   readonly answerKm: Prisma.FieldRef<"Faq", 'String'>
+  readonly keywords: Prisma.FieldRef<"Faq", 'String[]'>
+  readonly relatedRoute: Prisma.FieldRef<"Faq", 'String'>
+  readonly relatedRouteLabelEn: Prisma.FieldRef<"Faq", 'String'>
+  readonly relatedRouteLabelKm: Prisma.FieldRef<"Faq", 'String'>
   readonly sortOrder: Prisma.FieldRef<"Faq", 'Int'>
   readonly isActive: Prisma.FieldRef<"Faq", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Faq", 'DateTime'>

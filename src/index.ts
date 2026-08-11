@@ -15,6 +15,7 @@ import connectDatabase from "./database/prisma.client";
 import { logger } from "./utils/logger.util";
 import { getLang } from "./utils/get-lang.util";
 import { t } from "./i18n/translate";
+import { attachBookingWebSocket } from "./websocket/booking-ws";
 const app = express();
 
 const server = http.createServer(app);
@@ -65,6 +66,8 @@ app.use(errorHandler);
 
 const startServer = async () => {
     await connectDatabase();
+
+    attachBookingWebSocket(server);
 
     server.listen(Env.PORT, () => {
         logger.info(`Server is running on port ${Env.PORT} in ${Env.NODE_ENV} mode`);

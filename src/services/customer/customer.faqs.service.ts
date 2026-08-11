@@ -1,4 +1,5 @@
 import { prisma } from "../../database/prisma.client";
+import { FaqAudience } from "../../generated/prisma/enums";
 import type { Lang } from "../../i18n/messages";
 import {
     buildPaginationMeta,
@@ -16,6 +17,7 @@ export class CustomerFaqsService {
 
         const where = {
             isActive: true,
+            audience: FaqAudience.CUSTOMER,
             ...(search
                 ? {
                       OR: [

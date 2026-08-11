@@ -158,9 +158,27 @@ export const DevicePlatform = {
 export type DevicePlatform = (typeof DevicePlatform)[keyof typeof DevicePlatform]
 
 
+export const FaqAudience = {
+  CUSTOMER: 'CUSTOMER',
+  PROVIDER: 'PROVIDER'
+} as const
+
+export type FaqAudience = (typeof FaqAudience)[keyof typeof FaqAudience]
+
+
+export const SupportRequestStatus = {
+  OPEN: 'OPEN',
+  IN_PROGRESS: 'IN_PROGRESS',
+  RESOLVED: 'RESOLVED'
+} as const
+
+export type SupportRequestStatus = (typeof SupportRequestStatus)[keyof typeof SupportRequestStatus]
+
+
 export const SupportPageKey = {
   ABOUT: 'ABOUT',
-  MISSION: 'MISSION'
+  MISSION: 'MISSION',
+  PROVIDER_CONTACT: 'PROVIDER_CONTACT'
 } as const
 
 export type SupportPageKey = (typeof SupportPageKey)[keyof typeof SupportPageKey]

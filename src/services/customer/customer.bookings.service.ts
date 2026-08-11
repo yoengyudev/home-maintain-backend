@@ -25,7 +25,8 @@ import type {
     customerRescheduleBookingSchema,
 } from "../../validators/customer/booking.validator";
 import { CustomerAddressesService } from "./customer.addresses.service";
-import { CustomerNotificationsHelper } from "./customer.notifications.helper";
+import { BookingNotificationCopy, NotificationsHelper } from "../notifications.helper";
+import { publishBookingUpdated } from "../../websocket/booking-events";
 import {
     evaluateAvailabilityDay,
     isSlotOnDay,
@@ -271,28 +272,31 @@ export class CustomerBookingsService {
             return created;
         });
 
-        await CustomerNotificationsHelper.create({
-            userId,
-            titleEn: "Booking pending confirmation",
-            titleKm: "ការកក់កំពុងរង់ចាំការបញ្ជាក់",
-            messageEn: `${providerName} received your booking for ${data.scheduledDate} (${data.timeSlot}).`,
-            messageKm: `${providerName} បានទទួលការកក់របស់អ្នកសម្រាប់ ${data.scheduledDate} (${data.timeSlot})។`,
+        const bookingCtx = {
+            bookingPublicId: booking.publicId,
+            serviceName: service.name,
+            providerName,
+            customerName: customer.fullName,
+            scheduledDate: data.scheduledDate,
+            timeSlot: data.timeSlot,
+        };
+        const bookingRef = booking.publicId || booking.id;
+
+        await NotificationsHelper.notifyUser(userId, {
+            ...BookingNotificationCopy.createdForCustomer(bookingCtx),
+            type: NotificationType.BOOKING,
             relatedModule: "booking",
-            relatedRecordId: booking.id,
-            relatedRoute: `/bookings/${booking.id}`,
+            relatedRecordId: bookingRef,
+            relatedRoute: `/bookings/${bookingRef}`,
             priority: "normal",
         });
 
-        await CustomerNotificationsHelper.create({
-            userId: service.providerProfile.userId,
+        await NotificationsHelper.notifyUser(service.providerProfile.userId, {
+            ...BookingNotificationCopy.createdForVendor(bookingCtx),
             type: NotificationType.BOOKING,
-            titleEn: "New booking request",
-            titleKm: "សំណើកក់ថ្មី",
-            messageEn: `A customer requested ${service.name} on ${data.scheduledDate} (${data.timeSlot}).`,
-            messageKm: `អតិថិជនបានស្នើសុំ ${service.name} នៅ ${data.scheduledDate} (${data.timeSlot})។`,
             relatedModule: "booking",
-            relatedRecordId: booking.id,
-            relatedRoute: `/provider/requests`,
+            relatedRecordId: bookingRef,
+            relatedRoute: `/provider/requests/${bookingRef}`,
             priority: "high",
         });
 
@@ -310,6 +314,10 @@ export class CustomerBookingsService {
             where: {
                 customerProfileId: customer.id,
                 OR: [{ id }, { publicId: id }],
+            },
+            include: {
+                serviceListing: { select: { name: true } },
+                providerProfile: { select: { userId: true } },
             },
         });
 
@@ -353,15 +361,40 @@ export class CustomerBookingsService {
             return next;
         });
 
-        await CustomerNotificationsHelper.create({
-            userId,
-            titleEn: "Booking cancelled",
-            titleKm: "ការកក់ត្រូវបានលុបចោល",
-            messageEn: `Your booking ${booking.publicId} was cancelled.`,
-            messageKm: `ការកក់ ${booking.publicId} របស់អ្នកត្រូវបានលុបចោល។`,
+        const bookingCtx = {
+            bookingPublicId: booking.publicId,
+            serviceName: booking.serviceListing?.name,
+            customerName: customer.fullName,
+            reason: data.reason ?? undefined,
+        };
+        const bookingRef = booking.publicId || booking.id;
+        const vendorRoute =
+            booking.status === BookingStatus.PENDING || booking.status === BookingStatus.RESCHEDULED
+                ? `/provider/requests/${bookingRef}`
+                : `/provider/bookings/${bookingRef}`;
+
+        publishBookingUpdated({
+            bookingId: updated.id,
+            publicId: updated.publicId,
+            status: updated.status,
+            customerUserId: userId,
+        });
+
+        await NotificationsHelper.notifyUser(userId, {
+            ...BookingNotificationCopy.cancelledForCustomer(bookingCtx),
+            type: NotificationType.BOOKING,
             relatedModule: "booking",
-            relatedRecordId: booking.id,
-            relatedRoute: `/bookings/${booking.id}`,
+            relatedRecordId: bookingRef,
+            relatedRoute: `/bookings/${bookingRef}`,
+            priority: "high",
+        });
+
+        await NotificationsHelper.notifyUser(booking.providerProfile.userId, {
+            ...BookingNotificationCopy.cancelledForVendor(bookingCtx),
+            type: NotificationType.BOOKING,
+            relatedModule: "booking",
+            relatedRecordId: bookingRef,
+            relatedRoute: vendorRoute,
             priority: "high",
         });
 
@@ -379,6 +412,9 @@ export class CustomerBookingsService {
             where: {
                 customerProfileId: customer.id,
                 OR: [{ id }, { publicId: id }],
+            },
+            include: {
+                serviceListing: { select: { name: true } },
             },
         });
 
@@ -450,17 +486,45 @@ export class CustomerBookingsService {
             return next;
         });
 
-        await CustomerNotificationsHelper.create({
-            userId,
-            titleEn: "Booking rescheduled",
-            titleKm: "ការកក់ត្រូវបានកំណត់ពេលឡើងវិញ",
-            messageEn: `Your booking ${booking.publicId} was rescheduled to ${data.scheduledDate} (${data.timeSlot}).`,
-            messageKm: `ការកក់ ${booking.publicId} ត្រូវបានកំណត់ពេលឡើងវិញទៅ ${data.scheduledDate} (${data.timeSlot})។`,
+        const bookingCtx = {
+            bookingPublicId: booking.publicId,
+            serviceName: booking.serviceListing?.name,
+            customerName: customer.fullName,
+            scheduledDate: data.scheduledDate,
+            timeSlot: data.timeSlot,
+        };
+        const bookingRef = booking.publicId || booking.id;
+        const vendorRoute =
+            nextStatus === BookingStatus.PENDING
+                ? `/provider/requests/${bookingRef}`
+                : `/provider/bookings/${bookingRef}`;
+
+        publishBookingUpdated({
+            bookingId: updated.id,
+            publicId: updated.publicId,
+            status: updated.status,
+            customerUserId: userId,
+        });
+
+        await NotificationsHelper.notifyUser(userId, {
+            ...BookingNotificationCopy.rescheduledForCustomer(bookingCtx),
+            type: NotificationType.BOOKING,
             relatedModule: "booking",
-            relatedRecordId: booking.id,
-            relatedRoute: `/bookings/${booking.id}`,
+            relatedRecordId: bookingRef,
+            relatedRoute: `/bookings/${bookingRef}`,
             priority: "normal",
         });
+
+        if (providerProfile?.userId) {
+            await NotificationsHelper.notifyUser(providerProfile.userId, {
+                ...BookingNotificationCopy.rescheduledForVendor(bookingCtx),
+                type: NotificationType.BOOKING,
+                relatedModule: "booking",
+                relatedRecordId: bookingRef,
+                relatedRoute: vendorRoute,
+                priority: "high",
+            });
+        }
 
         return this.formatBooking(updated, lang);
     }

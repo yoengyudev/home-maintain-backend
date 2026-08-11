@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { register, login, forgotPassword, resetPassword, logout, me, getProfile, updateProfile, updateAvailability } from "../../controllers/vendor/vendor.authentication.controller";
+import { register, login, forgotPassword, resetPassword, logout, me, getProfile, updateProfile, updateAvailability, changePassword, listSessions, revokeOtherSessions, deleteAccount } from "../../controllers/vendor/vendor.authentication.controller";
 import { asyncHandler } from "../../middlewares/async-handler.middlerware";
 import { validate } from "../../validators/validate";
-import { vendorRegisterSchema, vendorLoginSchema, forgotPasswordSchema, resetPasswordSchema } from "../../validators/vendor/vendor.auth.validator";
+import { vendorRegisterSchema, vendorLoginSchema, forgotPasswordSchema, resetPasswordSchema, vendorChangePasswordSchema, vendorDeleteAccountSchema } from "../../validators/vendor/vendor.auth.validator";
 import { authenticate } from "../../middlewares/auth.middlerware";
 import { authorize } from "../../middlewares/role.middlerware";
 import { UserRole } from "../../generated/prisma/enums";
@@ -14,6 +14,22 @@ router.post("/login", validate(vendorLoginSchema), asyncHandler(login));
 router.post("/forgot-password", validate(forgotPasswordSchema), asyncHandler(forgotPassword));
 router.post("/reset-password", validate(resetPasswordSchema), asyncHandler(resetPassword));
 router.post("/logout", authenticate, authorize(UserRole.PROVIDER), asyncHandler(logout));
+router.post(
+    "/change-password",
+    authenticate,
+    authorize(UserRole.PROVIDER),
+    validate(vendorChangePasswordSchema),
+    asyncHandler(changePassword)
+);
+router.get("/sessions", authenticate, authorize(UserRole.PROVIDER), asyncHandler(listSessions));
+router.post("/sessions/revoke-others", authenticate, authorize(UserRole.PROVIDER), asyncHandler(revokeOtherSessions));
+router.delete(
+    "/account",
+    authenticate,
+    authorize(UserRole.PROVIDER),
+    validate(vendorDeleteAccountSchema),
+    asyncHandler(deleteAccount)
+);
 router.get("/me", authenticate, authorize(UserRole.PROVIDER), asyncHandler(me));
 router.get("/profile", authenticate, authorize(UserRole.PROVIDER), asyncHandler(getProfile));
 router.put("/profile", authenticate, authorize(UserRole.PROVIDER), asyncHandler(updateProfile));

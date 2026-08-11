@@ -134,6 +134,7 @@ model User {
   accountSessions   AccountSession[]
   fcmTokens         FcmToken[]
   notifications     Notification[]
+  supportRequests   SupportRequest[]
 
   @@index([email])
   @@index([role])
@@ -670,25 +671,65 @@ model InternalAdminNote {
   @@map("internal_admin_notes")
 }
 
+enum FaqAudience {
+  CUSTOMER
+  PROVIDER
+}
+
+enum SupportRequestStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+}
+
 model Faq {
-  id          String   @id @default(cuid())
-  publicId    String   @unique
-  questionEn  String
-  questionKm  String
-  answerEn    String
-  answerKm    String
-  sortOrder   Int      @default(0)
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                   String      @id @default(cuid())
+  publicId             String      @unique
+  audience             FaqAudience @default(CUSTOMER)
+  category             String      @default("general")
+  questionEn           String
+  questionKm           String
+  answerEn             String
+  answerKm             String
+  keywords             String[]    @default([])
+  relatedRoute         String?
+  relatedRouteLabelEn  String?
+  relatedRouteLabelKm  String?
+  sortOrder            Int         @default(0)
+  isActive             Boolean     @default(true)
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
 
   @@index([isActive, sortOrder])
+  @@index([audience, isActive, category])
   @@map("faqs")
+}
+
+model SupportRequest {
+  id               String                @id @default(cuid())
+  publicId         String                @unique
+  userId           String
+  audience         FaqAudience           @default(PROVIDER)
+  category         String
+  subject          String
+  description      String
+  relatedBookingId String?
+  relatedServiceId String?
+  status           SupportRequestStatus  @default(OPEN)
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+  user             User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("support_requests")
 }
 
 enum SupportPageKey {
   ABOUT
   MISSION
+  PROVIDER_CONTACT
 }
 
 model SupportPage {

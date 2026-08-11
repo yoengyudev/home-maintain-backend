@@ -30,7 +30,10 @@ export const getProfile = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
     const lang = getLang(req);
-    const data = await VendorAuthenticationService.login(req.body, lang);
+    const data = await VendorAuthenticationService.login(req.body, lang, {
+        userAgent: req.get("user-agent"),
+        ipAddress: req.ip,
+    });
 
     return sendResponse(res, {
         statusCode: HTTPSTATUS.OK,
@@ -63,16 +66,80 @@ export const resetPassword = async (req: Request, res: Response) => {
 
 export const logout = async (req: Request, res: Response) => {
     const lang = getLang(req);
-    const userId = (req as any).user?.userId;
-    const authHeader = req.headers.authorization;
+    const user = (req as any).user;
+    const userId = user?.userId;
+    const sessionId = user?.sid;
 
-    if (userId && authHeader) {
-        await VendorAuthenticationService.logout(userId, authHeader);
+    if (userId) {
+        await VendorAuthenticationService.logout(userId, sessionId);
     }
 
     return sendResponse(res, {
         statusCode: HTTPSTATUS.OK,
         message: t("VENDOR_LOGGED_OUT_SUCCESSFULLY", lang),
+    });
+};
+
+export const changePassword = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const user = (req as any).user;
+
+    await VendorAuthenticationService.changePassword(
+        user.userId,
+        req.body,
+        lang,
+        user.sid
+    );
+
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: t("VENDOR_PASSWORD_CHANGED", lang),
+        data: { success: true },
+    });
+};
+
+export const listSessions = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const user = (req as any).user;
+    const data = await VendorAuthenticationService.listSessions(
+        user.userId,
+        lang,
+        user.sid
+    );
+
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: t("VENDOR_SESSIONS_RETRIEVED", lang),
+        data,
+    });
+};
+
+export const revokeOtherSessions = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const user = (req as any).user;
+    const data = await VendorAuthenticationService.revokeOtherSessions(
+        user.userId,
+        lang,
+        user.sid
+    );
+
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: t("VENDOR_SESSIONS_REVOKED", lang),
+        data,
+    });
+};
+
+export const deleteAccount = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const user = (req as any).user;
+
+    await VendorAuthenticationService.deleteAccount(user.userId, req.body, lang);
+
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: t("VENDOR_ACCOUNT_DELETED", lang),
+        data: { success: true },
     });
 };
 

@@ -5,9 +5,9 @@ import { verifyPassword } from "../../utils/verify-password.util";
 import { signAccessToken, signRefreshToken } from "../../utils/jwt.util";
 import { BadRequestException, NotFoundException, UnauthorizedException } from "../../utils/app-error.util";
 import type { z } from "zod";
-import type { vendorRegisterSchema, vendorLoginSchema, forgotPasswordSchema, resetPasswordSchema } from "../../validators/vendor/vendor.auth.validator";
+import type { vendorRegisterSchema, vendorLoginSchema, forgotPasswordSchema, resetPasswordSchema, vendorChangePasswordSchema, vendorDeleteAccountSchema } from "../../validators/vendor/vendor.auth.validator";
 import { normalizeCambodiaPhone } from "../../validators/phone.validate";
-import { UserRole, ProviderStatus } from "../../generated/prisma/enums";
+import { UserRole, ProviderStatus, AccountStatus, BookingStatus, ServiceStatus } from "../../generated/prisma/enums";
 import { deactivateFcmToken, upsertFcmToken } from "../../helper/customer/auth.helper";
 import { Lang } from "../../i18n/messages";
 import { t } from "../../i18n/translate";
@@ -16,6 +16,23 @@ type RegisterDto = z.infer<typeof vendorRegisterSchema>;
 type LoginDto = z.infer<typeof vendorLoginSchema>;
 type ForgotPasswordDto = z.infer<typeof forgotPasswordSchema>;
 type ResetPasswordDto = z.infer<typeof resetPasswordSchema>;
+type ChangePasswordDto = z.infer<typeof vendorChangePasswordSchema>;
+type DeleteAccountDto = z.infer<typeof vendorDeleteAccountSchema>;
+
+const ACTIVE_BOOKING_STATUSES: BookingStatus[] = [
+    BookingStatus.PENDING,
+    BookingStatus.ACCEPTED,
+    BookingStatus.IN_PROGRESS,
+    BookingStatus.RESCHEDULED,
+];
+
+type SessionMeta = {
+    userAgent?: string | null;
+    ipAddress?: string | null;
+};
+
+const isMobileDevice = (value?: string | null) =>
+    /iphone|ipad|ipod|android|mobile/i.test(value ?? "");
 
 export class VendorAuthenticationService {
     static async register(data: RegisterDto, lang: Lang = "en") {
@@ -72,9 +89,11 @@ export class VendorAuthenticationService {
             return user;
         });
 
+        const sessionId = crypto.randomUUID();
         const tokenPayload = {
             userId: result.id,
             role: result.role,
+            sid: sessionId,
         };
 
         const accessToken = signAccessToken(tokenPayload);
@@ -84,7 +103,7 @@ export class VendorAuthenticationService {
         const tokenHash = crypto.createHash('sha256').update(refreshToken).digest('hex');
         await prisma.accountSession.create({
             data: {
-                publicId: crypto.randomUUID(),
+                publicId: sessionId,
                 userId: result.id,
                 tokenHash,
                 expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
@@ -104,7 +123,7 @@ export class VendorAuthenticationService {
         };
     }
 
-    static async login(data: LoginDto, lang: Lang = "en") {
+    static async login(data: LoginDto, lang: Lang = "en", meta: SessionMeta = {}) {
         const { phone, password, fcmToken, platform, deviceName } = data;
         const normalizedPhone = normalizeCambodiaPhone(phone);
 
@@ -123,14 +142,20 @@ export class VendorAuthenticationService {
             throw new UnauthorizedException(t("VENDOR_INVALID_CREDENTIALS", lang));
         }
 
+        if (user.accountStatus !== AccountStatus.ACTIVE) {
+            throw new UnauthorizedException(t("VENDOR_ACCOUNT_DISABLED", lang));
+        }
+
         const isValid = await verifyPassword(password, user.passwordHash);
         if (!isValid) {
             throw new UnauthorizedException(t("VENDOR_INVALID_CREDENTIALS", lang));
         }
 
+        const sessionId = crypto.randomUUID();
         const tokenPayload = {
             userId: user.id,
             role: user.role,
+            sid: sessionId,
         };
 
         const accessToken = signAccessToken(tokenPayload);
@@ -139,9 +164,13 @@ export class VendorAuthenticationService {
         const tokenHash = crypto.createHash('sha256').update(refreshToken).digest('hex');
         await prisma.accountSession.create({
             data: {
-                publicId: crypto.randomUUID(),
+                publicId: sessionId,
                 userId: user.id,
                 tokenHash,
+                deviceName: deviceName || meta.userAgent || null,
+                userAgent: meta.userAgent || null,
+                ipAddress: meta.ipAddress || null,
+                lastUsedAt: new Date(),
                 expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
             }
         });
@@ -228,23 +257,241 @@ export class VendorAuthenticationService {
         };
     }
 
-    static async logout(userId: string, authHeader: string) {
-        const token = authHeader.split(" ")[1];
-        if (!token) return;
+    static async logout(userId: string, sessionId?: string) {
+        if (sessionId) {
+            await prisma.accountSession.updateMany({
+                where: {
+                    userId,
+                    publicId: sessionId,
+                    revokedAt: null,
+                },
+                data: {
+                    revokedAt: new Date(),
+                },
+            });
+        }
 
-        const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
-        
+        await deactivateFcmToken(userId);
+    }
+
+    static async changePassword(
+        userId: string,
+        data: ChangePasswordDto,
+        lang: Lang,
+        sessionId?: string
+    ) {
+        const { currentPassword, newPassword } = data;
+
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+        });
+
+        if (!user || user.role !== UserRole.PROVIDER || !user.passwordHash) {
+            throw new NotFoundException(t("VENDOR_USER_NOT_FOUND", lang));
+        }
+
+        if (user.accountStatus !== AccountStatus.ACTIVE) {
+            throw new UnauthorizedException(t("VENDOR_ACCOUNT_DISABLED", lang));
+        }
+
+        const isValid = await verifyPassword(currentPassword, user.passwordHash);
+        if (!isValid) {
+            throw new BadRequestException(t("VENDOR_PASSWORD_CURRENT_INVALID", lang));
+        }
+
+        if (currentPassword === newPassword) {
+            throw new BadRequestException(t("VENDOR_PASSWORD_UNCHANGED", lang));
+        }
+
+        const passwordHash = await hashPassword(newPassword);
+
+        await prisma.user.update({
+            where: { id: user.id },
+            data: { passwordHash },
+        });
+
+        let keepSessionId = sessionId;
+        if (!keepSessionId) {
+            const latest = await prisma.accountSession.findFirst({
+                where: {
+                    userId: user.id,
+                    revokedAt: null,
+                    expiresAt: { gt: new Date() },
+                },
+                orderBy: [{ lastUsedAt: "desc" }, { createdAt: "desc" }],
+            });
+            keepSessionId = latest?.publicId;
+        }
+
+        await prisma.accountSession.updateMany({
+            where: {
+                userId: user.id,
+                revokedAt: null,
+                ...(keepSessionId ? { NOT: { publicId: keepSessionId } } : {}),
+            },
+            data: { revokedAt: new Date() },
+        });
+
+        return { success: true as const };
+    }
+
+    static async listSessions(userId: string, lang: Lang, sessionId?: string) {
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+        });
+
+        if (!user || user.role !== UserRole.PROVIDER) {
+            throw new NotFoundException(t("VENDOR_USER_NOT_FOUND", lang));
+        }
+
+        const now = new Date();
+        const rows = await prisma.accountSession.findMany({
+            where: {
+                userId,
+                revokedAt: null,
+                expiresAt: { gt: now },
+            },
+            orderBy: [{ lastUsedAt: "desc" }, { createdAt: "desc" }],
+        });
+
+        const currentId = sessionId || rows[0]?.publicId;
+
+        return {
+            phone: user.phone,
+            email: user.email,
+            lastSignedInAt: user.lastSignedInAt,
+            sessions: rows.map((session) => {
+                const label = session.deviceName || session.userAgent || null;
+                return {
+                    publicId: session.publicId,
+                    deviceName: label,
+                    ipAddress: session.ipAddress,
+                    lastUsedAt: session.lastUsedAt ?? session.createdAt,
+                    createdAt: session.createdAt,
+                    isCurrent: Boolean(currentId && session.publicId === currentId),
+                    isMobile: isMobileDevice(label),
+                };
+            }),
+        };
+    }
+
+    static async revokeOtherSessions(userId: string, lang: Lang, sessionId?: string) {
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+        });
+
+        if (!user || user.role !== UserRole.PROVIDER) {
+            throw new NotFoundException(t("VENDOR_USER_NOT_FOUND", lang));
+        }
+
+        let keepSessionId = sessionId;
+        if (!keepSessionId) {
+            const latest = await prisma.accountSession.findFirst({
+                where: {
+                    userId,
+                    revokedAt: null,
+                    expiresAt: { gt: new Date() },
+                },
+                orderBy: [{ lastUsedAt: "desc" }, { createdAt: "desc" }],
+            });
+            keepSessionId = latest?.publicId;
+        }
+
         await prisma.accountSession.updateMany({
             where: {
                 userId,
-                tokenHash
+                revokedAt: null,
+                ...(keepSessionId ? { NOT: { publicId: keepSessionId } } : {}),
             },
-            data: {
-                revokedAt: new Date()
-            }
+            data: { revokedAt: new Date() },
         });
 
-        await deactivateFcmToken(userId);
+        return this.listSessions(userId, lang, keepSessionId);
+    }
+
+    static async deleteAccount(
+        userId: string,
+        data: DeleteAccountDto,
+        lang: Lang
+    ) {
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+            include: { providerProfile: true },
+        });
+
+        if (!user || user.role !== UserRole.PROVIDER) {
+            throw new NotFoundException(t("VENDOR_USER_NOT_FOUND", lang));
+        }
+
+        if (user.accountStatus === AccountStatus.DISABLED) {
+            throw new BadRequestException(t("VENDOR_ACCOUNT_DISABLED", lang));
+        }
+
+        if (!user.passwordHash) {
+            throw new UnauthorizedException(t("VENDOR_INVALID_CREDENTIALS", lang));
+        }
+
+        const isValid = await verifyPassword(data.password, user.passwordHash);
+        if (!isValid) {
+            throw new BadRequestException(t("VENDOR_PASSWORD_CURRENT_INVALID", lang));
+        }
+
+        if (user.providerProfile) {
+            const activeBookings = await prisma.booking.count({
+                where: {
+                    providerProfileId: user.providerProfile.id,
+                    status: { in: ACTIVE_BOOKING_STATUSES },
+                },
+            });
+
+            if (activeBookings > 0) {
+                throw new BadRequestException(t("VENDOR_ACCOUNT_HAS_ACTIVE_BOOKINGS", lang));
+            }
+        }
+
+        const anonymizedEmail = `deleted+${user.publicId}@deleted.local`;
+
+        await prisma.$transaction(async (tx) => {
+            await tx.accountSession.updateMany({
+                where: { userId: user.id, revokedAt: null },
+                data: { revokedAt: new Date() },
+            });
+
+            await tx.fcmToken.updateMany({
+                where: { userId: user.id, isActive: true },
+                data: { isActive: false },
+            });
+
+            if (user.providerProfile) {
+                await tx.serviceListing.updateMany({
+                    where: { providerProfileId: user.providerProfile.id },
+                    data: { serviceStatus: ServiceStatus.DISABLED },
+                });
+
+                await tx.providerProfile.update({
+                    where: { id: user.providerProfile.id },
+                    data: {
+                        status: ProviderStatus.DISABLED,
+                        suspendedAt: new Date(),
+                        suspensionReason: "Account deleted by provider",
+                    },
+                });
+            }
+
+            await tx.user.update({
+                where: { id: user.id },
+                data: {
+                    accountStatus: AccountStatus.DISABLED,
+                    passwordHash: null,
+                    email: anonymizedEmail,
+                    phone: null,
+                    emailVerifiedAt: null,
+                    phoneVerifiedAt: null,
+                },
+            });
+        });
+
+        return { success: true as const };
     }
 
     static async me(userId: string, lang: Lang = "en") {

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { getLang } from "../utils/get-lang.util";
 import { getVerifiedAccessTokenPayload } from "../utils/auth-token.util";
 import { UnauthorizedException } from "../utils/app-error.util";
-import { assertActiveCustomerSession } from "../helper/customer/auth.helper";
+import { assertActiveCustomerSession, assertActiveProviderSession } from "../helper/customer/auth.helper";
 import { UserRole } from "../generated/prisma/enums";
 import { t } from "../i18n/translate";
 
@@ -20,6 +20,10 @@ export const authenticate = async (
         // Customer tokens include sid; revoked sessions must be rejected after logout.
         if (decoded.role === UserRole.CUSTOMER) {
             await assertActiveCustomerSession(decoded.userId, decoded.sid, lang);
+        }
+
+        if (decoded.role === UserRole.PROVIDER) {
+            await assertActiveProviderSession(decoded.userId, decoded.sid, lang);
         }
 
         (req as any).user = decoded;
