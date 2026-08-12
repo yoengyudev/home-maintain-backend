@@ -24,8 +24,8 @@ if (!connectionString) {
 
 const adapter = new PrismaPg({ connectionString });
 const prisma = new PrismaClient({ adapter });
-// Bcrypt hash for 'FixItHome@2026'
-const ADMIN_PASSWORD_HASH = '$2b$10$Uo23/Y0q/uH./zKz9z7Etuw49XqfC820fE8rQO8Poy/z80w3p5986';
+// Bcrypt hash for 'FixItHome@2026' (cost 10)
+const ADMIN_PASSWORD_HASH = '$2b$10$B.3ZEUzWY/9gBtiMsOZ6rujlmGVOhXgA3U.f.qsnnYdP2gxGfefc.';
 
 const at = (value: string) => new Date(value);
 
