@@ -50,3 +50,7 @@ export const adminLoginSchema = z.object({
     platform: devicePlatformSchema,
     deviceName: z.string().min(1, "Device name cannot be empty").optional(),
 });
+
+export const adminRefreshTokenSchema = z.object({
+    refreshToken: z.string().min(1, "Refresh token is required"),
+});

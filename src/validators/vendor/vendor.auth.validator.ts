@@ -62,3 +62,7 @@ export const resetPasswordSchema = z.object({
     otp: z.string().length(6, "OTP must be exactly 6 digits"),
     newPassword: z.string().refine(validatePassword, "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character"),
 });
+
+export const vendorRefreshTokenSchema = z.object({
+    refreshToken: z.string().min(1, "Refresh token is required"),
+});

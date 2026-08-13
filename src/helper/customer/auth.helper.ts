@@ -9,6 +9,9 @@ export const hashToken = (token: string): string => {
     return crypto.createHash("sha256").update(token).digest("hex");
 };
 
+/** Far-future expiry: customer sessions stay valid until logout (revokedAt). */
+export const CUSTOMER_SESSION_NEVER_EXPIRES_AT = new Date("9999-12-31T23:59:59.999Z");
+
 export const createCustomerSession = async (params: {
     userId: string;
     sessionId: string;
@@ -16,15 +19,12 @@ export const createCustomerSession = async (params: {
 }) => {
     const { userId, sessionId, refreshToken } = params;
 
-    // Far-future expiry: customer sessions stay valid until logout (revokedAt).
-    const NEVER_EXPIRES_AT = new Date("9999-12-31T23:59:59.999Z");
-
     return prisma.accountSession.create({
         data: {
             publicId: sessionId,
             userId,
             tokenHash: hashToken(refreshToken),
-            expiresAt: NEVER_EXPIRES_AT,
+            expiresAt: CUSTOMER_SESSION_NEVER_EXPIRES_AT,
         },
     });
 };
@@ -64,6 +64,7 @@ export const assertActiveCustomerSession = async (
         throw new UnauthorizedException(t("CUSTOMER_SESSION_INVALID", lang));
     }
 
+    // Customer sessions never expire by TTL — only logout (revokedAt) ends them.
     const session = await prisma.accountSession.findFirst({
         where: {
             publicId: sessionId,
@@ -78,7 +79,11 @@ export const assertActiveCustomerSession = async (
 
     await prisma.accountSession.update({
         where: { id: session.id },
-        data: { lastUsedAt: new Date() },
+        data: {
+            lastUsedAt: new Date(),
+            // Heal any legacy short-lived expiresAt values from older builds.
+            expiresAt: CUSTOMER_SESSION_NEVER_EXPIRES_AT,
+        },
     });
 };
 
@@ -102,6 +107,34 @@ export const assertActiveProviderSession = async (
 
     if (!session) {
         throw new UnauthorizedException(t("VENDOR_SESSION_INVALID", lang));
+    }
+
+    await prisma.accountSession.update({
+        where: { id: session.id },
+        data: { lastUsedAt: new Date() },
+    });
+};
+
+export const assertActiveAdminSession = async (
+    userId: string,
+    sessionId: string | undefined,
+    lang: Lang
+) => {
+    if (!sessionId) {
+        return;
+    }
+
+    const session = await prisma.accountSession.findFirst({
+        where: {
+            publicId: sessionId,
+            userId,
+            revokedAt: null,
+            expiresAt: { gt: new Date() },
+        },
+    });
+
+    if (!session) {
+        throw new UnauthorizedException(t("ADMIN_SESSION_INVALID", lang));
     }
 
     await prisma.accountSession.update({

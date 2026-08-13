@@ -9,6 +9,7 @@ import {
     adminForgotPasswordSchema,
     adminVerifyOtpSchema,
     adminResetPasswordSchema,
+    adminRefreshTokenSchema,
 } from "../validators/admin/admin.auth.validator";
 import { createAdminNoteSchema } from "../validators/admin/admin.notes.validator";
 import * as notesController from "../controllers/admin/admin.notes.controller";
@@ -44,6 +45,7 @@ const categoryImageUpload = uploadImage.fields([
 // Authentication
 // ==========================================
 router.post("/auth/login", validate(adminLoginSchema), asyncHandler(authController.login));
+router.post("/auth/refresh", validate(adminRefreshTokenSchema), asyncHandler(authController.refresh));
 router.post("/auth/forgot-password", validate(adminForgotPasswordSchema), asyncHandler(authController.forgotPassword));
 router.post("/auth/verify-otp", validate(adminVerifyOtpSchema), asyncHandler(authController.verifyResetOtp));
 router.post("/auth/reset-password", validate(adminResetPasswordSchema), asyncHandler(authController.resetPassword));

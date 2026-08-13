@@ -2,10 +2,10 @@ import crypto from "crypto";
 import { prisma } from "../../database/prisma.client";
 import { hashPassword } from "../../utils/password.util";
 import { verifyPassword } from "../../utils/verify-password.util";
-import { signAccessToken, signRefreshToken } from "../../utils/jwt.util";
+import { signAccessToken, signRefreshToken, getRefreshTokenExpiresAt, verifyRefreshToken } from "../../utils/jwt.util";
 import { BadRequestException, NotFoundException, UnauthorizedException } from "../../utils/app-error.util";
 import type { z } from "zod";
-import type { vendorRegisterSchema, vendorLoginSchema, forgotPasswordSchema, resetPasswordSchema, vendorChangePasswordSchema, vendorDeleteAccountSchema } from "../../validators/vendor/vendor.auth.validator";
+import type { vendorRegisterSchema, vendorLoginSchema, forgotPasswordSchema, resetPasswordSchema, vendorChangePasswordSchema, vendorDeleteAccountSchema, vendorRefreshTokenSchema } from "../../validators/vendor/vendor.auth.validator";
 import { normalizeCambodiaPhone } from "../../validators/phone.validate";
 import { UserRole, ProviderStatus, AccountStatus, BookingStatus, ServiceStatus } from "../../generated/prisma/enums";
 import { deactivateFcmToken, upsertFcmToken } from "../../helper/customer/auth.helper";
@@ -18,6 +18,7 @@ type ForgotPasswordDto = z.infer<typeof forgotPasswordSchema>;
 type ResetPasswordDto = z.infer<typeof resetPasswordSchema>;
 type ChangePasswordDto = z.infer<typeof vendorChangePasswordSchema>;
 type DeleteAccountDto = z.infer<typeof vendorDeleteAccountSchema>;
+type RefreshTokenDto = z.infer<typeof vendorRefreshTokenSchema>;
 
 const ACTIVE_BOOKING_STATUSES: BookingStatus[] = [
     BookingStatus.PENDING,
@@ -106,7 +107,7 @@ export class VendorAuthenticationService {
                 publicId: sessionId,
                 userId: result.id,
                 tokenHash,
-                expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
+                expiresAt: getRefreshTokenExpiresAt()
             }
         });
 
@@ -171,7 +172,7 @@ export class VendorAuthenticationService {
                 userAgent: meta.userAgent || null,
                 ipAddress: meta.ipAddress || null,
                 lastUsedAt: new Date(),
-                expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+                expiresAt: getRefreshTokenExpiresAt()
             }
         });
 
@@ -197,6 +198,84 @@ export class VendorAuthenticationService {
             },
             accessToken,
             refreshToken
+        };
+    }
+
+    static async refresh(data: RefreshTokenDto, lang: Lang = "en") {
+        const { refreshToken } = data;
+        const decoded = verifyRefreshToken(refreshToken) as {
+            userId?: string;
+            role?: UserRole;
+            sid?: string;
+        } | null;
+
+        if (!decoded?.userId || !decoded?.sid || decoded.role !== UserRole.PROVIDER) {
+            throw new UnauthorizedException(t("VENDOR_SESSION_INVALID", lang));
+        }
+
+        const tokenHash = crypto.createHash("sha256").update(refreshToken).digest("hex");
+        const session = await prisma.accountSession.findFirst({
+            where: {
+                publicId: decoded.sid,
+                userId: decoded.userId,
+                tokenHash,
+                revokedAt: null,
+                expiresAt: { gt: new Date() },
+            },
+        });
+
+        if (!session) {
+            throw new UnauthorizedException(t("VENDOR_SESSION_INVALID", lang));
+        }
+
+        const user = await prisma.user.findUnique({
+            where: { id: decoded.userId },
+            include: {
+                providerProfile: {
+                    include: {
+                        businessProfile: true,
+                    },
+                },
+            },
+        });
+
+        if (!user || user.role !== UserRole.PROVIDER) {
+            throw new UnauthorizedException(t("VENDOR_SESSION_INVALID", lang));
+        }
+
+        if (user.accountStatus !== AccountStatus.ACTIVE) {
+            throw new UnauthorizedException(t("VENDOR_ACCOUNT_DISABLED", lang));
+        }
+
+        const tokenPayload = {
+            userId: user.id,
+            role: user.role,
+            sid: session.publicId,
+        };
+
+        const nextAccessToken = signAccessToken(tokenPayload);
+        const nextRefreshToken = signRefreshToken(tokenPayload);
+        const nextTokenHash = crypto.createHash("sha256").update(nextRefreshToken).digest("hex");
+
+        await prisma.accountSession.update({
+            where: { id: session.id },
+            data: {
+                tokenHash: nextTokenHash,
+                lastUsedAt: new Date(),
+                expiresAt: getRefreshTokenExpiresAt(),
+            },
+        });
+
+        return {
+            user: {
+                publicId: user.publicId,
+                email: user.email,
+                phone: user.phone,
+                role: user.role,
+                profile: user.providerProfile,
+            },
+            accessToken: nextAccessToken,
+            refreshToken: nextRefreshToken,
         };
     }
 

@@ -7,7 +7,10 @@ import { t } from "../../i18n/translate";
 
 export const login = async (req: Request, res: Response) => {
     const lang = getLang(req);
-    const data = await AdminAuthenticationService.login(req.body, lang);
+    const data = await AdminAuthenticationService.login(req.body, lang, {
+        userAgent: req.get("user-agent"),
+        ipAddress: req.ip,
+    });
 
     return sendResponse(res, {
         statusCode: HTTPSTATUS.OK,
@@ -16,11 +19,22 @@ export const login = async (req: Request, res: Response) => {
     });
 };
 
+export const refresh = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const data = await AdminAuthenticationService.refresh(req.body, lang);
+
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: t("ADMIN_TOKEN_REFRESHED", lang),
+        data,
+    });
+};
+
 export const logout = async (req: Request, res: Response) => {
     const lang = getLang(req);
     const user = (req as any).user;
     if (user?.userId) {
-        await AdminAuthenticationService.logout(user.userId, lang);
+        await AdminAuthenticationService.logout(user.userId, lang, user?.sid);
     }
     return sendResponse(res, {
         statusCode: HTTPSTATUS.OK,

@@ -42,6 +42,17 @@ export const login = async (req: Request, res: Response) => {
     });
 };
 
+export const refresh = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const data = await VendorAuthenticationService.refresh(req.body, lang);
+
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: t("VENDOR_TOKEN_REFRESHED", lang),
+        data,
+    });
+};
+
 export const forgotPassword = async (req: Request, res: Response) => {
     const lang = getLang(req);
     const data = await VendorAuthenticationService.forgotPassword(req.body, lang);
