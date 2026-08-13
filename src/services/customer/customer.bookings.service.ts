@@ -624,6 +624,7 @@ export class CustomerBookingsService {
                 id: string;
                 publicId: string;
                 name: string;
+                nameKm?: string | null;
                 imageUrl: string | null;
                 priceUnit: string | null;
                 duration: string | null;
@@ -723,7 +724,9 @@ export class CustomerBookingsService {
             service: {
                 id: booking.serviceListing.id,
                 publicId: booking.serviceListing.publicId,
-                name: booking.serviceListing.name,
+                name: isKh
+                    ? booking.serviceListing.nameKm || booking.serviceListing.name
+                    : booking.serviceListing.name || booking.serviceListing.nameKm || "",
                 imageUrl: booking.serviceListing.imageUrl,
                 priceUnit: booking.serviceListing.priceUnit,
                 duration: booking.serviceListing.duration,

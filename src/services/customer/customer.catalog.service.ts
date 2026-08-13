@@ -140,7 +140,9 @@ export class CustomerCatalogService {
                 ? {
                       OR: [
                           { name: { contains: searchText, mode: "insensitive" } },
+                          { nameKm: { contains: searchText, mode: "insensitive" } },
                           { description: { contains: searchText, mode: "insensitive" } },
+                          { descriptionKm: { contains: searchText, mode: "insensitive" } },
                       ],
                   }
                 : {}),
@@ -186,8 +188,8 @@ export class CustomerCatalogService {
             data: items.map((item) => ({
                 id: item.id,
                 publicId: item.publicId,
-                name: item.name,
-                description: item.description,
+                name: getLocalizedText(lang, item.name, item.nameKm),
+                description: getLocalizedText(lang, item.description, item.descriptionKm) || null,
                 price: Number(item.price),
                 priceUnit: item.priceUnit,
                 pricingType: item.pricingType,
@@ -217,6 +219,9 @@ export class CustomerCatalogService {
                     contactName: item.providerProfile.contactName,
                     businessName: item.providerProfile.businessProfile?.businessName ?? null,
                     avatarUrl: item.providerProfile.avatarUrl,
+                    logoUrl:
+                        item.providerProfile.businessProfile?.logoUrl ??
+                        item.providerProfile.avatarUrl,
                     averageRating: item.providerProfile.averageRating ? Number(item.providerProfile.averageRating) : null,
                     completedJobs: item.providerProfile.completedJobs,
                 },
@@ -268,8 +273,8 @@ export class CustomerCatalogService {
         return {
             id: item.id,
             publicId: item.publicId,
-            name: item.name,
-            description: item.description,
+            name: getLocalizedText(lang, item.name, item.nameKm),
+            description: getLocalizedText(lang, item.description, item.descriptionKm) || null,
             price: Number(item.price),
             priceUnit: item.priceUnit,
             pricingType: item.pricingType,
@@ -307,6 +312,9 @@ export class CustomerCatalogService {
                 contactName: item.providerProfile.contactName,
                 businessName: item.providerProfile.businessProfile?.businessName ?? null,
                 avatarUrl: item.providerProfile.avatarUrl,
+                logoUrl:
+                    item.providerProfile.businessProfile?.logoUrl ??
+                    item.providerProfile.avatarUrl,
                 averageRating: item.providerProfile.averageRating ? Number(item.providerProfile.averageRating) : null,
                 completedJobs: item.providerProfile.completedJobs,
             },
@@ -342,8 +350,8 @@ export class CustomerCatalogService {
             data: items.map((item) => ({
                 id: item.id,
                 publicId: item.publicId,
-                name: item.name,
-                description: item.description,
+                name: getLocalizedText(lang, item.name, item.nameKm),
+                description: getLocalizedText(lang, item.description, item.descriptionKm) || null,
                 price: Number(item.price),
                 priceUnit: item.priceUnit,
                 pricingType: item.pricingType,
@@ -373,6 +381,9 @@ export class CustomerCatalogService {
                     contactName: item.providerProfile.contactName,
                     businessName: item.providerProfile.businessProfile?.businessName ?? null,
                     avatarUrl: item.providerProfile.avatarUrl,
+                    logoUrl:
+                        item.providerProfile.businessProfile?.logoUrl ??
+                        item.providerProfile.avatarUrl,
                     averageRating: item.providerProfile.averageRating ? Number(item.providerProfile.averageRating) : null,
                     completedJobs: item.providerProfile.completedJobs,
                 },
@@ -588,8 +599,8 @@ export class CustomerCatalogService {
             services: item.serviceListings.map((service) => ({
                 id: service.id,
                 publicId: service.publicId,
-                name: service.name,
-                description: service.description,
+                name: getLocalizedText(lang, service.name, service.nameKm),
+                description: getLocalizedText(lang, service.description, service.descriptionKm) || null,
                 price: Number(service.price),
                 priceUnit: service.priceUnit,
                 pricingType: service.pricingType,

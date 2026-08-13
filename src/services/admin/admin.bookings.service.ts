@@ -68,6 +68,7 @@ function formatBooking(b: any) {
             id: b.serviceListing.id,
             publicId: b.serviceListing.publicId,
             name: b.serviceListing.name,
+            nameKm: b.serviceListing.nameKm ?? null,
             price: parseFloat(b.serviceListing.price),
             category: b.serviceListing.category,
         },

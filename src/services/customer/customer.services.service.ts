@@ -74,7 +74,9 @@ export class CustomerServicesService {
                 ? {
                       OR: [
                           { name: { contains: search, mode: "insensitive" as const } },
+                          { nameKm: { contains: search, mode: "insensitive" as const } },
                           { description: { contains: search, mode: "insensitive" as const } },
+                          { descriptionKm: { contains: search, mode: "insensitive" as const } },
                           {
                               category: {
                                   OR: [
@@ -273,7 +275,9 @@ export class CustomerServicesService {
             id: string;
             publicId: string;
             name: string;
+            nameKm?: string | null;
             description: string | null;
+            descriptionKm?: string | null;
             price: { toNumber?: () => number } | number | string;
             priceUnit: string | null;
             pricingType: string | null;
@@ -302,6 +306,7 @@ export class CustomerServicesService {
                 completedJobs: number;
                 businessProfile: {
                     businessName: string;
+                    logoUrl?: string | null;
                 } | null;
             };
             areas: Array<{
@@ -333,8 +338,10 @@ export class CustomerServicesService {
         return {
             id: service.id,
             publicId: service.publicId,
-            name: service.name,
-            description: service.description,
+            name: isKh ? service.nameKm || service.name : service.name || service.nameKm || "",
+            description: isKh
+                ? service.descriptionKm || service.description
+                : service.description || service.descriptionKm || null,
             price: this.toNumber(service.price),
             priceUnit: service.priceUnit,
             pricingType: service.pricingType,
@@ -370,6 +377,9 @@ export class CustomerServicesService {
                 contactName: service.providerProfile.contactName,
                 businessName: service.providerProfile.businessProfile?.businessName ?? null,
                 avatarUrl: service.providerProfile.avatarUrl,
+                logoUrl:
+                    service.providerProfile.businessProfile?.logoUrl ??
+                    service.providerProfile.avatarUrl,
                 averageRating: this.toNumber(service.providerProfile.averageRating),
                 completedJobs: service.providerProfile.completedJobs,
             },

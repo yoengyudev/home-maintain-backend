@@ -39,7 +39,9 @@ function formatService(s: any) {
         id: s.id,
         publicId: s.publicId,
         name: s.name,
+        nameKm: s.nameKm ?? null,
         description: s.description,
+        descriptionKm: s.descriptionKm ?? null,
         price: parseFloat(s.price),
         priceUnit: s.priceUnit,
         imageUrl: s.imageUrl,
@@ -120,7 +122,12 @@ export class AdminServicesService {
             ...(categoryId ? { categoryId } : {}),
             ...(search
                 ? {
-                      name: { contains: search, mode: "insensitive" },
+                      OR: [
+                          { name: { contains: search, mode: "insensitive" } },
+                          { nameKm: { contains: search, mode: "insensitive" } },
+                          { description: { contains: search, mode: "insensitive" } },
+                          { descriptionKm: { contains: search, mode: "insensitive" } },
+                      ],
                   }
                 : {}),
         };

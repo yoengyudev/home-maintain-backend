@@ -44,7 +44,9 @@ export type ServiceListingMinAggregateOutputType = {
   providerProfileId: string | null
   categoryId: string | null
   name: string | null
+  nameKm: string | null
   description: string | null
+  descriptionKm: string | null
   price: runtime.Decimal | null
   priceUnit: string | null
   pricingType: string | null
@@ -67,7 +69,9 @@ export type ServiceListingMaxAggregateOutputType = {
   providerProfileId: string | null
   categoryId: string | null
   name: string | null
+  nameKm: string | null
   description: string | null
+  descriptionKm: string | null
   price: runtime.Decimal | null
   priceUnit: string | null
   pricingType: string | null
@@ -90,7 +94,9 @@ export type ServiceListingCountAggregateOutputType = {
   providerProfileId: number
   categoryId: number
   name: number
+  nameKm: number
   description: number
+  descriptionKm: number
   price: number
   priceUnit: number
   pricingType: number
@@ -127,7 +133,9 @@ export type ServiceListingMinAggregateInputType = {
   providerProfileId?: true
   categoryId?: true
   name?: true
+  nameKm?: true
   description?: true
+  descriptionKm?: true
   price?: true
   priceUnit?: true
   pricingType?: true
@@ -150,7 +158,9 @@ export type ServiceListingMaxAggregateInputType = {
   providerProfileId?: true
   categoryId?: true
   name?: true
+  nameKm?: true
   description?: true
+  descriptionKm?: true
   price?: true
   priceUnit?: true
   pricingType?: true
@@ -173,7 +183,9 @@ export type ServiceListingCountAggregateInputType = {
   providerProfileId?: true
   categoryId?: true
   name?: true
+  nameKm?: true
   description?: true
+  descriptionKm?: true
   price?: true
   priceUnit?: true
   pricingType?: true
@@ -283,7 +295,9 @@ export type ServiceListingGroupByOutputType = {
   providerProfileId: string
   categoryId: string
   name: string
+  nameKm: string | null
   description: string | null
+  descriptionKm: string | null
   price: runtime.Decimal
   priceUnit: string | null
   pricingType: string | null
@@ -329,7 +343,9 @@ export type ServiceListingWhereInput = {
   providerProfileId?: Prisma.StringFilter<"ServiceListing"> | string
   categoryId?: Prisma.StringFilter<"ServiceListing"> | string
   name?: Prisma.StringFilter<"ServiceListing"> | string
+  nameKm?: Prisma.StringNullableFilter<"ServiceListing"> | string | null
   description?: Prisma.StringNullableFilter<"ServiceListing"> | string | null
+  descriptionKm?: Prisma.StringNullableFilter<"ServiceListing"> | string | null
   price?: Prisma.DecimalFilter<"ServiceListing"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: Prisma.StringNullableFilter<"ServiceListing"> | string | null
   pricingType?: Prisma.StringNullableFilter<"ServiceListing"> | string | null
@@ -358,7 +374,9 @@ export type ServiceListingOrderByWithRelationInput = {
   providerProfileId?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  nameKm?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  descriptionKm?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrder
   priceUnit?: Prisma.SortOrderInput | Prisma.SortOrder
   pricingType?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -390,7 +408,9 @@ export type ServiceListingWhereUniqueInput = Prisma.AtLeast<{
   providerProfileId?: Prisma.StringFilter<"ServiceListing"> | string
   categoryId?: Prisma.StringFilter<"ServiceListing"> | string
   name?: Prisma.StringFilter<"ServiceListing"> | string
+  nameKm?: Prisma.StringNullableFilter<"ServiceListing"> | string | null
   description?: Prisma.StringNullableFilter<"ServiceListing"> | string | null
+  descriptionKm?: Prisma.StringNullableFilter<"ServiceListing"> | string | null
   price?: Prisma.DecimalFilter<"ServiceListing"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: Prisma.StringNullableFilter<"ServiceListing"> | string | null
   pricingType?: Prisma.StringNullableFilter<"ServiceListing"> | string | null
@@ -419,7 +439,9 @@ export type ServiceListingOrderByWithAggregationInput = {
   providerProfileId?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  nameKm?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  descriptionKm?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrder
   priceUnit?: Prisma.SortOrderInput | Prisma.SortOrder
   pricingType?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -450,7 +472,9 @@ export type ServiceListingScalarWhereWithAggregatesInput = {
   providerProfileId?: Prisma.StringWithAggregatesFilter<"ServiceListing"> | string
   categoryId?: Prisma.StringWithAggregatesFilter<"ServiceListing"> | string
   name?: Prisma.StringWithAggregatesFilter<"ServiceListing"> | string
+  nameKm?: Prisma.StringNullableWithAggregatesFilter<"ServiceListing"> | string | null
   description?: Prisma.StringNullableWithAggregatesFilter<"ServiceListing"> | string | null
+  descriptionKm?: Prisma.StringNullableWithAggregatesFilter<"ServiceListing"> | string | null
   price?: Prisma.DecimalWithAggregatesFilter<"ServiceListing"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: Prisma.StringNullableWithAggregatesFilter<"ServiceListing"> | string | null
   pricingType?: Prisma.StringNullableWithAggregatesFilter<"ServiceListing"> | string | null
@@ -471,7 +495,9 @@ export type ServiceListingCreateInput = {
   id?: string
   publicId: string
   name: string
+  nameKm?: string | null
   description?: string | null
+  descriptionKm?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: string | null
   pricingType?: string | null
@@ -500,7 +526,9 @@ export type ServiceListingUncheckedCreateInput = {
   providerProfileId: string
   categoryId: string
   name: string
+  nameKm?: string | null
   description?: string | null
+  descriptionKm?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: string | null
   pricingType?: string | null
@@ -525,7 +553,9 @@ export type ServiceListingUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -554,7 +584,9 @@ export type ServiceListingUncheckedUpdateInput = {
   providerProfileId?: Prisma.StringFieldUpdateOperationsInput | string
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -581,7 +613,9 @@ export type ServiceListingCreateManyInput = {
   providerProfileId: string
   categoryId: string
   name: string
+  nameKm?: string | null
   description?: string | null
+  descriptionKm?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: string | null
   pricingType?: string | null
@@ -602,7 +636,9 @@ export type ServiceListingUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -625,7 +661,9 @@ export type ServiceListingUncheckedUpdateManyInput = {
   providerProfileId?: Prisma.StringFieldUpdateOperationsInput | string
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -658,7 +696,9 @@ export type ServiceListingCountOrderByAggregateInput = {
   providerProfileId?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  nameKm?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  descriptionKm?: Prisma.SortOrder
   price?: Prisma.SortOrder
   priceUnit?: Prisma.SortOrder
   pricingType?: Prisma.SortOrder
@@ -687,7 +727,9 @@ export type ServiceListingMaxOrderByAggregateInput = {
   providerProfileId?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  nameKm?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  descriptionKm?: Prisma.SortOrder
   price?: Prisma.SortOrder
   priceUnit?: Prisma.SortOrder
   pricingType?: Prisma.SortOrder
@@ -710,7 +752,9 @@ export type ServiceListingMinOrderByAggregateInput = {
   providerProfileId?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  nameKm?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  descriptionKm?: Prisma.SortOrder
   price?: Prisma.SortOrder
   priceUnit?: Prisma.SortOrder
   pricingType?: Prisma.SortOrder
@@ -906,7 +950,9 @@ export type ServiceListingCreateWithoutProviderProfileInput = {
   id?: string
   publicId: string
   name: string
+  nameKm?: string | null
   description?: string | null
+  descriptionKm?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: string | null
   pricingType?: string | null
@@ -933,7 +979,9 @@ export type ServiceListingUncheckedCreateWithoutProviderProfileInput = {
   publicId: string
   categoryId: string
   name: string
+  nameKm?: string | null
   description?: string | null
+  descriptionKm?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: string | null
   pricingType?: string | null
@@ -989,7 +1037,9 @@ export type ServiceListingScalarWhereInput = {
   providerProfileId?: Prisma.StringFilter<"ServiceListing"> | string
   categoryId?: Prisma.StringFilter<"ServiceListing"> | string
   name?: Prisma.StringFilter<"ServiceListing"> | string
+  nameKm?: Prisma.StringNullableFilter<"ServiceListing"> | string | null
   description?: Prisma.StringNullableFilter<"ServiceListing"> | string | null
+  descriptionKm?: Prisma.StringNullableFilter<"ServiceListing"> | string | null
   price?: Prisma.DecimalFilter<"ServiceListing"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: Prisma.StringNullableFilter<"ServiceListing"> | string | null
   pricingType?: Prisma.StringNullableFilter<"ServiceListing"> | string | null
@@ -1010,7 +1060,9 @@ export type ServiceListingCreateWithoutCategoryInput = {
   id?: string
   publicId: string
   name: string
+  nameKm?: string | null
   description?: string | null
+  descriptionKm?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: string | null
   pricingType?: string | null
@@ -1037,7 +1089,9 @@ export type ServiceListingUncheckedCreateWithoutCategoryInput = {
   publicId: string
   providerProfileId: string
   name: string
+  nameKm?: string | null
   description?: string | null
+  descriptionKm?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: string | null
   pricingType?: string | null
@@ -1088,7 +1142,9 @@ export type ServiceListingCreateWithoutAreasInput = {
   id?: string
   publicId: string
   name: string
+  nameKm?: string | null
   description?: string | null
+  descriptionKm?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: string | null
   pricingType?: string | null
@@ -1116,7 +1172,9 @@ export type ServiceListingUncheckedCreateWithoutAreasInput = {
   providerProfileId: string
   categoryId: string
   name: string
+  nameKm?: string | null
   description?: string | null
+  descriptionKm?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: string | null
   pricingType?: string | null
@@ -1156,7 +1214,9 @@ export type ServiceListingUpdateWithoutAreasInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1184,7 +1244,9 @@ export type ServiceListingUncheckedUpdateWithoutAreasInput = {
   providerProfileId?: Prisma.StringFieldUpdateOperationsInput | string
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1208,7 +1270,9 @@ export type ServiceListingCreateWithoutModerationHistoryInput = {
   id?: string
   publicId: string
   name: string
+  nameKm?: string | null
   description?: string | null
+  descriptionKm?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: string | null
   pricingType?: string | null
@@ -1236,7 +1300,9 @@ export type ServiceListingUncheckedCreateWithoutModerationHistoryInput = {
   providerProfileId: string
   categoryId: string
   name: string
+  nameKm?: string | null
   description?: string | null
+  descriptionKm?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: string | null
   pricingType?: string | null
@@ -1276,7 +1342,9 @@ export type ServiceListingUpdateWithoutModerationHistoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1304,7 +1372,9 @@ export type ServiceListingUncheckedUpdateWithoutModerationHistoryInput = {
   providerProfileId?: Prisma.StringFieldUpdateOperationsInput | string
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1328,7 +1398,9 @@ export type ServiceListingCreateWithoutBookingsInput = {
   id?: string
   publicId: string
   name: string
+  nameKm?: string | null
   description?: string | null
+  descriptionKm?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: string | null
   pricingType?: string | null
@@ -1356,7 +1428,9 @@ export type ServiceListingUncheckedCreateWithoutBookingsInput = {
   providerProfileId: string
   categoryId: string
   name: string
+  nameKm?: string | null
   description?: string | null
+  descriptionKm?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: string | null
   pricingType?: string | null
@@ -1396,7 +1470,9 @@ export type ServiceListingUpdateWithoutBookingsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1424,7 +1500,9 @@ export type ServiceListingUncheckedUpdateWithoutBookingsInput = {
   providerProfileId?: Prisma.StringFieldUpdateOperationsInput | string
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1448,7 +1526,9 @@ export type ServiceListingCreateWithoutReviewsInput = {
   id?: string
   publicId: string
   name: string
+  nameKm?: string | null
   description?: string | null
+  descriptionKm?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: string | null
   pricingType?: string | null
@@ -1476,7 +1556,9 @@ export type ServiceListingUncheckedCreateWithoutReviewsInput = {
   providerProfileId: string
   categoryId: string
   name: string
+  nameKm?: string | null
   description?: string | null
+  descriptionKm?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: string | null
   pricingType?: string | null
@@ -1516,7 +1598,9 @@ export type ServiceListingUpdateWithoutReviewsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1544,7 +1628,9 @@ export type ServiceListingUncheckedUpdateWithoutReviewsInput = {
   providerProfileId?: Prisma.StringFieldUpdateOperationsInput | string
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1569,7 +1655,9 @@ export type ServiceListingCreateManyProviderProfileInput = {
   publicId: string
   categoryId: string
   name: string
+  nameKm?: string | null
   description?: string | null
+  descriptionKm?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: string | null
   pricingType?: string | null
@@ -1590,7 +1678,9 @@ export type ServiceListingUpdateWithoutProviderProfileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1617,7 +1707,9 @@ export type ServiceListingUncheckedUpdateWithoutProviderProfileInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1643,7 +1735,9 @@ export type ServiceListingUncheckedUpdateManyWithoutProviderProfileInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1665,7 +1759,9 @@ export type ServiceListingCreateManyCategoryInput = {
   publicId: string
   providerProfileId: string
   name: string
+  nameKm?: string | null
   description?: string | null
+  descriptionKm?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: string | null
   pricingType?: string | null
@@ -1686,7 +1782,9 @@ export type ServiceListingUpdateWithoutCategoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1713,7 +1811,9 @@ export type ServiceListingUncheckedUpdateWithoutCategoryInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   providerProfileId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1739,7 +1839,9 @@ export type ServiceListingUncheckedUpdateManyWithoutCategoryInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   providerProfileId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   priceUnit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1820,7 +1922,9 @@ export type ServiceListingSelect<ExtArgs extends runtime.Types.Extensions.Intern
   providerProfileId?: boolean
   categoryId?: boolean
   name?: boolean
+  nameKm?: boolean
   description?: boolean
+  descriptionKm?: boolean
   price?: boolean
   priceUnit?: boolean
   pricingType?: boolean
@@ -1850,7 +1954,9 @@ export type ServiceListingSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   providerProfileId?: boolean
   categoryId?: boolean
   name?: boolean
+  nameKm?: boolean
   description?: boolean
+  descriptionKm?: boolean
   price?: boolean
   priceUnit?: boolean
   pricingType?: boolean
@@ -1875,7 +1981,9 @@ export type ServiceListingSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   providerProfileId?: boolean
   categoryId?: boolean
   name?: boolean
+  nameKm?: boolean
   description?: boolean
+  descriptionKm?: boolean
   price?: boolean
   priceUnit?: boolean
   pricingType?: boolean
@@ -1900,7 +2008,9 @@ export type ServiceListingSelectScalar = {
   providerProfileId?: boolean
   categoryId?: boolean
   name?: boolean
+  nameKm?: boolean
   description?: boolean
+  descriptionKm?: boolean
   price?: boolean
   priceUnit?: boolean
   pricingType?: boolean
@@ -1917,7 +2027,7 @@ export type ServiceListingSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ServiceListingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "providerProfileId" | "categoryId" | "name" | "description" | "price" | "priceUnit" | "pricingType" | "duration" | "imageUrl" | "quantityEnabled" | "quantityUnit" | "minQuantity" | "maxQuantity" | "availabilitySummary" | "serviceStatus" | "moderationStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["serviceListing"]>
+export type ServiceListingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "providerProfileId" | "categoryId" | "name" | "nameKm" | "description" | "descriptionKm" | "price" | "priceUnit" | "pricingType" | "duration" | "imageUrl" | "quantityEnabled" | "quantityUnit" | "minQuantity" | "maxQuantity" | "availabilitySummary" | "serviceStatus" | "moderationStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["serviceListing"]>
 export type ServiceListingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   providerProfile?: boolean | Prisma.ProviderProfileDefaultArgs<ExtArgs>
   category?: boolean | Prisma.ServiceCategoryDefaultArgs<ExtArgs>
@@ -1952,7 +2062,9 @@ export type $ServiceListingPayload<ExtArgs extends runtime.Types.Extensions.Inte
     providerProfileId: string
     categoryId: string
     name: string
+    nameKm: string | null
     description: string | null
+    descriptionKm: string | null
     price: runtime.Decimal
     priceUnit: string | null
     pricingType: string | null
@@ -2401,7 +2513,9 @@ export interface ServiceListingFieldRefs {
   readonly providerProfileId: Prisma.FieldRef<"ServiceListing", 'String'>
   readonly categoryId: Prisma.FieldRef<"ServiceListing", 'String'>
   readonly name: Prisma.FieldRef<"ServiceListing", 'String'>
+  readonly nameKm: Prisma.FieldRef<"ServiceListing", 'String'>
   readonly description: Prisma.FieldRef<"ServiceListing", 'String'>
+  readonly descriptionKm: Prisma.FieldRef<"ServiceListing", 'String'>
   readonly price: Prisma.FieldRef<"ServiceListing", 'Decimal'>
   readonly priceUnit: Prisma.FieldRef<"ServiceListing", 'String'>
   readonly pricingType: Prisma.FieldRef<"ServiceListing", 'String'>

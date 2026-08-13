@@ -409,7 +409,9 @@ export class CustomerProvidersService {
                 id: string;
                 publicId: string;
                 name: string;
+                nameKm?: string | null;
                 description: string | null;
+                descriptionKm?: string | null;
                 price: { toNumber?: () => number } | number | string;
                 priceUnit: string | null;
                 pricingType: string | null;
@@ -496,8 +498,12 @@ export class CustomerProvidersService {
             services: provider.serviceListings.map((listing) => ({
                 id: listing.id,
                 publicId: listing.publicId,
-                name: listing.name,
-                description: listing.description,
+                name: isKh
+                    ? listing.nameKm || listing.name
+                    : listing.name || listing.nameKm || "",
+                description: isKh
+                    ? listing.descriptionKm || listing.description
+                    : listing.description || listing.descriptionKm || null,
                 price: this.toNumber(listing.price) ?? 0,
                 priceUnit: listing.priceUnit,
                 pricingType: listing.pricingType,

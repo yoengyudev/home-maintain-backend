@@ -413,7 +413,9 @@ model ServiceListing {
   providerProfileId    String
   categoryId           String
   name                 String
+  nameKm               String?
   description          String?
+  descriptionKm        String?
   price                Decimal                    @db.Decimal(10, 2)
   priceUnit            String?
   pricingType          String?

@@ -7,8 +7,10 @@ import { t } from "../../i18n/translate";
 
 interface CreateServiceData {
     name: string;
+    nameKm?: string;
     categoryId: string;
     description?: string;
+    descriptionKm?: string;
     price: number;
     priceUnit?: string;
     pricingType?: string;
@@ -85,7 +87,9 @@ function mapServiceRecord(service: {
     id: string;
     publicId: string;
     name: string;
+    nameKm?: string | null;
     description: string | null;
+    descriptionKm?: string | null;
     category: { nameEn: string };
     categoryId: string;
     price: unknown;
@@ -111,7 +115,9 @@ function mapServiceRecord(service: {
         id: service.id,
         publicId: service.publicId,
         name: service.name,
+        nameKm: service.nameKm || null,
         description: service.description,
+        descriptionKm: service.descriptionKm || null,
         category: service.category.nameEn,
         categoryId: service.categoryId,
         price: Number(service.price),
@@ -218,7 +224,9 @@ export class VendorServiceService {
                 providerProfileId: providerProfile.id,
                 categoryId: category.id,
                 name: payload.name,
+                nameKm: payload.nameKm?.trim() || null,
                 description: payload.description,
+                descriptionKm: payload.descriptionKm?.trim() || null,
                 price: payload.price,
                 priceUnit: payload.priceUnit,
                 pricingType: payload.pricingType,
@@ -249,6 +257,7 @@ export class VendorServiceService {
             id: service.id,
             publicId: service.publicId,
             name: service.name,
+            nameKm: service.nameKm || null,
             category: service.category.nameEn,
             price: Number(service.price),
             priceUnit: service.priceUnit,
@@ -311,8 +320,12 @@ export class VendorServiceService {
             where: { id: existingService.id },
             data: {
                 ...(payload.name && { name: payload.name }),
+                ...(payload.nameKm !== undefined && { nameKm: payload.nameKm?.trim() || null }),
                 ...(category && { categoryId: category.id }),
                 ...(payload.description !== undefined && { description: payload.description }),
+                ...(payload.descriptionKm !== undefined && {
+                    descriptionKm: payload.descriptionKm?.trim() || null,
+                }),
                 ...(payload.price !== undefined && { price: payload.price }),
                 ...(payload.priceUnit !== undefined && { priceUnit: payload.priceUnit }),
                 ...(payload.pricingType !== undefined && { pricingType: payload.pricingType }),
@@ -341,6 +354,7 @@ export class VendorServiceService {
             id: service.id,
             publicId: service.publicId,
             name: service.name,
+            nameKm: service.nameKm || null,
             category: service.category.nameEn,
             price: Number(service.price),
             priceUnit: service.priceUnit,
