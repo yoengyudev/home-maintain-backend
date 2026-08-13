@@ -10,7 +10,6 @@ import type { Lang } from "../../i18n/messages";
 import { NotFoundException } from "../../utils/app-error.util";
 import { t } from "../../i18n/translate";
 import { NotificationsHelper } from "../notifications.helper";
-import { PROVIDER_CONTACT_DEFAULT, PROVIDER_FAQ_SEEDS } from "./vendor.help.seed";
 import type { z } from "zod";
 import type { vendorSupportRequestSchema } from "../../validators/vendor/vendor.help.validator";
 
@@ -29,8 +28,6 @@ type ContactContent = {
 
 export class VendorHelpService {
     static async getHelp(lang: Lang) {
-        await this.ensureProviderHelpContent();
-
         const [faqs, contactPage] = await Promise.all([
             prisma.faq.findMany({
                 where: {
@@ -47,25 +44,26 @@ export class VendorHelpService {
             }),
         ]);
 
-        const contactRaw = (contactPage
+        const contactRaw = contactPage
             ? ((lang === "kh" ? contactPage.contentKm : contactPage.contentEn) as ContactContent)
-            : PROVIDER_CONTACT_DEFAULT);
+            : null;
 
-        const hours =
-            ("hours" in contactRaw && contactRaw.hours) ||
-            (lang === "kh"
-                ? contactRaw.hoursKm || PROVIDER_CONTACT_DEFAULT.hoursKm
-                : contactRaw.hoursEn || PROVIDER_CONTACT_DEFAULT.hoursEn);
+        const contact = contactRaw
+            ? {
+                  telegramHandle: contactRaw.telegramHandle || "",
+                  telegramUrl: contactRaw.telegramUrl || "",
+                  phone: contactRaw.phone || "",
+                  phoneDisplay: contactRaw.phoneDisplay || "",
+                  email: contactRaw.email || "",
+                  hours:
+                      ("hours" in contactRaw && contactRaw.hours) ||
+                      (lang === "kh" ? contactRaw.hoursKm || "" : contactRaw.hoursEn || "") ||
+                      "",
+              }
+            : null;
 
         return {
-            contact: {
-                telegramHandle: contactRaw.telegramHandle || PROVIDER_CONTACT_DEFAULT.telegramHandle,
-                telegramUrl: contactRaw.telegramUrl || PROVIDER_CONTACT_DEFAULT.telegramUrl,
-                phone: contactRaw.phone || PROVIDER_CONTACT_DEFAULT.phone,
-                phoneDisplay: contactRaw.phoneDisplay || PROVIDER_CONTACT_DEFAULT.phoneDisplay,
-                email: contactRaw.email || PROVIDER_CONTACT_DEFAULT.email,
-                hours,
-            },
+            contact,
             faqs: faqs.map((faq) => ({
                 publicId: faq.publicId,
                 category: faq.category,
@@ -141,49 +139,5 @@ export class VendorHelpService {
             publicId: request.publicId,
             status: request.status,
         };
-    }
-
-    private static async ensureProviderHelpContent() {
-        const [faqCount, contact] = await Promise.all([
-            prisma.faq.count({
-                where: { audience: FaqAudience.PROVIDER },
-            }),
-            prisma.supportPage.findFirst({
-                where: { pageKey: SupportPageKey.PROVIDER_CONTACT },
-            }),
-        ]);
-
-        if (faqCount === 0) {
-            await prisma.faq.createMany({
-                data: PROVIDER_FAQ_SEEDS.map((faq) => ({
-                    publicId: faq.publicId,
-                    audience: FaqAudience.PROVIDER,
-                    category: faq.category,
-                    questionEn: faq.questionEn,
-                    questionKm: faq.questionKm,
-                    answerEn: faq.answerEn,
-                    answerKm: faq.answerKm,
-                    keywords: faq.keywords,
-                    relatedRoute: faq.relatedRoute ?? null,
-                    relatedRouteLabelEn: faq.relatedRouteLabelEn ?? null,
-                    relatedRouteLabelKm: faq.relatedRouteLabelKm ?? null,
-                    sortOrder: faq.sortOrder,
-                    isActive: true,
-                })),
-                skipDuplicates: true,
-            });
-        }
-
-        if (!contact) {
-            await prisma.supportPage.create({
-                data: {
-                    publicId: "support-provider-contact",
-                    pageKey: SupportPageKey.PROVIDER_CONTACT,
-                    isActive: true,
-                    contentEn: PROVIDER_CONTACT_DEFAULT,
-                    contentKm: PROVIDER_CONTACT_DEFAULT,
-                },
-            });
-        }
     }
 }

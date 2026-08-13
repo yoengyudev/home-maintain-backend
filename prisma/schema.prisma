@@ -730,6 +730,7 @@ enum SupportPageKey {
   ABOUT
   MISSION
   PROVIDER_CONTACT
+  CUSTOMER_CONTACT
 }
 
 model SupportPage {

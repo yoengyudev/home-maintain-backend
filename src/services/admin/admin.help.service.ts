@@ -50,7 +50,14 @@ function parseStatus(value: unknown): SupportRequestStatus | undefined {
 
 function parsePageKey(value: string): SupportPageKey | undefined {
     const raw = value.trim().toUpperCase();
-    if (raw === "ABOUT" || raw === "MISSION" || raw === "PROVIDER_CONTACT") return raw;
+    if (
+        raw === "ABOUT" ||
+        raw === "MISSION" ||
+        raw === "PROVIDER_CONTACT" ||
+        raw === "CUSTOMER_CONTACT"
+    ) {
+        return raw;
+    }
     return undefined;
 }
 
@@ -294,6 +301,25 @@ export class AdminHelpService {
     }
 
     static async listSupportPages() {
+        // Ensure editable customer contact exists for admin Help Center.
+        const existingCustomerContact = await prisma.supportPage.findUnique({
+            where: { pageKey: SupportPageKey.CUSTOMER_CONTACT },
+        });
+        if (!existingCustomerContact) {
+            const { CUSTOMER_CONTACT_DEFAULT } = await import(
+                "../customer/customer.support.seed"
+            );
+            await prisma.supportPage.create({
+                data: {
+                    publicId: `support-customer-contact`,
+                    pageKey: SupportPageKey.CUSTOMER_CONTACT,
+                    contentEn: CUSTOMER_CONTACT_DEFAULT,
+                    contentKm: CUSTOMER_CONTACT_DEFAULT,
+                    isActive: true,
+                },
+            });
+        }
+
         const pages = await prisma.supportPage.findMany({
             orderBy: { pageKey: "asc" },
         });

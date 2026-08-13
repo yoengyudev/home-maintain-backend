@@ -213,6 +213,7 @@ export const messages = {
         CUSTOMER_FAQS_FETCHED_SUCCESSFULLY: "FAQs fetched successfully",
         CUSTOMER_SUPPORT_ABOUT_FETCHED_SUCCESSFULLY: "About page fetched successfully",
         CUSTOMER_SUPPORT_MISSION_FETCHED_SUCCESSFULLY: "Mission page fetched successfully",
+        CUSTOMER_SUPPORT_CONTACT_FETCHED_SUCCESSFULLY: "Contact details fetched successfully",
         CUSTOMER_SUPPORT_PAGE_NOT_FOUND: "Support page content not found",
         SUCCESS: "Success",
         OTP_PENDING_NOT_FOUND: "No pending verification found for this phone number",
@@ -270,6 +271,7 @@ export const messages = {
         VENDOR_SERVICE_HAS_ACTIVE_BOOKINGS: "Cannot delete service with active bookings",
         VENDOR_CATEGORIES_RETRIEVED: "Service categories retrieved successfully",
         VENDOR_SERVICE_AREAS_RETRIEVED: "Service areas retrieved successfully",
+        VENDOR_LOCATIONS_RETRIEVED: "Cambodia locations retrieved successfully",
 
         // vendor bookings
         VENDOR_BOOKINGS_RETRIEVED: "Bookings retrieved successfully",
@@ -528,6 +530,7 @@ export const messages = {
         CUSTOMER_FAQS_FETCHED_SUCCESSFULLY: "បានទាញយកសំណួរដែលសួរញឹកញាប់ដោយជោគជ័យ",
         CUSTOMER_SUPPORT_ABOUT_FETCHED_SUCCESSFULLY: "បានទាញយកទំព័រអំពីយើងដោយជោគជ័យ",
         CUSTOMER_SUPPORT_MISSION_FETCHED_SUCCESSFULLY: "បានទាញយកទំព័របេសកកម្មដោយជោគជ័យ",
+        CUSTOMER_SUPPORT_CONTACT_FETCHED_SUCCESSFULLY: "បានទាញយកព័ត៌មានទំនាក់ទំនងដោយជោគជ័យ",
         CUSTOMER_SUPPORT_PAGE_NOT_FOUND: "រកមិនឃើញខ្លឹមសារទំព័រគាំទ្រ",
         SUCCESS: "ជោគជ័យ",
         OTP_PENDING_NOT_FOUND: "រកមិនឃើញការផ្ទៀងផ្ទាត់ដែលកំពុងរង់ចាំសម្រាប់លេខទូរស័ព្ទនេះ",
@@ -585,6 +588,7 @@ export const messages = {
         VENDOR_SERVICE_HAS_ACTIVE_BOOKINGS: "មិនអាចលុបសេវាកម្មដែលមានការកក់សកម្មបានទេ",
         VENDOR_CATEGORIES_RETRIEVED: "បានទាញយកប្រភេទសេវាដោយជោគជ័យ",
         VENDOR_SERVICE_AREAS_RETRIEVED: "បានទាញយកតំបន់សេវាដោយជោគជ័យ",
+        VENDOR_LOCATIONS_RETRIEVED: "បានទាញយកទីតាំងកម្ពុជាដោយជោគជ័យ",
 
         // vendor bookings
         VENDOR_BOOKINGS_RETRIEVED: "បានទាញយកការកក់ដោយជោគជ័យ",

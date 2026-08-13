@@ -8,6 +8,7 @@ import vendorAvailabilityRoutes from "./vendor/vendor.availability.routes";
 import vendorBookingsRoutes from "./vendor/vendor.bookings.routes";
 import vendorNotificationsRoutes from "./vendor/vendor.notifications.routes";
 import vendorHelpRoutes from "./vendor/vendor.help.routes";
+import vendorLocationsRoutes from "./vendor/vendor.locations.routes";
 import {
     acceptBooking,
     completeBooking,
@@ -34,5 +35,6 @@ router.post("/bookings/:id/complete", authenticate, authorize(UserRole.PROVIDER)
 router.use("/bookings", vendorBookingsRoutes);
 router.use("/notifications", vendorNotificationsRoutes);
 router.use("/help", vendorHelpRoutes);
+router.use("/locations", vendorLocationsRoutes);
 
 export default router;

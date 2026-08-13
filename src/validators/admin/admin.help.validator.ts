@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const faqAudienceSchema = z.enum(["CUSTOMER", "PROVIDER"]);
 export const supportRequestStatusSchema = z.enum(["OPEN", "IN_PROGRESS", "RESOLVED"]);
-export const supportPageKeySchema = z.enum(["ABOUT", "MISSION", "PROVIDER_CONTACT"]);
+export const supportPageKeySchema = z.enum(["ABOUT", "MISSION", "PROVIDER_CONTACT", "CUSTOMER_CONTACT"]);
 
 export const createFaqSchema = z.object({
     audience: faqAudienceSchema,

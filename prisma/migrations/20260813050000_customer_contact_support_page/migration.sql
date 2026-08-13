@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "SupportPageKey" ADD VALUE 'CUSTOMER_CONTACT';

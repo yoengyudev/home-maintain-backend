@@ -26,3 +26,15 @@ export const getMissionPage = async (req: Request, res: Response) => {
         data,
     });
 };
+
+export const getContactPage = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    await CustomerSupportService.ensureCustomerContactPage();
+    const data = await CustomerSupportService.getContact(lang);
+
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: t("CUSTOMER_SUPPORT_CONTACT_FETCHED_SUCCESSFULLY", lang),
+        data,
+    });
+};

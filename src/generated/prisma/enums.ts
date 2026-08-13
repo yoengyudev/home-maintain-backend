@@ -178,7 +178,8 @@ export type SupportRequestStatus = (typeof SupportRequestStatus)[keyof typeof Su
 export const SupportPageKey = {
   ABOUT: 'ABOUT',
   MISSION: 'MISSION',
-  PROVIDER_CONTACT: 'PROVIDER_CONTACT'
+  PROVIDER_CONTACT: 'PROVIDER_CONTACT',
+  CUSTOMER_CONTACT: 'CUSTOMER_CONTACT'
 } as const
 
 export type SupportPageKey = (typeof SupportPageKey)[keyof typeof SupportPageKey]
