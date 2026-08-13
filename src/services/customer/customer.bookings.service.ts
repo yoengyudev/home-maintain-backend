@@ -26,7 +26,7 @@ import type {
 } from "../../validators/customer/booking.validator";
 import { CustomerAddressesService } from "./customer.addresses.service";
 import { BookingNotificationCopy, NotificationsHelper } from "../notifications.helper";
-import { publishBookingUpdated } from "../../websocket/booking-events";
+import { publishBookingCreated, publishBookingUpdated } from "../../websocket/booking-events";
 import {
     evaluateAvailabilityDay,
     isSlotOnDay,
@@ -300,6 +300,14 @@ export class CustomerBookingsService {
             priority: "high",
         });
 
+        publishBookingCreated({
+            bookingId: booking.id,
+            publicId: booking.publicId,
+            status: booking.status,
+            customerUserId: userId,
+            providerUserId: service.providerProfile.userId,
+        });
+
         return this.formatBooking(booking, lang);
     }
 
@@ -378,6 +386,7 @@ export class CustomerBookingsService {
             publicId: updated.publicId,
             status: updated.status,
             customerUserId: userId,
+            providerUserId: booking.providerProfile.userId,
         });
 
         await NotificationsHelper.notifyUser(userId, {
@@ -504,6 +513,7 @@ export class CustomerBookingsService {
             publicId: updated.publicId,
             status: updated.status,
             customerUserId: userId,
+            providerUserId: providerProfile?.userId,
         });
 
         await NotificationsHelper.notifyUser(userId, {

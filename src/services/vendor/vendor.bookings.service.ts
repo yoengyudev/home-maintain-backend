@@ -289,6 +289,7 @@ export class VendorBookingsService {
             publicId: updated.publicId,
             status: updated.status,
             customerUserId: booking.customerProfile?.userId,
+            providerUserId: userId,
         });
 
         if (booking.customerProfile?.userId) {

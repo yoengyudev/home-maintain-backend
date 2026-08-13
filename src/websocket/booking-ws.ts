@@ -1,8 +1,12 @@
 import type { IncomingMessage, Server } from "http";
 import { WebSocket, WebSocketServer } from "ws";
 import { UserRole } from "../generated/prisma/enums";
-import { assertActiveCustomerSession } from "../helper/customer/auth.helper";
+import {
+    assertActiveCustomerSession,
+    assertActiveProviderSession,
+} from "../helper/customer/auth.helper";
 import { CustomerBookingsService } from "../services/customer/customer.bookings.service";
+import { VendorBookingsService } from "../services/vendor/vendor.bookings.service";
 import { logger } from "../utils/logger.util";
 import { verifyAccessToken } from "../utils/jwt.util";
 import { subscribeBookingEvents, type BookingRealtimeEvent } from "./booking-events";
@@ -14,6 +18,7 @@ type ClientMessage = {
 
 type SocketMeta = {
     userId: string;
+    role: typeof UserRole.CUSTOMER | typeof UserRole.PROVIDER;
     lang: "en" | "kh";
     bookingIds: Set<string>;
 };
@@ -45,6 +50,20 @@ function sendJson(socket: WebSocket, payload: unknown) {
 }
 
 function matchesBooking(meta: SocketMeta, event: BookingRealtimeEvent) {
+    if (meta.role === UserRole.PROVIDER) {
+        if (event.providerUserId && meta.userId === event.providerUserId) {
+            if (meta.bookingIds.size === 0) return true;
+            return (
+                meta.bookingIds.has(event.bookingId) ||
+                meta.bookingIds.has(event.publicId)
+            );
+        }
+        return (
+            meta.bookingIds.has(event.bookingId) ||
+            meta.bookingIds.has(event.publicId)
+        );
+    }
+
     if (meta.userId && event.customerUserId && meta.userId === event.customerUserId) {
         if (meta.bookingIds.size === 0) return true;
     }
@@ -86,7 +105,7 @@ export function attachBookingWebSocket(server: Server) {
     }, 30000);
 
     const unsubscribe = subscribeBookingEvents((event) => {
-        void broadcastBookingUpdated(event);
+        void broadcastBookingEvent(event);
     });
 
     wss.on("close", () => {
@@ -98,7 +117,7 @@ export function attachBookingWebSocket(server: Server) {
     return wss;
 }
 
-async function broadcastBookingUpdated(event: BookingRealtimeEvent) {
+async function broadcastBookingEvent(event: BookingRealtimeEvent) {
     const targets = [...sockets.entries()].filter(([, meta]) => matchesBooking(meta, event));
     if (targets.length === 0) return;
 
@@ -106,14 +125,22 @@ async function broadcastBookingUpdated(event: BookingRealtimeEvent) {
 
     await Promise.all(
         targets.map(async ([socket, meta]) => {
-            const cacheKey = `${meta.userId}:${meta.lang}`;
+            const cacheKey = `${meta.role}:${meta.userId}:${meta.lang}`;
             if (!payloads.has(cacheKey)) {
                 try {
-                    const booking = await CustomerBookingsService.getById(
-                        meta.userId,
-                        event.publicId || event.bookingId,
-                        meta.lang
-                    );
+                    const bookingId = event.publicId || event.bookingId;
+                    const booking =
+                        meta.role === UserRole.PROVIDER
+                            ? await VendorBookingsService.getById(
+                                  meta.userId,
+                                  bookingId,
+                                  meta.lang
+                              )
+                            : await CustomerBookingsService.getById(
+                                  meta.userId,
+                                  bookingId,
+                                  meta.lang
+                              );
                     payloads.set(cacheKey, booking);
                 } catch (error) {
                     logger.error("Failed to load booking for websocket push:", error);
@@ -123,7 +150,7 @@ async function broadcastBookingUpdated(event: BookingRealtimeEvent) {
 
             const booking = payloads.get(cacheKey);
             sendJson(socket, {
-                type: "booking.updated",
+                type: event.type,
                 bookingId: event.publicId || event.bookingId,
                 publicId: event.publicId,
                 status: event.status,
@@ -136,30 +163,46 @@ async function broadcastBookingUpdated(event: BookingRealtimeEvent) {
 async function handleConnection(socket: WebSocket, req: IncomingMessage) {
     const token = readToken(req);
     const decoded = token ? verifyAccessToken(token) : null;
+    const role = decoded?.role;
 
-    if (!decoded?.userId || decoded.role !== UserRole.CUSTOMER) {
+    if (
+        !decoded?.userId ||
+        (role !== UserRole.CUSTOMER && role !== UserRole.PROVIDER)
+    ) {
         socket.close(4401, "Unauthorized");
         return;
     }
 
     try {
-        await assertActiveCustomerSession(decoded.userId, decoded.sid, "en");
+        if (role === UserRole.CUSTOMER) {
+            await assertActiveCustomerSession(decoded.userId, decoded.sid, "en");
+        } else {
+            await assertActiveProviderSession(decoded.userId, decoded.sid, "en");
+        }
     } catch {
         socket.close(4401, "Unauthorized");
         return;
     }
 
     const url = readUrl(req);
-    const lang = url.searchParams.get("lang") === "km" || url.searchParams.get("lang") === "kh"
-        ? "kh"
-        : "en";
+    const lang =
+        url.searchParams.get("lang") === "km" || url.searchParams.get("lang") === "kh"
+            ? "kh"
+            : "en";
     const initialBookingId = url.searchParams.get("bookingId")?.trim();
     const meta: SocketMeta = {
         userId: decoded.userId,
+        role,
         lang,
         bookingIds: new Set(initialBookingId ? [initialBookingId] : []),
     };
     sockets.set(socket, meta);
+
+    sendJson(socket, {
+        type: "connected",
+        role,
+        bookingId: initialBookingId || null,
+    });
 
     if (initialBookingId) {
         sendJson(socket, { type: "subscribed", bookingId: initialBookingId });
@@ -177,6 +220,12 @@ async function handleConnection(socket: WebSocket, req: IncomingMessage) {
 
             if (message.type === "ping") {
                 sendJson(socket, { type: "pong" });
+                return;
+            }
+
+            if (message.type === "subscribe_all" && meta.role === UserRole.PROVIDER) {
+                meta.bookingIds.clear();
+                sendJson(socket, { type: "subscribed_all" });
                 return;
             }
 
