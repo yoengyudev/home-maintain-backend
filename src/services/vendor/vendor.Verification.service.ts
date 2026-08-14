@@ -108,6 +108,21 @@ async function resolveAreaId(keys: string[]): Promise<string | null> {
     return null;
 }
 
+async function resolveAreaIds(keys: string[]): Promise<string[]> {
+    if (keys.length === 0) return [];
+
+    const areas = await prisma.serviceArea.findMany({
+        select: { id: true, publicId: true, slug: true, nameEn: true, nameKm: true },
+    });
+
+    const ids: string[] = [];
+    for (const key of keys) {
+        const match = areas.find((item) => matchesCatalogRef(key, item));
+        if (match && !ids.includes(match.id)) ids.push(match.id);
+    }
+    return ids;
+}
+
 interface VerificationDraftData extends Partial<VerificationSubmissionData> {
     step?: number;
 }
@@ -280,7 +295,7 @@ export class VendorVerificationService {
 
         const documents = Array.isArray(data.documents) ? data.documents : [];
         const rawData = data as unknown as Record<string, unknown>;
-        const [primaryCategoryId, primaryAreaId] = await Promise.all([
+        const [primaryCategoryId, serviceAreaIds] = await Promise.all([
             resolveCategoryId(collectRefKeys(rawData, [
                 "primaryCategoryId",
                 "serviceCategories",
@@ -288,7 +303,7 @@ export class VendorVerificationService {
                 "serviceCategoryIds",
                 "primaryCategory",
             ])),
-            resolveAreaId(collectRefKeys(rawData, [
+            resolveAreaIds(collectRefKeys(rawData, [
                 "primaryAreaId",
                 "serviceAreas",
                 "areas",
@@ -296,6 +311,7 @@ export class VendorVerificationService {
                 "primaryArea",
             ])),
         ]);
+        const primaryAreaId = serviceAreaIds[0] ?? null;
 
         await prisma.providerProfile.update({
             where: { id: providerProfile.id },
@@ -306,22 +322,34 @@ export class VendorVerificationService {
             }
         });
 
-        if (providerProfile.businessProfile && (primaryCategoryId || primaryAreaId)) {
-            const [category, area] = await Promise.all([
+        if (serviceAreaIds.length > 0) {
+            const { syncProviderServiceAreas } = await import(
+                "../../utils/provider-service-areas.util"
+            );
+            await syncProviderServiceAreas(providerProfile.id, serviceAreaIds);
+        }
+
+        if (providerProfile.businessProfile && (primaryCategoryId || serviceAreaIds.length)) {
+            const [category, areas] = await Promise.all([
                 primaryCategoryId
                     ? prisma.serviceCategory.findUnique({
                         where: { id: primaryCategoryId },
                         select: { nameEn: true },
                     })
                     : Promise.resolve(null),
-                primaryAreaId
-                    ? prisma.serviceArea.findUnique({
-                        where: { id: primaryAreaId },
+                serviceAreaIds.length
+                    ? prisma.serviceArea.findMany({
+                        where: { id: { in: serviceAreaIds } },
                         select: { nameEn: true },
                     })
-                    : Promise.resolve(null),
+                    : Promise.resolve([]),
             ]);
-            const coverageSummary = [category?.nameEn, area?.nameEn].filter(Boolean).join(' · ');
+            const coverageSummary = [
+                category?.nameEn,
+                areas.map((a) => a.nameEn).join(", "),
+            ]
+                .filter(Boolean)
+                .join(" · ");
             if (coverageSummary) {
                 await prisma.providerBusinessProfile.update({
                     where: { id: providerProfile.businessProfile.id },
@@ -512,7 +540,7 @@ export class VendorVerificationService {
         }
 
         const rawUpdateData = data as Record<string, unknown>;
-        const [primaryCategoryId, primaryAreaId] = await Promise.all([
+        const [primaryCategoryId, serviceAreaIds] = await Promise.all([
             resolveCategoryId(collectRefKeys(rawUpdateData, [
                 "primaryCategoryId",
                 "serviceCategories",
@@ -520,7 +548,7 @@ export class VendorVerificationService {
                 "serviceCategoryIds",
                 "primaryCategory",
             ])),
-            resolveAreaId(collectRefKeys(rawUpdateData, [
+            resolveAreaIds(collectRefKeys(rawUpdateData, [
                 "primaryAreaId",
                 "serviceAreas",
                 "areas",
@@ -528,6 +556,7 @@ export class VendorVerificationService {
                 "primaryArea",
             ])),
         ]);
+        const primaryAreaId = serviceAreaIds[0] ?? null;
 
         await prisma.providerProfile.update({
             where: { id: providerProfile.id },
@@ -537,6 +566,13 @@ export class VendorVerificationService {
                 ...(primaryAreaId ? { primaryAreaId } : {}),
             }
         });
+
+        if (serviceAreaIds.length > 0) {
+            const { syncProviderServiceAreas } = await import(
+                "../../utils/provider-service-areas.util"
+            );
+            await syncProviderServiceAreas(providerProfile.id, serviceAreaIds);
+        }
 
         // Update documents if provided
         const documents = data.documents;

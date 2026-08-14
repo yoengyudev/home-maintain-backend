@@ -306,6 +306,7 @@ export type ProviderProfileWhereInput = {
   businessProfile?: Prisma.XOR<Prisma.ProviderBusinessProfileNullableScalarRelationFilter, Prisma.ProviderBusinessProfileWhereInput> | null
   verifications?: Prisma.ProviderVerificationListRelationFilter
   serviceListings?: Prisma.ServiceListingListRelationFilter
+  serviceAreas?: Prisma.ProviderServiceAreaListRelationFilter
   bookings?: Prisma.BookingListRelationFilter
   reviews?: Prisma.ReviewListRelationFilter
 }
@@ -332,6 +333,7 @@ export type ProviderProfileOrderByWithRelationInput = {
   businessProfile?: Prisma.ProviderBusinessProfileOrderByWithRelationInput
   verifications?: Prisma.ProviderVerificationOrderByRelationAggregateInput
   serviceListings?: Prisma.ServiceListingOrderByRelationAggregateInput
+  serviceAreas?: Prisma.ProviderServiceAreaOrderByRelationAggregateInput
   bookings?: Prisma.BookingOrderByRelationAggregateInput
   reviews?: Prisma.ReviewOrderByRelationAggregateInput
 }
@@ -361,6 +363,7 @@ export type ProviderProfileWhereUniqueInput = Prisma.AtLeast<{
   businessProfile?: Prisma.XOR<Prisma.ProviderBusinessProfileNullableScalarRelationFilter, Prisma.ProviderBusinessProfileWhereInput> | null
   verifications?: Prisma.ProviderVerificationListRelationFilter
   serviceListings?: Prisma.ServiceListingListRelationFilter
+  serviceAreas?: Prisma.ProviderServiceAreaListRelationFilter
   bookings?: Prisma.BookingListRelationFilter
   reviews?: Prisma.ReviewListRelationFilter
 }, "id" | "publicId" | "userId">
@@ -428,6 +431,7 @@ export type ProviderProfileCreateInput = {
   businessProfile?: Prisma.ProviderBusinessProfileCreateNestedOneWithoutProviderProfileInput
   verifications?: Prisma.ProviderVerificationCreateNestedManyWithoutProviderProfileInput
   serviceListings?: Prisma.ServiceListingCreateNestedManyWithoutProviderProfileInput
+  serviceAreas?: Prisma.ProviderServiceAreaCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutProviderProfileInput
 }
@@ -451,6 +455,7 @@ export type ProviderProfileUncheckedCreateInput = {
   businessProfile?: Prisma.ProviderBusinessProfileUncheckedCreateNestedOneWithoutProviderProfileInput
   verifications?: Prisma.ProviderVerificationUncheckedCreateNestedManyWithoutProviderProfileInput
   serviceListings?: Prisma.ServiceListingUncheckedCreateNestedManyWithoutProviderProfileInput
+  serviceAreas?: Prisma.ProviderServiceAreaUncheckedCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutProviderProfileInput
 }
@@ -474,6 +479,7 @@ export type ProviderProfileUpdateInput = {
   businessProfile?: Prisma.ProviderBusinessProfileUpdateOneWithoutProviderProfileNestedInput
   verifications?: Prisma.ProviderVerificationUpdateManyWithoutProviderProfileNestedInput
   serviceListings?: Prisma.ServiceListingUpdateManyWithoutProviderProfileNestedInput
+  serviceAreas?: Prisma.ProviderServiceAreaUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutProviderProfileNestedInput
 }
@@ -497,6 +503,7 @@ export type ProviderProfileUncheckedUpdateInput = {
   businessProfile?: Prisma.ProviderBusinessProfileUncheckedUpdateOneWithoutProviderProfileNestedInput
   verifications?: Prisma.ProviderVerificationUncheckedUpdateManyWithoutProviderProfileNestedInput
   serviceListings?: Prisma.ServiceListingUncheckedUpdateManyWithoutProviderProfileNestedInput
+  serviceAreas?: Prisma.ProviderServiceAreaUncheckedUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutProviderProfileNestedInput
 }
@@ -786,6 +793,20 @@ export type ProviderProfileUncheckedUpdateManyWithoutPrimaryAreaNestedInput = {
   deleteMany?: Prisma.ProviderProfileScalarWhereInput | Prisma.ProviderProfileScalarWhereInput[]
 }
 
+export type ProviderProfileCreateNestedOneWithoutServiceAreasInput = {
+  create?: Prisma.XOR<Prisma.ProviderProfileCreateWithoutServiceAreasInput, Prisma.ProviderProfileUncheckedCreateWithoutServiceAreasInput>
+  connectOrCreate?: Prisma.ProviderProfileCreateOrConnectWithoutServiceAreasInput
+  connect?: Prisma.ProviderProfileWhereUniqueInput
+}
+
+export type ProviderProfileUpdateOneRequiredWithoutServiceAreasNestedInput = {
+  create?: Prisma.XOR<Prisma.ProviderProfileCreateWithoutServiceAreasInput, Prisma.ProviderProfileUncheckedCreateWithoutServiceAreasInput>
+  connectOrCreate?: Prisma.ProviderProfileCreateOrConnectWithoutServiceAreasInput
+  upsert?: Prisma.ProviderProfileUpsertWithoutServiceAreasInput
+  connect?: Prisma.ProviderProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProviderProfileUpdateToOneWithWhereWithoutServiceAreasInput, Prisma.ProviderProfileUpdateWithoutServiceAreasInput>, Prisma.ProviderProfileUncheckedUpdateWithoutServiceAreasInput>
+}
+
 export type ProviderProfileCreateNestedOneWithoutVerificationsInput = {
   create?: Prisma.XOR<Prisma.ProviderProfileCreateWithoutVerificationsInput, Prisma.ProviderProfileUncheckedCreateWithoutVerificationsInput>
   connectOrCreate?: Prisma.ProviderProfileCreateOrConnectWithoutVerificationsInput
@@ -860,6 +881,7 @@ export type ProviderProfileCreateWithoutUserInput = {
   businessProfile?: Prisma.ProviderBusinessProfileCreateNestedOneWithoutProviderProfileInput
   verifications?: Prisma.ProviderVerificationCreateNestedManyWithoutProviderProfileInput
   serviceListings?: Prisma.ServiceListingCreateNestedManyWithoutProviderProfileInput
+  serviceAreas?: Prisma.ProviderServiceAreaCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutProviderProfileInput
 }
@@ -882,6 +904,7 @@ export type ProviderProfileUncheckedCreateWithoutUserInput = {
   businessProfile?: Prisma.ProviderBusinessProfileUncheckedCreateNestedOneWithoutProviderProfileInput
   verifications?: Prisma.ProviderVerificationUncheckedCreateNestedManyWithoutProviderProfileInput
   serviceListings?: Prisma.ServiceListingUncheckedCreateNestedManyWithoutProviderProfileInput
+  serviceAreas?: Prisma.ProviderServiceAreaUncheckedCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutProviderProfileInput
 }
@@ -920,6 +943,7 @@ export type ProviderProfileUpdateWithoutUserInput = {
   businessProfile?: Prisma.ProviderBusinessProfileUpdateOneWithoutProviderProfileNestedInput
   verifications?: Prisma.ProviderVerificationUpdateManyWithoutProviderProfileNestedInput
   serviceListings?: Prisma.ServiceListingUpdateManyWithoutProviderProfileNestedInput
+  serviceAreas?: Prisma.ProviderServiceAreaUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutProviderProfileNestedInput
 }
@@ -942,6 +966,7 @@ export type ProviderProfileUncheckedUpdateWithoutUserInput = {
   businessProfile?: Prisma.ProviderBusinessProfileUncheckedUpdateOneWithoutProviderProfileNestedInput
   verifications?: Prisma.ProviderVerificationUncheckedUpdateManyWithoutProviderProfileNestedInput
   serviceListings?: Prisma.ServiceListingUncheckedUpdateManyWithoutProviderProfileNestedInput
+  serviceAreas?: Prisma.ProviderServiceAreaUncheckedUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutProviderProfileNestedInput
 }
@@ -964,6 +989,7 @@ export type ProviderProfileCreateWithoutBusinessProfileInput = {
   primaryArea?: Prisma.ServiceAreaCreateNestedOneWithoutPrimaryProvidersInput
   verifications?: Prisma.ProviderVerificationCreateNestedManyWithoutProviderProfileInput
   serviceListings?: Prisma.ServiceListingCreateNestedManyWithoutProviderProfileInput
+  serviceAreas?: Prisma.ProviderServiceAreaCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutProviderProfileInput
 }
@@ -986,6 +1012,7 @@ export type ProviderProfileUncheckedCreateWithoutBusinessProfileInput = {
   updatedAt?: Date | string
   verifications?: Prisma.ProviderVerificationUncheckedCreateNestedManyWithoutProviderProfileInput
   serviceListings?: Prisma.ServiceListingUncheckedCreateNestedManyWithoutProviderProfileInput
+  serviceAreas?: Prisma.ProviderServiceAreaUncheckedCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutProviderProfileInput
 }
@@ -1024,6 +1051,7 @@ export type ProviderProfileUpdateWithoutBusinessProfileInput = {
   primaryArea?: Prisma.ServiceAreaUpdateOneWithoutPrimaryProvidersNestedInput
   verifications?: Prisma.ProviderVerificationUpdateManyWithoutProviderProfileNestedInput
   serviceListings?: Prisma.ServiceListingUpdateManyWithoutProviderProfileNestedInput
+  serviceAreas?: Prisma.ProviderServiceAreaUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutProviderProfileNestedInput
 }
@@ -1046,6 +1074,7 @@ export type ProviderProfileUncheckedUpdateWithoutBusinessProfileInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   verifications?: Prisma.ProviderVerificationUncheckedUpdateManyWithoutProviderProfileNestedInput
   serviceListings?: Prisma.ServiceListingUncheckedUpdateManyWithoutProviderProfileNestedInput
+  serviceAreas?: Prisma.ProviderServiceAreaUncheckedUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutProviderProfileNestedInput
 }
@@ -1068,6 +1097,7 @@ export type ProviderProfileCreateWithoutPrimaryCategoryInput = {
   businessProfile?: Prisma.ProviderBusinessProfileCreateNestedOneWithoutProviderProfileInput
   verifications?: Prisma.ProviderVerificationCreateNestedManyWithoutProviderProfileInput
   serviceListings?: Prisma.ServiceListingCreateNestedManyWithoutProviderProfileInput
+  serviceAreas?: Prisma.ProviderServiceAreaCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutProviderProfileInput
 }
@@ -1090,6 +1120,7 @@ export type ProviderProfileUncheckedCreateWithoutPrimaryCategoryInput = {
   businessProfile?: Prisma.ProviderBusinessProfileUncheckedCreateNestedOneWithoutProviderProfileInput
   verifications?: Prisma.ProviderVerificationUncheckedCreateNestedManyWithoutProviderProfileInput
   serviceListings?: Prisma.ServiceListingUncheckedCreateNestedManyWithoutProviderProfileInput
+  serviceAreas?: Prisma.ProviderServiceAreaUncheckedCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutProviderProfileInput
 }
@@ -1159,6 +1190,7 @@ export type ProviderProfileCreateWithoutPrimaryAreaInput = {
   businessProfile?: Prisma.ProviderBusinessProfileCreateNestedOneWithoutProviderProfileInput
   verifications?: Prisma.ProviderVerificationCreateNestedManyWithoutProviderProfileInput
   serviceListings?: Prisma.ServiceListingCreateNestedManyWithoutProviderProfileInput
+  serviceAreas?: Prisma.ProviderServiceAreaCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutProviderProfileInput
 }
@@ -1181,6 +1213,7 @@ export type ProviderProfileUncheckedCreateWithoutPrimaryAreaInput = {
   businessProfile?: Prisma.ProviderBusinessProfileUncheckedCreateNestedOneWithoutProviderProfileInput
   verifications?: Prisma.ProviderVerificationUncheckedCreateNestedManyWithoutProviderProfileInput
   serviceListings?: Prisma.ServiceListingUncheckedCreateNestedManyWithoutProviderProfileInput
+  serviceAreas?: Prisma.ProviderServiceAreaUncheckedCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutProviderProfileInput
 }
@@ -1211,6 +1244,114 @@ export type ProviderProfileUpdateManyWithWhereWithoutPrimaryAreaInput = {
   data: Prisma.XOR<Prisma.ProviderProfileUpdateManyMutationInput, Prisma.ProviderProfileUncheckedUpdateManyWithoutPrimaryAreaInput>
 }
 
+export type ProviderProfileCreateWithoutServiceAreasInput = {
+  id?: string
+  publicId: string
+  contactName: string
+  status?: $Enums.ProviderStatus
+  avatarUrl?: string | null
+  approvedAt?: Date | string | null
+  suspendedAt?: Date | string | null
+  suspensionReason?: string | null
+  averageRating?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  completedJobs?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutProviderProfileInput
+  primaryCategory?: Prisma.ServiceCategoryCreateNestedOneWithoutPrimaryProvidersInput
+  primaryArea?: Prisma.ServiceAreaCreateNestedOneWithoutPrimaryProvidersInput
+  businessProfile?: Prisma.ProviderBusinessProfileCreateNestedOneWithoutProviderProfileInput
+  verifications?: Prisma.ProviderVerificationCreateNestedManyWithoutProviderProfileInput
+  serviceListings?: Prisma.ServiceListingCreateNestedManyWithoutProviderProfileInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutProviderProfileInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutProviderProfileInput
+}
+
+export type ProviderProfileUncheckedCreateWithoutServiceAreasInput = {
+  id?: string
+  publicId: string
+  userId: string
+  contactName: string
+  status?: $Enums.ProviderStatus
+  avatarUrl?: string | null
+  primaryCategoryId?: string | null
+  primaryAreaId?: string | null
+  approvedAt?: Date | string | null
+  suspendedAt?: Date | string | null
+  suspensionReason?: string | null
+  averageRating?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  completedJobs?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  businessProfile?: Prisma.ProviderBusinessProfileUncheckedCreateNestedOneWithoutProviderProfileInput
+  verifications?: Prisma.ProviderVerificationUncheckedCreateNestedManyWithoutProviderProfileInput
+  serviceListings?: Prisma.ServiceListingUncheckedCreateNestedManyWithoutProviderProfileInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutProviderProfileInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutProviderProfileInput
+}
+
+export type ProviderProfileCreateOrConnectWithoutServiceAreasInput = {
+  where: Prisma.ProviderProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProviderProfileCreateWithoutServiceAreasInput, Prisma.ProviderProfileUncheckedCreateWithoutServiceAreasInput>
+}
+
+export type ProviderProfileUpsertWithoutServiceAreasInput = {
+  update: Prisma.XOR<Prisma.ProviderProfileUpdateWithoutServiceAreasInput, Prisma.ProviderProfileUncheckedUpdateWithoutServiceAreasInput>
+  create: Prisma.XOR<Prisma.ProviderProfileCreateWithoutServiceAreasInput, Prisma.ProviderProfileUncheckedCreateWithoutServiceAreasInput>
+  where?: Prisma.ProviderProfileWhereInput
+}
+
+export type ProviderProfileUpdateToOneWithWhereWithoutServiceAreasInput = {
+  where?: Prisma.ProviderProfileWhereInput
+  data: Prisma.XOR<Prisma.ProviderProfileUpdateWithoutServiceAreasInput, Prisma.ProviderProfileUncheckedUpdateWithoutServiceAreasInput>
+}
+
+export type ProviderProfileUpdateWithoutServiceAreasInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  averageRating?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  completedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutProviderProfileNestedInput
+  primaryCategory?: Prisma.ServiceCategoryUpdateOneWithoutPrimaryProvidersNestedInput
+  primaryArea?: Prisma.ServiceAreaUpdateOneWithoutPrimaryProvidersNestedInput
+  businessProfile?: Prisma.ProviderBusinessProfileUpdateOneWithoutProviderProfileNestedInput
+  verifications?: Prisma.ProviderVerificationUpdateManyWithoutProviderProfileNestedInput
+  serviceListings?: Prisma.ServiceListingUpdateManyWithoutProviderProfileNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutProviderProfileNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutProviderProfileNestedInput
+}
+
+export type ProviderProfileUncheckedUpdateWithoutServiceAreasInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  primaryCategoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  primaryAreaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  averageRating?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  completedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessProfile?: Prisma.ProviderBusinessProfileUncheckedUpdateOneWithoutProviderProfileNestedInput
+  verifications?: Prisma.ProviderVerificationUncheckedUpdateManyWithoutProviderProfileNestedInput
+  serviceListings?: Prisma.ServiceListingUncheckedUpdateManyWithoutProviderProfileNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutProviderProfileNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutProviderProfileNestedInput
+}
+
 export type ProviderProfileCreateWithoutVerificationsInput = {
   id?: string
   publicId: string
@@ -1229,6 +1370,7 @@ export type ProviderProfileCreateWithoutVerificationsInput = {
   primaryArea?: Prisma.ServiceAreaCreateNestedOneWithoutPrimaryProvidersInput
   businessProfile?: Prisma.ProviderBusinessProfileCreateNestedOneWithoutProviderProfileInput
   serviceListings?: Prisma.ServiceListingCreateNestedManyWithoutProviderProfileInput
+  serviceAreas?: Prisma.ProviderServiceAreaCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutProviderProfileInput
 }
@@ -1251,6 +1393,7 @@ export type ProviderProfileUncheckedCreateWithoutVerificationsInput = {
   updatedAt?: Date | string
   businessProfile?: Prisma.ProviderBusinessProfileUncheckedCreateNestedOneWithoutProviderProfileInput
   serviceListings?: Prisma.ServiceListingUncheckedCreateNestedManyWithoutProviderProfileInput
+  serviceAreas?: Prisma.ProviderServiceAreaUncheckedCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutProviderProfileInput
 }
@@ -1289,6 +1432,7 @@ export type ProviderProfileUpdateWithoutVerificationsInput = {
   primaryArea?: Prisma.ServiceAreaUpdateOneWithoutPrimaryProvidersNestedInput
   businessProfile?: Prisma.ProviderBusinessProfileUpdateOneWithoutProviderProfileNestedInput
   serviceListings?: Prisma.ServiceListingUpdateManyWithoutProviderProfileNestedInput
+  serviceAreas?: Prisma.ProviderServiceAreaUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutProviderProfileNestedInput
 }
@@ -1311,6 +1455,7 @@ export type ProviderProfileUncheckedUpdateWithoutVerificationsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessProfile?: Prisma.ProviderBusinessProfileUncheckedUpdateOneWithoutProviderProfileNestedInput
   serviceListings?: Prisma.ServiceListingUncheckedUpdateManyWithoutProviderProfileNestedInput
+  serviceAreas?: Prisma.ProviderServiceAreaUncheckedUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutProviderProfileNestedInput
 }
@@ -1333,6 +1478,7 @@ export type ProviderProfileCreateWithoutServiceListingsInput = {
   primaryArea?: Prisma.ServiceAreaCreateNestedOneWithoutPrimaryProvidersInput
   businessProfile?: Prisma.ProviderBusinessProfileCreateNestedOneWithoutProviderProfileInput
   verifications?: Prisma.ProviderVerificationCreateNestedManyWithoutProviderProfileInput
+  serviceAreas?: Prisma.ProviderServiceAreaCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutProviderProfileInput
 }
@@ -1355,6 +1501,7 @@ export type ProviderProfileUncheckedCreateWithoutServiceListingsInput = {
   updatedAt?: Date | string
   businessProfile?: Prisma.ProviderBusinessProfileUncheckedCreateNestedOneWithoutProviderProfileInput
   verifications?: Prisma.ProviderVerificationUncheckedCreateNestedManyWithoutProviderProfileInput
+  serviceAreas?: Prisma.ProviderServiceAreaUncheckedCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutProviderProfileInput
 }
@@ -1393,6 +1540,7 @@ export type ProviderProfileUpdateWithoutServiceListingsInput = {
   primaryArea?: Prisma.ServiceAreaUpdateOneWithoutPrimaryProvidersNestedInput
   businessProfile?: Prisma.ProviderBusinessProfileUpdateOneWithoutProviderProfileNestedInput
   verifications?: Prisma.ProviderVerificationUpdateManyWithoutProviderProfileNestedInput
+  serviceAreas?: Prisma.ProviderServiceAreaUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutProviderProfileNestedInput
 }
@@ -1415,6 +1563,7 @@ export type ProviderProfileUncheckedUpdateWithoutServiceListingsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessProfile?: Prisma.ProviderBusinessProfileUncheckedUpdateOneWithoutProviderProfileNestedInput
   verifications?: Prisma.ProviderVerificationUncheckedUpdateManyWithoutProviderProfileNestedInput
+  serviceAreas?: Prisma.ProviderServiceAreaUncheckedUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutProviderProfileNestedInput
 }
@@ -1438,6 +1587,7 @@ export type ProviderProfileCreateWithoutBookingsInput = {
   businessProfile?: Prisma.ProviderBusinessProfileCreateNestedOneWithoutProviderProfileInput
   verifications?: Prisma.ProviderVerificationCreateNestedManyWithoutProviderProfileInput
   serviceListings?: Prisma.ServiceListingCreateNestedManyWithoutProviderProfileInput
+  serviceAreas?: Prisma.ProviderServiceAreaCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutProviderProfileInput
 }
 
@@ -1460,6 +1610,7 @@ export type ProviderProfileUncheckedCreateWithoutBookingsInput = {
   businessProfile?: Prisma.ProviderBusinessProfileUncheckedCreateNestedOneWithoutProviderProfileInput
   verifications?: Prisma.ProviderVerificationUncheckedCreateNestedManyWithoutProviderProfileInput
   serviceListings?: Prisma.ServiceListingUncheckedCreateNestedManyWithoutProviderProfileInput
+  serviceAreas?: Prisma.ProviderServiceAreaUncheckedCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutProviderProfileInput
 }
 
@@ -1498,6 +1649,7 @@ export type ProviderProfileUpdateWithoutBookingsInput = {
   businessProfile?: Prisma.ProviderBusinessProfileUpdateOneWithoutProviderProfileNestedInput
   verifications?: Prisma.ProviderVerificationUpdateManyWithoutProviderProfileNestedInput
   serviceListings?: Prisma.ServiceListingUpdateManyWithoutProviderProfileNestedInput
+  serviceAreas?: Prisma.ProviderServiceAreaUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutProviderProfileNestedInput
 }
 
@@ -1520,6 +1672,7 @@ export type ProviderProfileUncheckedUpdateWithoutBookingsInput = {
   businessProfile?: Prisma.ProviderBusinessProfileUncheckedUpdateOneWithoutProviderProfileNestedInput
   verifications?: Prisma.ProviderVerificationUncheckedUpdateManyWithoutProviderProfileNestedInput
   serviceListings?: Prisma.ServiceListingUncheckedUpdateManyWithoutProviderProfileNestedInput
+  serviceAreas?: Prisma.ProviderServiceAreaUncheckedUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutProviderProfileNestedInput
 }
 
@@ -1542,6 +1695,7 @@ export type ProviderProfileCreateWithoutReviewsInput = {
   businessProfile?: Prisma.ProviderBusinessProfileCreateNestedOneWithoutProviderProfileInput
   verifications?: Prisma.ProviderVerificationCreateNestedManyWithoutProviderProfileInput
   serviceListings?: Prisma.ServiceListingCreateNestedManyWithoutProviderProfileInput
+  serviceAreas?: Prisma.ProviderServiceAreaCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingCreateNestedManyWithoutProviderProfileInput
 }
 
@@ -1564,6 +1718,7 @@ export type ProviderProfileUncheckedCreateWithoutReviewsInput = {
   businessProfile?: Prisma.ProviderBusinessProfileUncheckedCreateNestedOneWithoutProviderProfileInput
   verifications?: Prisma.ProviderVerificationUncheckedCreateNestedManyWithoutProviderProfileInput
   serviceListings?: Prisma.ServiceListingUncheckedCreateNestedManyWithoutProviderProfileInput
+  serviceAreas?: Prisma.ProviderServiceAreaUncheckedCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutProviderProfileInput
 }
 
@@ -1602,6 +1757,7 @@ export type ProviderProfileUpdateWithoutReviewsInput = {
   businessProfile?: Prisma.ProviderBusinessProfileUpdateOneWithoutProviderProfileNestedInput
   verifications?: Prisma.ProviderVerificationUpdateManyWithoutProviderProfileNestedInput
   serviceListings?: Prisma.ServiceListingUpdateManyWithoutProviderProfileNestedInput
+  serviceAreas?: Prisma.ProviderServiceAreaUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutProviderProfileNestedInput
 }
 
@@ -1624,6 +1780,7 @@ export type ProviderProfileUncheckedUpdateWithoutReviewsInput = {
   businessProfile?: Prisma.ProviderBusinessProfileUncheckedUpdateOneWithoutProviderProfileNestedInput
   verifications?: Prisma.ProviderVerificationUncheckedUpdateManyWithoutProviderProfileNestedInput
   serviceListings?: Prisma.ServiceListingUncheckedUpdateManyWithoutProviderProfileNestedInput
+  serviceAreas?: Prisma.ProviderServiceAreaUncheckedUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutProviderProfileNestedInput
 }
 
@@ -1662,6 +1819,7 @@ export type ProviderProfileUpdateWithoutPrimaryCategoryInput = {
   businessProfile?: Prisma.ProviderBusinessProfileUpdateOneWithoutProviderProfileNestedInput
   verifications?: Prisma.ProviderVerificationUpdateManyWithoutProviderProfileNestedInput
   serviceListings?: Prisma.ServiceListingUpdateManyWithoutProviderProfileNestedInput
+  serviceAreas?: Prisma.ProviderServiceAreaUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutProviderProfileNestedInput
 }
@@ -1684,6 +1842,7 @@ export type ProviderProfileUncheckedUpdateWithoutPrimaryCategoryInput = {
   businessProfile?: Prisma.ProviderBusinessProfileUncheckedUpdateOneWithoutProviderProfileNestedInput
   verifications?: Prisma.ProviderVerificationUncheckedUpdateManyWithoutProviderProfileNestedInput
   serviceListings?: Prisma.ServiceListingUncheckedUpdateManyWithoutProviderProfileNestedInput
+  serviceAreas?: Prisma.ProviderServiceAreaUncheckedUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutProviderProfileNestedInput
 }
@@ -1740,6 +1899,7 @@ export type ProviderProfileUpdateWithoutPrimaryAreaInput = {
   businessProfile?: Prisma.ProviderBusinessProfileUpdateOneWithoutProviderProfileNestedInput
   verifications?: Prisma.ProviderVerificationUpdateManyWithoutProviderProfileNestedInput
   serviceListings?: Prisma.ServiceListingUpdateManyWithoutProviderProfileNestedInput
+  serviceAreas?: Prisma.ProviderServiceAreaUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutProviderProfileNestedInput
 }
@@ -1762,6 +1922,7 @@ export type ProviderProfileUncheckedUpdateWithoutPrimaryAreaInput = {
   businessProfile?: Prisma.ProviderBusinessProfileUncheckedUpdateOneWithoutProviderProfileNestedInput
   verifications?: Prisma.ProviderVerificationUncheckedUpdateManyWithoutProviderProfileNestedInput
   serviceListings?: Prisma.ServiceListingUncheckedUpdateManyWithoutProviderProfileNestedInput
+  serviceAreas?: Prisma.ProviderServiceAreaUncheckedUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutProviderProfileNestedInput
 }
@@ -1791,6 +1952,7 @@ export type ProviderProfileUncheckedUpdateManyWithoutPrimaryAreaInput = {
 export type ProviderProfileCountOutputType = {
   verifications: number
   serviceListings: number
+  serviceAreas: number
   bookings: number
   reviews: number
 }
@@ -1798,6 +1960,7 @@ export type ProviderProfileCountOutputType = {
 export type ProviderProfileCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   verifications?: boolean | ProviderProfileCountOutputTypeCountVerificationsArgs
   serviceListings?: boolean | ProviderProfileCountOutputTypeCountServiceListingsArgs
+  serviceAreas?: boolean | ProviderProfileCountOutputTypeCountServiceAreasArgs
   bookings?: boolean | ProviderProfileCountOutputTypeCountBookingsArgs
   reviews?: boolean | ProviderProfileCountOutputTypeCountReviewsArgs
 }
@@ -1824,6 +1987,13 @@ export type ProviderProfileCountOutputTypeCountVerificationsArgs<ExtArgs extends
  */
 export type ProviderProfileCountOutputTypeCountServiceListingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ServiceListingWhereInput
+}
+
+/**
+ * ProviderProfileCountOutputType without action
+ */
+export type ProviderProfileCountOutputTypeCountServiceAreasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProviderServiceAreaWhereInput
 }
 
 /**
@@ -1863,6 +2033,7 @@ export type ProviderProfileSelect<ExtArgs extends runtime.Types.Extensions.Inter
   businessProfile?: boolean | Prisma.ProviderProfile$businessProfileArgs<ExtArgs>
   verifications?: boolean | Prisma.ProviderProfile$verificationsArgs<ExtArgs>
   serviceListings?: boolean | Prisma.ProviderProfile$serviceListingsArgs<ExtArgs>
+  serviceAreas?: boolean | Prisma.ProviderProfile$serviceAreasArgs<ExtArgs>
   bookings?: boolean | Prisma.ProviderProfile$bookingsArgs<ExtArgs>
   reviews?: boolean | Prisma.ProviderProfile$reviewsArgs<ExtArgs>
   _count?: boolean | Prisma.ProviderProfileCountOutputTypeDefaultArgs<ExtArgs>
@@ -1936,6 +2107,7 @@ export type ProviderProfileInclude<ExtArgs extends runtime.Types.Extensions.Inte
   businessProfile?: boolean | Prisma.ProviderProfile$businessProfileArgs<ExtArgs>
   verifications?: boolean | Prisma.ProviderProfile$verificationsArgs<ExtArgs>
   serviceListings?: boolean | Prisma.ProviderProfile$serviceListingsArgs<ExtArgs>
+  serviceAreas?: boolean | Prisma.ProviderProfile$serviceAreasArgs<ExtArgs>
   bookings?: boolean | Prisma.ProviderProfile$bookingsArgs<ExtArgs>
   reviews?: boolean | Prisma.ProviderProfile$reviewsArgs<ExtArgs>
   _count?: boolean | Prisma.ProviderProfileCountOutputTypeDefaultArgs<ExtArgs>
@@ -1960,6 +2132,7 @@ export type $ProviderProfilePayload<ExtArgs extends runtime.Types.Extensions.Int
     businessProfile: Prisma.$ProviderBusinessProfilePayload<ExtArgs> | null
     verifications: Prisma.$ProviderVerificationPayload<ExtArgs>[]
     serviceListings: Prisma.$ServiceListingPayload<ExtArgs>[]
+    serviceAreas: Prisma.$ProviderServiceAreaPayload<ExtArgs>[]
     bookings: Prisma.$BookingPayload<ExtArgs>[]
     reviews: Prisma.$ReviewPayload<ExtArgs>[]
   }
@@ -2379,6 +2552,7 @@ export interface Prisma__ProviderProfileClient<T, Null = never, ExtArgs extends 
   businessProfile<T extends Prisma.ProviderProfile$businessProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProviderProfile$businessProfileArgs<ExtArgs>>): Prisma.Prisma__ProviderBusinessProfileClient<runtime.Types.Result.GetResult<Prisma.$ProviderBusinessProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   verifications<T extends Prisma.ProviderProfile$verificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProviderProfile$verificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProviderVerificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   serviceListings<T extends Prisma.ProviderProfile$serviceListingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProviderProfile$serviceListingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServiceListingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  serviceAreas<T extends Prisma.ProviderProfile$serviceAreasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProviderProfile$serviceAreasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProviderServiceAreaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   bookings<T extends Prisma.ProviderProfile$bookingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProviderProfile$bookingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reviews<T extends Prisma.ProviderProfile$reviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProviderProfile$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -2928,6 +3102,30 @@ export type ProviderProfile$serviceListingsArgs<ExtArgs extends runtime.Types.Ex
   take?: number
   skip?: number
   distinct?: Prisma.ServiceListingScalarFieldEnum | Prisma.ServiceListingScalarFieldEnum[]
+}
+
+/**
+ * ProviderProfile.serviceAreas
+ */
+export type ProviderProfile$serviceAreasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProviderServiceArea
+   */
+  select?: Prisma.ProviderServiceAreaSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProviderServiceArea
+   */
+  omit?: Prisma.ProviderServiceAreaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProviderServiceAreaInclude<ExtArgs> | null
+  where?: Prisma.ProviderServiceAreaWhereInput
+  orderBy?: Prisma.ProviderServiceAreaOrderByWithRelationInput | Prisma.ProviderServiceAreaOrderByWithRelationInput[]
+  cursor?: Prisma.ProviderServiceAreaWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProviderServiceAreaScalarFieldEnum | Prisma.ProviderServiceAreaScalarFieldEnum[]
 }
 
 /**

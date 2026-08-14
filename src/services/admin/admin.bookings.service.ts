@@ -22,7 +22,7 @@ const bookingInclude = {
     serviceListing: {
         include: { category: { select: { nameEn: true, nameKm: true } } },
     },
-    serviceArea: { select: { nameEn: true, nameKm: true } },
+    serviceArea: { select: { id: true, publicId: true, nameEn: true, nameKm: true } },
     issues: {
         select: {
             id: true,
@@ -47,6 +47,7 @@ function formatBooking(b: any) {
         quantity: b.quantity,
         estimatedTotal: parseFloat(b.estimatedTotal),
         serviceAddress: b.serviceAddress,
+        areaSummary: b.areaSummary ?? null,
         customerNotes: b.customerNotes,
         rejectionReason: b.rejectionReason,
         createdAt: b.createdAt.toISOString(),
@@ -72,7 +73,14 @@ function formatBooking(b: any) {
             price: parseFloat(b.serviceListing.price),
             category: b.serviceListing.category,
         },
-        serviceArea: b.serviceArea,
+        serviceArea: b.serviceArea
+            ? {
+                  id: b.serviceArea.id,
+                  publicId: b.serviceArea.publicId,
+                  nameEn: b.serviceArea.nameEn,
+                  nameKm: b.serviceArea.nameKm,
+              }
+            : null,
         issues: b.issues.map((i: any) => ({
             ...i,
             resolvedAt: i.resolvedAt?.toISOString() ?? null,

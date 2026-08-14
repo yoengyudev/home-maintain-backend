@@ -456,7 +456,10 @@ export class VendorServiceService {
             name: area.nameEn,
             nameKm: area.nameKm,
             slug: area.slug,
-            provinceOrCity: area.provinceOrCity
+            provinceOrCity: area.provinceOrCity,
+            latitude: area.latitude ? Number(area.latitude) : null,
+            longitude: area.longitude ? Number(area.longitude) : null,
+            radiusKm: Number(area.radiusKm ?? 15),
         }));
     }
 }

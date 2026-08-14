@@ -61,6 +61,7 @@ export const ModelName = {
   FcmToken: 'FcmToken',
   ServiceCategory: 'ServiceCategory',
   ServiceArea: 'ServiceArea',
+  ProviderServiceArea: 'ProviderServiceArea',
   ProviderVerification: 'ProviderVerification',
   ProviderVerificationDocument: 'ProviderVerificationDocument',
   ProviderVerificationChecklistItem: 'ProviderVerificationChecklistItem',
@@ -262,12 +263,25 @@ export const ServiceAreaScalarFieldEnum = {
   nameKm: 'nameKm',
   slug: 'slug',
   provinceOrCity: 'provinceOrCity',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  radiusKm: 'radiusKm',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type ServiceAreaScalarFieldEnum = (typeof ServiceAreaScalarFieldEnum)[keyof typeof ServiceAreaScalarFieldEnum]
+
+
+export const ProviderServiceAreaScalarFieldEnum = {
+  id: 'id',
+  providerProfileId: 'providerProfileId',
+  serviceAreaId: 'serviceAreaId',
+  createdAt: 'createdAt'
+} as const
+
+export type ProviderServiceAreaScalarFieldEnum = (typeof ProviderServiceAreaScalarFieldEnum)[keyof typeof ProviderServiceAreaScalarFieldEnum]
 
 
 export const ProviderVerificationScalarFieldEnum = {

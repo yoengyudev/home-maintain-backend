@@ -394,6 +394,7 @@ export const ModelName = {
   FcmToken: 'FcmToken',
   ServiceCategory: 'ServiceCategory',
   ServiceArea: 'ServiceArea',
+  ProviderServiceArea: 'ProviderServiceArea',
   ProviderVerification: 'ProviderVerification',
   ProviderVerificationDocument: 'ProviderVerificationDocument',
   ProviderVerificationChecklistItem: 'ProviderVerificationChecklistItem',
@@ -429,7 +430,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "adminProfile" | "customerProfile" | "providerProfile" | "providerBusinessProfile" | "userPreference" | "accountSession" | "fcmToken" | "serviceCategory" | "serviceArea" | "providerVerification" | "providerVerificationDocument" | "providerVerificationChecklistItem" | "providerVerificationDecision" | "providerVerificationTimelineItem" | "serviceListing" | "serviceListingArea" | "serviceModerationHistory" | "customerAddress" | "booking" | "bookingTimelineItem" | "bookingIssue" | "bookingStatusHistory" | "review" | "notification" | "auditLog" | "internalAdminNote" | "faq" | "supportRequest" | "supportPage"
+    modelProps: "user" | "adminProfile" | "customerProfile" | "providerProfile" | "providerBusinessProfile" | "userPreference" | "accountSession" | "fcmToken" | "serviceCategory" | "serviceArea" | "providerServiceArea" | "providerVerification" | "providerVerificationDocument" | "providerVerificationChecklistItem" | "providerVerificationDecision" | "providerVerificationTimelineItem" | "serviceListing" | "serviceListingArea" | "serviceModerationHistory" | "customerAddress" | "booking" | "bookingTimelineItem" | "bookingIssue" | "bookingStatusHistory" | "review" | "notification" | "auditLog" | "internalAdminNote" | "faq" | "supportRequest" | "supportPage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1170,6 +1171,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ServiceAreaCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ServiceAreaCountAggregateOutputType> | number
+        }
+      }
+    }
+    ProviderServiceArea: {
+      payload: Prisma.$ProviderServiceAreaPayload<ExtArgs>
+      fields: Prisma.ProviderServiceAreaFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ProviderServiceAreaFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderServiceAreaPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ProviderServiceAreaFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderServiceAreaPayload>
+        }
+        findFirst: {
+          args: Prisma.ProviderServiceAreaFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderServiceAreaPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ProviderServiceAreaFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderServiceAreaPayload>
+        }
+        findMany: {
+          args: Prisma.ProviderServiceAreaFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderServiceAreaPayload>[]
+        }
+        create: {
+          args: Prisma.ProviderServiceAreaCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderServiceAreaPayload>
+        }
+        createMany: {
+          args: Prisma.ProviderServiceAreaCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ProviderServiceAreaCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderServiceAreaPayload>[]
+        }
+        delete: {
+          args: Prisma.ProviderServiceAreaDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderServiceAreaPayload>
+        }
+        update: {
+          args: Prisma.ProviderServiceAreaUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderServiceAreaPayload>
+        }
+        deleteMany: {
+          args: Prisma.ProviderServiceAreaDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ProviderServiceAreaUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ProviderServiceAreaUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderServiceAreaPayload>[]
+        }
+        upsert: {
+          args: Prisma.ProviderServiceAreaUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProviderServiceAreaPayload>
+        }
+        aggregate: {
+          args: Prisma.ProviderServiceAreaAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateProviderServiceArea>
+        }
+        groupBy: {
+          args: Prisma.ProviderServiceAreaGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProviderServiceAreaGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ProviderServiceAreaCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProviderServiceAreaCountAggregateOutputType> | number
         }
       }
     }
@@ -2855,12 +2930,25 @@ export const ServiceAreaScalarFieldEnum = {
   nameKm: 'nameKm',
   slug: 'slug',
   provinceOrCity: 'provinceOrCity',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  radiusKm: 'radiusKm',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type ServiceAreaScalarFieldEnum = (typeof ServiceAreaScalarFieldEnum)[keyof typeof ServiceAreaScalarFieldEnum]
+
+
+export const ProviderServiceAreaScalarFieldEnum = {
+  id: 'id',
+  providerProfileId: 'providerProfileId',
+  serviceAreaId: 'serviceAreaId',
+  createdAt: 'createdAt'
+} as const
+
+export type ProviderServiceAreaScalarFieldEnum = (typeof ProviderServiceAreaScalarFieldEnum)[keyof typeof ProviderServiceAreaScalarFieldEnum]
 
 
 export const ProviderVerificationScalarFieldEnum = {
@@ -3708,6 +3796,7 @@ export type GlobalOmitConfig = {
   fcmToken?: Prisma.FcmTokenOmit
   serviceCategory?: Prisma.ServiceCategoryOmit
   serviceArea?: Prisma.ServiceAreaOmit
+  providerServiceArea?: Prisma.ProviderServiceAreaOmit
   providerVerification?: Prisma.ProviderVerificationOmit
   providerVerificationDocument?: Prisma.ProviderVerificationDocumentOmit
   providerVerificationChecklistItem?: Prisma.ProviderVerificationChecklistItemOmit

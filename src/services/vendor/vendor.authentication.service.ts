@@ -585,7 +585,28 @@ export class VendorAuthenticationService {
                                 publicId: true,
                                 nameEn: true,
                                 nameKm: true,
+                                latitude: true,
+                                longitude: true,
+                                radiusKm: true,
                             },
+                        },
+                        serviceAreas: {
+                            include: {
+                                serviceArea: {
+                                    select: {
+                                        id: true,
+                                        publicId: true,
+                                        nameEn: true,
+                                        nameKm: true,
+                                        slug: true,
+                                        latitude: true,
+                                        longitude: true,
+                                        radiusKm: true,
+                                        isActive: true,
+                                    },
+                                },
+                            },
+                            orderBy: { createdAt: "asc" },
                         },
                     }
                 } 
@@ -596,12 +617,36 @@ export class VendorAuthenticationService {
             throw new NotFoundException(t("VENDOR_USER_NOT_FOUND", lang));
         }
 
+        const profile = user.providerProfile;
+        const serviceAreas =
+            profile?.serviceAreas?.map((row) => ({
+                id: row.serviceArea.id,
+                publicId: row.serviceArea.publicId,
+                nameEn: row.serviceArea.nameEn,
+                nameKm: row.serviceArea.nameKm,
+                slug: row.serviceArea.slug,
+                latitude: row.serviceArea.latitude
+                    ? Number(row.serviceArea.latitude)
+                    : null,
+                longitude: row.serviceArea.longitude
+                    ? Number(row.serviceArea.longitude)
+                    : null,
+                radiusKm: Number(row.serviceArea.radiusKm ?? 15),
+                isActive: row.serviceArea.isActive,
+            })) ?? [];
+
         return {
             publicId: user.publicId,
             email: user.email,
             phone: user.phone,
             role: user.role,
-            profile: user.providerProfile
+            profile: profile
+                ? {
+                      ...profile,
+                      serviceAreas,
+                      serviceAreaIds: serviceAreas.map((a) => a.publicId),
+                  }
+                : null,
         };
     }
 
@@ -627,25 +672,6 @@ export class VendorAuthenticationService {
 
         if (!providerProfile) {
             throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
-        }
-
-        let primaryAreaId: string | null | undefined;
-        if (data.serviceAreaIds !== undefined) {
-            const tokens = data.serviceAreaIds.filter(Boolean);
-            if (tokens.length > 0) {
-                const areas = await prisma.serviceArea.findMany({
-                    where: {
-                        OR: tokens.flatMap((token) => [
-                            { id: token },
-                            { publicId: token },
-                            { slug: token },
-                        ]),
-                    },
-                });
-                primaryAreaId = areas[0]?.id ?? null;
-            } else {
-                primaryAreaId = null;
-            }
         }
 
         const businessData = {
@@ -678,16 +704,23 @@ export class VendorAuthenticationService {
             });
         }
 
-        // Update provider profile
-        await prisma.providerProfile.update({
-            where: { id: providerProfile.id },
-            data: {
-                ...(data.contactName !== undefined && { contactName: data.contactName }),
-                ...(data.serviceAreaIds !== undefined && {
-                    primaryAreaId: primaryAreaId || null,
-                }),
-            }
-        });
+        // Update provider profile contact name
+        if (data.contactName !== undefined) {
+            await prisma.providerProfile.update({
+                where: { id: providerProfile.id },
+                data: { contactName: data.contactName },
+            });
+        }
+
+        // Sync multi service areas (+ primaryAreaId)
+        if (data.serviceAreaIds !== undefined) {
+            const {
+                resolveServiceAreaIds,
+                syncProviderServiceAreas,
+            } = await import("../../utils/provider-service-areas.util");
+            const areaIds = await resolveServiceAreaIds(data.serviceAreaIds, lang);
+            await syncProviderServiceAreas(providerProfile.id, areaIds);
+        }
 
         // Return updated profile
         return this.me(userId, lang);

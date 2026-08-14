@@ -20,8 +20,22 @@ export type ServiceAreaModel = runtime.Types.Result.DefaultSelection<Prisma.$Ser
 
 export type AggregateServiceArea = {
   _count: ServiceAreaCountAggregateOutputType | null
+  _avg: ServiceAreaAvgAggregateOutputType | null
+  _sum: ServiceAreaSumAggregateOutputType | null
   _min: ServiceAreaMinAggregateOutputType | null
   _max: ServiceAreaMaxAggregateOutputType | null
+}
+
+export type ServiceAreaAvgAggregateOutputType = {
+  latitude: runtime.Decimal | null
+  longitude: runtime.Decimal | null
+  radiusKm: runtime.Decimal | null
+}
+
+export type ServiceAreaSumAggregateOutputType = {
+  latitude: runtime.Decimal | null
+  longitude: runtime.Decimal | null
+  radiusKm: runtime.Decimal | null
 }
 
 export type ServiceAreaMinAggregateOutputType = {
@@ -31,6 +45,9 @@ export type ServiceAreaMinAggregateOutputType = {
   nameKm: string | null
   slug: string | null
   provinceOrCity: string | null
+  latitude: runtime.Decimal | null
+  longitude: runtime.Decimal | null
+  radiusKm: runtime.Decimal | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -43,6 +60,9 @@ export type ServiceAreaMaxAggregateOutputType = {
   nameKm: string | null
   slug: string | null
   provinceOrCity: string | null
+  latitude: runtime.Decimal | null
+  longitude: runtime.Decimal | null
+  radiusKm: runtime.Decimal | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -55,12 +75,27 @@ export type ServiceAreaCountAggregateOutputType = {
   nameKm: number
   slug: number
   provinceOrCity: number
+  latitude: number
+  longitude: number
+  radiusKm: number
   isActive: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
+
+export type ServiceAreaAvgAggregateInputType = {
+  latitude?: true
+  longitude?: true
+  radiusKm?: true
+}
+
+export type ServiceAreaSumAggregateInputType = {
+  latitude?: true
+  longitude?: true
+  radiusKm?: true
+}
 
 export type ServiceAreaMinAggregateInputType = {
   id?: true
@@ -69,6 +104,9 @@ export type ServiceAreaMinAggregateInputType = {
   nameKm?: true
   slug?: true
   provinceOrCity?: true
+  latitude?: true
+  longitude?: true
+  radiusKm?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -81,6 +119,9 @@ export type ServiceAreaMaxAggregateInputType = {
   nameKm?: true
   slug?: true
   provinceOrCity?: true
+  latitude?: true
+  longitude?: true
+  radiusKm?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -93,6 +134,9 @@ export type ServiceAreaCountAggregateInputType = {
   nameKm?: true
   slug?: true
   provinceOrCity?: true
+  latitude?: true
+  longitude?: true
+  radiusKm?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -137,6 +181,18 @@ export type ServiceAreaAggregateArgs<ExtArgs extends runtime.Types.Extensions.In
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: ServiceAreaAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: ServiceAreaSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: ServiceAreaMinAggregateInputType
@@ -167,6 +223,8 @@ export type ServiceAreaGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   _count?: ServiceAreaCountAggregateInputType | true
+  _avg?: ServiceAreaAvgAggregateInputType
+  _sum?: ServiceAreaSumAggregateInputType
   _min?: ServiceAreaMinAggregateInputType
   _max?: ServiceAreaMaxAggregateInputType
 }
@@ -178,10 +236,15 @@ export type ServiceAreaGroupByOutputType = {
   nameKm: string
   slug: string
   provinceOrCity: string | null
+  latitude: runtime.Decimal | null
+  longitude: runtime.Decimal | null
+  radiusKm: runtime.Decimal
   isActive: boolean
   createdAt: Date
   updatedAt: Date
   _count: ServiceAreaCountAggregateOutputType | null
+  _avg: ServiceAreaAvgAggregateOutputType | null
+  _sum: ServiceAreaSumAggregateOutputType | null
   _min: ServiceAreaMinAggregateOutputType | null
   _max: ServiceAreaMaxAggregateOutputType | null
 }
@@ -211,10 +274,14 @@ export type ServiceAreaWhereInput = {
   nameKm?: Prisma.StringFilter<"ServiceArea"> | string
   slug?: Prisma.StringFilter<"ServiceArea"> | string
   provinceOrCity?: Prisma.StringNullableFilter<"ServiceArea"> | string | null
+  latitude?: Prisma.DecimalNullableFilter<"ServiceArea"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.DecimalNullableFilter<"ServiceArea"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  radiusKm?: Prisma.DecimalFilter<"ServiceArea"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFilter<"ServiceArea"> | boolean
   createdAt?: Prisma.DateTimeFilter<"ServiceArea"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ServiceArea"> | Date | string
   listingAreas?: Prisma.ServiceListingAreaListRelationFilter
+  providerAreas?: Prisma.ProviderServiceAreaListRelationFilter
   primaryProviders?: Prisma.ProviderProfileListRelationFilter
   bookings?: Prisma.BookingListRelationFilter
 }
@@ -226,10 +293,14 @@ export type ServiceAreaOrderByWithRelationInput = {
   nameKm?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   provinceOrCity?: Prisma.SortOrderInput | Prisma.SortOrder
+  latitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  longitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  radiusKm?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   listingAreas?: Prisma.ServiceListingAreaOrderByRelationAggregateInput
+  providerAreas?: Prisma.ProviderServiceAreaOrderByRelationAggregateInput
   primaryProviders?: Prisma.ProviderProfileOrderByRelationAggregateInput
   bookings?: Prisma.BookingOrderByRelationAggregateInput
 }
@@ -244,10 +315,14 @@ export type ServiceAreaWhereUniqueInput = Prisma.AtLeast<{
   nameEn?: Prisma.StringFilter<"ServiceArea"> | string
   nameKm?: Prisma.StringFilter<"ServiceArea"> | string
   provinceOrCity?: Prisma.StringNullableFilter<"ServiceArea"> | string | null
+  latitude?: Prisma.DecimalNullableFilter<"ServiceArea"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.DecimalNullableFilter<"ServiceArea"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  radiusKm?: Prisma.DecimalFilter<"ServiceArea"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFilter<"ServiceArea"> | boolean
   createdAt?: Prisma.DateTimeFilter<"ServiceArea"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ServiceArea"> | Date | string
   listingAreas?: Prisma.ServiceListingAreaListRelationFilter
+  providerAreas?: Prisma.ProviderServiceAreaListRelationFilter
   primaryProviders?: Prisma.ProviderProfileListRelationFilter
   bookings?: Prisma.BookingListRelationFilter
 }, "id" | "publicId" | "slug">
@@ -259,12 +334,17 @@ export type ServiceAreaOrderByWithAggregationInput = {
   nameKm?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   provinceOrCity?: Prisma.SortOrderInput | Prisma.SortOrder
+  latitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  longitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  radiusKm?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ServiceAreaCountOrderByAggregateInput
+  _avg?: Prisma.ServiceAreaAvgOrderByAggregateInput
   _max?: Prisma.ServiceAreaMaxOrderByAggregateInput
   _min?: Prisma.ServiceAreaMinOrderByAggregateInput
+  _sum?: Prisma.ServiceAreaSumOrderByAggregateInput
 }
 
 export type ServiceAreaScalarWhereWithAggregatesInput = {
@@ -277,6 +357,9 @@ export type ServiceAreaScalarWhereWithAggregatesInput = {
   nameKm?: Prisma.StringWithAggregatesFilter<"ServiceArea"> | string
   slug?: Prisma.StringWithAggregatesFilter<"ServiceArea"> | string
   provinceOrCity?: Prisma.StringNullableWithAggregatesFilter<"ServiceArea"> | string | null
+  latitude?: Prisma.DecimalNullableWithAggregatesFilter<"ServiceArea"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.DecimalNullableWithAggregatesFilter<"ServiceArea"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  radiusKm?: Prisma.DecimalWithAggregatesFilter<"ServiceArea"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolWithAggregatesFilter<"ServiceArea"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ServiceArea"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ServiceArea"> | Date | string
@@ -289,10 +372,14 @@ export type ServiceAreaCreateInput = {
   nameKm: string
   slug: string
   provinceOrCity?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  radiusKm?: runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   listingAreas?: Prisma.ServiceListingAreaCreateNestedManyWithoutServiceAreaInput
+  providerAreas?: Prisma.ProviderServiceAreaCreateNestedManyWithoutServiceAreaInput
   primaryProviders?: Prisma.ProviderProfileCreateNestedManyWithoutPrimaryAreaInput
   bookings?: Prisma.BookingCreateNestedManyWithoutServiceAreaInput
 }
@@ -304,10 +391,14 @@ export type ServiceAreaUncheckedCreateInput = {
   nameKm: string
   slug: string
   provinceOrCity?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  radiusKm?: runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   listingAreas?: Prisma.ServiceListingAreaUncheckedCreateNestedManyWithoutServiceAreaInput
+  providerAreas?: Prisma.ProviderServiceAreaUncheckedCreateNestedManyWithoutServiceAreaInput
   primaryProviders?: Prisma.ProviderProfileUncheckedCreateNestedManyWithoutPrimaryAreaInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutServiceAreaInput
 }
@@ -319,10 +410,14 @@ export type ServiceAreaUpdateInput = {
   nameKm?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   provinceOrCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  radiusKm?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listingAreas?: Prisma.ServiceListingAreaUpdateManyWithoutServiceAreaNestedInput
+  providerAreas?: Prisma.ProviderServiceAreaUpdateManyWithoutServiceAreaNestedInput
   primaryProviders?: Prisma.ProviderProfileUpdateManyWithoutPrimaryAreaNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutServiceAreaNestedInput
 }
@@ -334,10 +429,14 @@ export type ServiceAreaUncheckedUpdateInput = {
   nameKm?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   provinceOrCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  radiusKm?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listingAreas?: Prisma.ServiceListingAreaUncheckedUpdateManyWithoutServiceAreaNestedInput
+  providerAreas?: Prisma.ProviderServiceAreaUncheckedUpdateManyWithoutServiceAreaNestedInput
   primaryProviders?: Prisma.ProviderProfileUncheckedUpdateManyWithoutPrimaryAreaNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutServiceAreaNestedInput
 }
@@ -349,6 +448,9 @@ export type ServiceAreaCreateManyInput = {
   nameKm: string
   slug: string
   provinceOrCity?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  radiusKm?: runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -361,6 +463,9 @@ export type ServiceAreaUpdateManyMutationInput = {
   nameKm?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   provinceOrCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  radiusKm?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -373,6 +478,9 @@ export type ServiceAreaUncheckedUpdateManyInput = {
   nameKm?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   provinceOrCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  radiusKm?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -390,9 +498,18 @@ export type ServiceAreaCountOrderByAggregateInput = {
   nameKm?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   provinceOrCity?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  radiusKm?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type ServiceAreaAvgOrderByAggregateInput = {
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  radiusKm?: Prisma.SortOrder
 }
 
 export type ServiceAreaMaxOrderByAggregateInput = {
@@ -402,6 +519,9 @@ export type ServiceAreaMaxOrderByAggregateInput = {
   nameKm?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   provinceOrCity?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  radiusKm?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -414,9 +534,18 @@ export type ServiceAreaMinOrderByAggregateInput = {
   nameKm?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   provinceOrCity?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  radiusKm?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type ServiceAreaSumOrderByAggregateInput = {
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  radiusKm?: Prisma.SortOrder
 }
 
 export type ServiceAreaScalarRelationFilter = {
@@ -438,6 +567,28 @@ export type ServiceAreaUpdateOneWithoutPrimaryProvidersNestedInput = {
   delete?: Prisma.ServiceAreaWhereInput | boolean
   connect?: Prisma.ServiceAreaWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.ServiceAreaUpdateToOneWithWhereWithoutPrimaryProvidersInput, Prisma.ServiceAreaUpdateWithoutPrimaryProvidersInput>, Prisma.ServiceAreaUncheckedUpdateWithoutPrimaryProvidersInput>
+}
+
+export type DecimalFieldUpdateOperationsInput = {
+  set?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
+}
+
+export type ServiceAreaCreateNestedOneWithoutProviderAreasInput = {
+  create?: Prisma.XOR<Prisma.ServiceAreaCreateWithoutProviderAreasInput, Prisma.ServiceAreaUncheckedCreateWithoutProviderAreasInput>
+  connectOrCreate?: Prisma.ServiceAreaCreateOrConnectWithoutProviderAreasInput
+  connect?: Prisma.ServiceAreaWhereUniqueInput
+}
+
+export type ServiceAreaUpdateOneRequiredWithoutProviderAreasNestedInput = {
+  create?: Prisma.XOR<Prisma.ServiceAreaCreateWithoutProviderAreasInput, Prisma.ServiceAreaUncheckedCreateWithoutProviderAreasInput>
+  connectOrCreate?: Prisma.ServiceAreaCreateOrConnectWithoutProviderAreasInput
+  upsert?: Prisma.ServiceAreaUpsertWithoutProviderAreasInput
+  connect?: Prisma.ServiceAreaWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ServiceAreaUpdateToOneWithWhereWithoutProviderAreasInput, Prisma.ServiceAreaUpdateWithoutProviderAreasInput>, Prisma.ServiceAreaUncheckedUpdateWithoutProviderAreasInput>
 }
 
 export type ServiceAreaCreateNestedOneWithoutListingAreasInput = {
@@ -477,10 +628,14 @@ export type ServiceAreaCreateWithoutPrimaryProvidersInput = {
   nameKm: string
   slug: string
   provinceOrCity?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  radiusKm?: runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   listingAreas?: Prisma.ServiceListingAreaCreateNestedManyWithoutServiceAreaInput
+  providerAreas?: Prisma.ProviderServiceAreaCreateNestedManyWithoutServiceAreaInput
   bookings?: Prisma.BookingCreateNestedManyWithoutServiceAreaInput
 }
 
@@ -491,10 +646,14 @@ export type ServiceAreaUncheckedCreateWithoutPrimaryProvidersInput = {
   nameKm: string
   slug: string
   provinceOrCity?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  radiusKm?: runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   listingAreas?: Prisma.ServiceListingAreaUncheckedCreateNestedManyWithoutServiceAreaInput
+  providerAreas?: Prisma.ProviderServiceAreaUncheckedCreateNestedManyWithoutServiceAreaInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutServiceAreaInput
 }
 
@@ -521,10 +680,14 @@ export type ServiceAreaUpdateWithoutPrimaryProvidersInput = {
   nameKm?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   provinceOrCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  radiusKm?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listingAreas?: Prisma.ServiceListingAreaUpdateManyWithoutServiceAreaNestedInput
+  providerAreas?: Prisma.ProviderServiceAreaUpdateManyWithoutServiceAreaNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutServiceAreaNestedInput
 }
 
@@ -535,10 +698,102 @@ export type ServiceAreaUncheckedUpdateWithoutPrimaryProvidersInput = {
   nameKm?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   provinceOrCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  radiusKm?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listingAreas?: Prisma.ServiceListingAreaUncheckedUpdateManyWithoutServiceAreaNestedInput
+  providerAreas?: Prisma.ProviderServiceAreaUncheckedUpdateManyWithoutServiceAreaNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutServiceAreaNestedInput
+}
+
+export type ServiceAreaCreateWithoutProviderAreasInput = {
+  id?: string
+  publicId: string
+  nameEn: string
+  nameKm: string
+  slug: string
+  provinceOrCity?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  radiusKm?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  listingAreas?: Prisma.ServiceListingAreaCreateNestedManyWithoutServiceAreaInput
+  primaryProviders?: Prisma.ProviderProfileCreateNestedManyWithoutPrimaryAreaInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutServiceAreaInput
+}
+
+export type ServiceAreaUncheckedCreateWithoutProviderAreasInput = {
+  id?: string
+  publicId: string
+  nameEn: string
+  nameKm: string
+  slug: string
+  provinceOrCity?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  radiusKm?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  listingAreas?: Prisma.ServiceListingAreaUncheckedCreateNestedManyWithoutServiceAreaInput
+  primaryProviders?: Prisma.ProviderProfileUncheckedCreateNestedManyWithoutPrimaryAreaInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutServiceAreaInput
+}
+
+export type ServiceAreaCreateOrConnectWithoutProviderAreasInput = {
+  where: Prisma.ServiceAreaWhereUniqueInput
+  create: Prisma.XOR<Prisma.ServiceAreaCreateWithoutProviderAreasInput, Prisma.ServiceAreaUncheckedCreateWithoutProviderAreasInput>
+}
+
+export type ServiceAreaUpsertWithoutProviderAreasInput = {
+  update: Prisma.XOR<Prisma.ServiceAreaUpdateWithoutProviderAreasInput, Prisma.ServiceAreaUncheckedUpdateWithoutProviderAreasInput>
+  create: Prisma.XOR<Prisma.ServiceAreaCreateWithoutProviderAreasInput, Prisma.ServiceAreaUncheckedCreateWithoutProviderAreasInput>
+  where?: Prisma.ServiceAreaWhereInput
+}
+
+export type ServiceAreaUpdateToOneWithWhereWithoutProviderAreasInput = {
+  where?: Prisma.ServiceAreaWhereInput
+  data: Prisma.XOR<Prisma.ServiceAreaUpdateWithoutProviderAreasInput, Prisma.ServiceAreaUncheckedUpdateWithoutProviderAreasInput>
+}
+
+export type ServiceAreaUpdateWithoutProviderAreasInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.StringFieldUpdateOperationsInput | string
+  nameKm?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  provinceOrCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  radiusKm?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  listingAreas?: Prisma.ServiceListingAreaUpdateManyWithoutServiceAreaNestedInput
+  primaryProviders?: Prisma.ProviderProfileUpdateManyWithoutPrimaryAreaNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutServiceAreaNestedInput
+}
+
+export type ServiceAreaUncheckedUpdateWithoutProviderAreasInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.StringFieldUpdateOperationsInput | string
+  nameKm?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  provinceOrCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  radiusKm?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  listingAreas?: Prisma.ServiceListingAreaUncheckedUpdateManyWithoutServiceAreaNestedInput
+  primaryProviders?: Prisma.ProviderProfileUncheckedUpdateManyWithoutPrimaryAreaNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutServiceAreaNestedInput
 }
 
@@ -549,9 +804,13 @@ export type ServiceAreaCreateWithoutListingAreasInput = {
   nameKm: string
   slug: string
   provinceOrCity?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  radiusKm?: runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  providerAreas?: Prisma.ProviderServiceAreaCreateNestedManyWithoutServiceAreaInput
   primaryProviders?: Prisma.ProviderProfileCreateNestedManyWithoutPrimaryAreaInput
   bookings?: Prisma.BookingCreateNestedManyWithoutServiceAreaInput
 }
@@ -563,9 +822,13 @@ export type ServiceAreaUncheckedCreateWithoutListingAreasInput = {
   nameKm: string
   slug: string
   provinceOrCity?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  radiusKm?: runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  providerAreas?: Prisma.ProviderServiceAreaUncheckedCreateNestedManyWithoutServiceAreaInput
   primaryProviders?: Prisma.ProviderProfileUncheckedCreateNestedManyWithoutPrimaryAreaInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutServiceAreaInput
 }
@@ -593,9 +856,13 @@ export type ServiceAreaUpdateWithoutListingAreasInput = {
   nameKm?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   provinceOrCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  radiusKm?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  providerAreas?: Prisma.ProviderServiceAreaUpdateManyWithoutServiceAreaNestedInput
   primaryProviders?: Prisma.ProviderProfileUpdateManyWithoutPrimaryAreaNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutServiceAreaNestedInput
 }
@@ -607,9 +874,13 @@ export type ServiceAreaUncheckedUpdateWithoutListingAreasInput = {
   nameKm?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   provinceOrCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  radiusKm?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  providerAreas?: Prisma.ProviderServiceAreaUncheckedUpdateManyWithoutServiceAreaNestedInput
   primaryProviders?: Prisma.ProviderProfileUncheckedUpdateManyWithoutPrimaryAreaNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutServiceAreaNestedInput
 }
@@ -621,10 +892,14 @@ export type ServiceAreaCreateWithoutBookingsInput = {
   nameKm: string
   slug: string
   provinceOrCity?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  radiusKm?: runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   listingAreas?: Prisma.ServiceListingAreaCreateNestedManyWithoutServiceAreaInput
+  providerAreas?: Prisma.ProviderServiceAreaCreateNestedManyWithoutServiceAreaInput
   primaryProviders?: Prisma.ProviderProfileCreateNestedManyWithoutPrimaryAreaInput
 }
 
@@ -635,10 +910,14 @@ export type ServiceAreaUncheckedCreateWithoutBookingsInput = {
   nameKm: string
   slug: string
   provinceOrCity?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  radiusKm?: runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   listingAreas?: Prisma.ServiceListingAreaUncheckedCreateNestedManyWithoutServiceAreaInput
+  providerAreas?: Prisma.ProviderServiceAreaUncheckedCreateNestedManyWithoutServiceAreaInput
   primaryProviders?: Prisma.ProviderProfileUncheckedCreateNestedManyWithoutPrimaryAreaInput
 }
 
@@ -665,10 +944,14 @@ export type ServiceAreaUpdateWithoutBookingsInput = {
   nameKm?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   provinceOrCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  radiusKm?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listingAreas?: Prisma.ServiceListingAreaUpdateManyWithoutServiceAreaNestedInput
+  providerAreas?: Prisma.ProviderServiceAreaUpdateManyWithoutServiceAreaNestedInput
   primaryProviders?: Prisma.ProviderProfileUpdateManyWithoutPrimaryAreaNestedInput
 }
 
@@ -679,10 +962,14 @@ export type ServiceAreaUncheckedUpdateWithoutBookingsInput = {
   nameKm?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   provinceOrCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  radiusKm?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listingAreas?: Prisma.ServiceListingAreaUncheckedUpdateManyWithoutServiceAreaNestedInput
+  providerAreas?: Prisma.ProviderServiceAreaUncheckedUpdateManyWithoutServiceAreaNestedInput
   primaryProviders?: Prisma.ProviderProfileUncheckedUpdateManyWithoutPrimaryAreaNestedInput
 }
 
@@ -693,12 +980,14 @@ export type ServiceAreaUncheckedUpdateWithoutBookingsInput = {
 
 export type ServiceAreaCountOutputType = {
   listingAreas: number
+  providerAreas: number
   primaryProviders: number
   bookings: number
 }
 
 export type ServiceAreaCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   listingAreas?: boolean | ServiceAreaCountOutputTypeCountListingAreasArgs
+  providerAreas?: boolean | ServiceAreaCountOutputTypeCountProviderAreasArgs
   primaryProviders?: boolean | ServiceAreaCountOutputTypeCountPrimaryProvidersArgs
   bookings?: boolean | ServiceAreaCountOutputTypeCountBookingsArgs
 }
@@ -723,6 +1012,13 @@ export type ServiceAreaCountOutputTypeCountListingAreasArgs<ExtArgs extends runt
 /**
  * ServiceAreaCountOutputType without action
  */
+export type ServiceAreaCountOutputTypeCountProviderAreasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProviderServiceAreaWhereInput
+}
+
+/**
+ * ServiceAreaCountOutputType without action
+ */
 export type ServiceAreaCountOutputTypeCountPrimaryProvidersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ProviderProfileWhereInput
 }
@@ -742,10 +1038,14 @@ export type ServiceAreaSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   nameKm?: boolean
   slug?: boolean
   provinceOrCity?: boolean
+  latitude?: boolean
+  longitude?: boolean
+  radiusKm?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   listingAreas?: boolean | Prisma.ServiceArea$listingAreasArgs<ExtArgs>
+  providerAreas?: boolean | Prisma.ServiceArea$providerAreasArgs<ExtArgs>
   primaryProviders?: boolean | Prisma.ServiceArea$primaryProvidersArgs<ExtArgs>
   bookings?: boolean | Prisma.ServiceArea$bookingsArgs<ExtArgs>
   _count?: boolean | Prisma.ServiceAreaCountOutputTypeDefaultArgs<ExtArgs>
@@ -758,6 +1058,9 @@ export type ServiceAreaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   nameKm?: boolean
   slug?: boolean
   provinceOrCity?: boolean
+  latitude?: boolean
+  longitude?: boolean
+  radiusKm?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -770,6 +1073,9 @@ export type ServiceAreaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   nameKm?: boolean
   slug?: boolean
   provinceOrCity?: boolean
+  latitude?: boolean
+  longitude?: boolean
+  radiusKm?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -782,14 +1088,18 @@ export type ServiceAreaSelectScalar = {
   nameKm?: boolean
   slug?: boolean
   provinceOrCity?: boolean
+  latitude?: boolean
+  longitude?: boolean
+  radiusKm?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ServiceAreaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "nameEn" | "nameKm" | "slug" | "provinceOrCity" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["serviceArea"]>
+export type ServiceAreaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "nameEn" | "nameKm" | "slug" | "provinceOrCity" | "latitude" | "longitude" | "radiusKm" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["serviceArea"]>
 export type ServiceAreaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   listingAreas?: boolean | Prisma.ServiceArea$listingAreasArgs<ExtArgs>
+  providerAreas?: boolean | Prisma.ServiceArea$providerAreasArgs<ExtArgs>
   primaryProviders?: boolean | Prisma.ServiceArea$primaryProvidersArgs<ExtArgs>
   bookings?: boolean | Prisma.ServiceArea$bookingsArgs<ExtArgs>
   _count?: boolean | Prisma.ServiceAreaCountOutputTypeDefaultArgs<ExtArgs>
@@ -801,6 +1111,7 @@ export type $ServiceAreaPayload<ExtArgs extends runtime.Types.Extensions.Interna
   name: "ServiceArea"
   objects: {
     listingAreas: Prisma.$ServiceListingAreaPayload<ExtArgs>[]
+    providerAreas: Prisma.$ProviderServiceAreaPayload<ExtArgs>[]
     primaryProviders: Prisma.$ProviderProfilePayload<ExtArgs>[]
     bookings: Prisma.$BookingPayload<ExtArgs>[]
   }
@@ -811,6 +1122,9 @@ export type $ServiceAreaPayload<ExtArgs extends runtime.Types.Extensions.Interna
     nameKm: string
     slug: string
     provinceOrCity: string | null
+    latitude: runtime.Decimal | null
+    longitude: runtime.Decimal | null
+    radiusKm: runtime.Decimal
     isActive: boolean
     createdAt: Date
     updatedAt: Date
@@ -1209,6 +1523,7 @@ readonly fields: ServiceAreaFieldRefs;
 export interface Prisma__ServiceAreaClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   listingAreas<T extends Prisma.ServiceArea$listingAreasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ServiceArea$listingAreasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServiceListingAreaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  providerAreas<T extends Prisma.ServiceArea$providerAreasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ServiceArea$providerAreasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProviderServiceAreaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   primaryProviders<T extends Prisma.ServiceArea$primaryProvidersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ServiceArea$primaryProvidersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProviderProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   bookings<T extends Prisma.ServiceArea$bookingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ServiceArea$bookingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1246,6 +1561,9 @@ export interface ServiceAreaFieldRefs {
   readonly nameKm: Prisma.FieldRef<"ServiceArea", 'String'>
   readonly slug: Prisma.FieldRef<"ServiceArea", 'String'>
   readonly provinceOrCity: Prisma.FieldRef<"ServiceArea", 'String'>
+  readonly latitude: Prisma.FieldRef<"ServiceArea", 'Decimal'>
+  readonly longitude: Prisma.FieldRef<"ServiceArea", 'Decimal'>
+  readonly radiusKm: Prisma.FieldRef<"ServiceArea", 'Decimal'>
   readonly isActive: Prisma.FieldRef<"ServiceArea", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"ServiceArea", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ServiceArea", 'DateTime'>
@@ -1663,6 +1981,30 @@ export type ServiceArea$listingAreasArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.ServiceListingAreaScalarFieldEnum | Prisma.ServiceListingAreaScalarFieldEnum[]
+}
+
+/**
+ * ServiceArea.providerAreas
+ */
+export type ServiceArea$providerAreasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProviderServiceArea
+   */
+  select?: Prisma.ProviderServiceAreaSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProviderServiceArea
+   */
+  omit?: Prisma.ProviderServiceAreaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProviderServiceAreaInclude<ExtArgs> | null
+  where?: Prisma.ProviderServiceAreaWhereInput
+  orderBy?: Prisma.ProviderServiceAreaOrderByWithRelationInput | Prisma.ProviderServiceAreaOrderByWithRelationInput[]
+  cursor?: Prisma.ProviderServiceAreaWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProviderServiceAreaScalarFieldEnum | Prisma.ProviderServiceAreaScalarFieldEnum[]
 }
 
 /**

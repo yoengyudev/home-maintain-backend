@@ -199,6 +199,7 @@ model ProviderProfile {
   businessProfile       ProviderBusinessProfile?
   verifications         ProviderVerification[]
   serviceListings       ServiceListing[]
+  serviceAreas          ProviderServiceArea[]
   bookings              Booking[]
   reviews               Review[]
 
@@ -310,15 +311,32 @@ model ServiceArea {
   nameKm           String
   slug             String               @unique
   provinceOrCity   String?
+  latitude         Decimal?             @db.Decimal(10, 7)
+  longitude        Decimal?             @db.Decimal(10, 7)
+  radiusKm         Decimal              @default(15) @db.Decimal(6, 2)
   isActive         Boolean              @default(true)
   createdAt        DateTime             @default(now())
   updatedAt        DateTime             @updatedAt
   listingAreas     ServiceListingArea[]
+  providerAreas    ProviderServiceArea[]
   primaryProviders ProviderProfile[]    @relation("ProviderPrimaryArea")
   bookings         Booking[]
 
   @@index([isActive])
   @@map("service_areas")
+}
+
+model ProviderServiceArea {
+  id                String          @id @default(cuid())
+  providerProfileId String
+  serviceAreaId     String
+  createdAt         DateTime        @default(now())
+  providerProfile   ProviderProfile @relation(fields: [providerProfileId], references: [id], onDelete: Cascade)
+  serviceArea       ServiceArea     @relation(fields: [serviceAreaId], references: [id], onDelete: Cascade)
+
+  @@unique([providerProfileId, serviceAreaId])
+  @@index([serviceAreaId])
+  @@map("provider_service_areas")
 }
 
 model ProviderVerification {

@@ -28,6 +28,11 @@ import { CustomerAddressesService } from "./customer.addresses.service";
 import { BookingNotificationCopy, NotificationsHelper } from "../notifications.helper";
 import { publishBookingCreated, publishBookingUpdated } from "../../websocket/booking-events";
 import {
+    findNearestArea,
+    isWithinAnyServiceArea,
+} from "../../utils/geo-distance.util";
+import { toAreaGeoNumber } from "../../utils/provider-service-areas.util";
+import {
     evaluateAvailabilityDay,
     isSlotOnDay,
 } from "../../utils/provider-availability.util";
@@ -133,12 +138,17 @@ export class CustomerBookingsService {
             },
             include: {
                 providerProfile: {
-                    include: { businessProfile: true },
+                    include: {
+                        businessProfile: true,
+                        serviceAreas: {
+                            include: { serviceArea: true },
+                        },
+                        primaryArea: true,
+                    },
                 },
                 category: true,
                 areas: {
                     include: { serviceArea: true },
-                    take: 1,
                 },
             },
         });
@@ -166,6 +176,8 @@ export class CustomerBookingsService {
         let customerAddressId: string | null = null;
         let serviceAddress = "";
         let accessInstructions = data.accessInstructions ?? null;
+        let customerLat: number | null = null;
+        let customerLng: number | null = null;
 
         if (data.addressId) {
             const address = await prisma.customerAddress.findFirst({
@@ -180,23 +192,75 @@ export class CustomerBookingsService {
             customerAddressId = address.id;
             serviceAddress = address.addressLine;
             accessInstructions = accessInstructions ?? address.notes;
+            customerLat = toAreaGeoNumber(address.latitude);
+            customerLng = toAreaGeoNumber(address.longitude);
         } else if (data.address) {
             const created = await CustomerAddressesService.create(userId, data.address, lang);
             customerAddressId = created.id;
             serviceAddress = created.addressLine;
             accessInstructions = accessInstructions ?? created.notes;
+            customerLat = toAreaGeoNumber((created as any).latitude);
+            customerLng = toAreaGeoNumber((created as any).longitude);
         } else {
             throw new BadRequestException(t("CUSTOMER_BOOKING_ADDRESS_REQUIRED", lang));
+        }
+
+        // Build coverage circles: listing areas first, else provider multi areas, else primary.
+        // Disabled (isActive=false) areas are never used.
+        const hasLinkedAreas =
+            service.areas.length > 0 ||
+            service.providerProfile.serviceAreas.length > 0 ||
+            Boolean(service.providerProfile.primaryAreaId);
+        const coverageAreas = this.resolveCoverageAreas(service);
+        if (hasLinkedAreas && coverageAreas.length === 0) {
+            throw new BadRequestException(
+                t("CUSTOMER_BOOKING_NO_ACTIVE_SERVICE_AREA", lang)
+            );
+        }
+        if (coverageAreas.some((a) => a.latitude != null && a.longitude != null)) {
+            if (customerLat == null || customerLng == null) {
+                throw new BadRequestException(
+                    t("CUSTOMER_BOOKING_ADDRESS_LOCATION_REQUIRED", lang)
+                );
+            }
+            if (!isWithinAnyServiceArea(customerLat, customerLng, coverageAreas)) {
+                throw new BadRequestException(
+                    t("CUSTOMER_BOOKING_OUTSIDE_SERVICE_AREA", lang)
+                );
+            }
         }
 
         const quantity = data.quantity ?? 1;
         const unitPrice = Number(service.price);
         const estimatedTotal = Number((unitPrice * quantity).toFixed(2));
-        const serviceAreaId = service.areas[0]?.serviceAreaId ?? service.providerProfile.primaryAreaId ?? null;
-        const areaSummary = service.areas[0]
+
+        const matchedArea =
+            customerLat != null && customerLng != null
+                ? findNearestArea(customerLat, customerLng, coverageAreas)
+                : null;
+        const firstActiveListingAreaId = service.areas.find(
+            (a) => a.serviceArea.isActive !== false
+        )?.serviceAreaId;
+        const serviceAreaId =
+            (matchedArea?.isWithin ? matchedArea.areaId : null) ||
+            firstActiveListingAreaId ||
+            (service.providerProfile.primaryArea?.isActive !== false
+                ? service.providerProfile.primaryAreaId
+                : null) ||
+            coverageAreas[0]?.id ||
+            null;
+
+        const matchedAreaRow =
+            service.areas.find((a) => a.serviceAreaId === serviceAreaId)?.serviceArea ||
+            service.providerProfile.serviceAreas.find(
+                (a) => a.serviceAreaId === serviceAreaId
+            )?.serviceArea ||
+            service.providerProfile.primaryArea;
+
+        const areaSummary = matchedAreaRow
             ? lang === "kh"
-                ? service.areas[0].serviceArea.nameKm
-                : service.areas[0].serviceArea.nameEn
+                ? matchedAreaRow.nameKm
+                : matchedAreaRow.nameEn
             : null;
 
         const publicId = await nextPublicId("BK", "booking");
@@ -554,6 +618,78 @@ export class CustomerBookingsService {
         };
 
         return map[statusRaw] ?? null;
+    }
+
+    private static resolveCoverageAreas(service: {
+        areas: Array<{
+            serviceAreaId: string;
+            serviceArea: {
+                id: string;
+                latitude: unknown;
+                longitude: unknown;
+                radiusKm: unknown;
+                isActive?: boolean;
+            };
+        }>;
+        providerProfile: {
+            primaryAreaId: string | null;
+            primaryArea: {
+                id: string;
+                latitude: unknown;
+                longitude: unknown;
+                radiusKm: unknown;
+                isActive?: boolean;
+            } | null;
+            serviceAreas: Array<{
+                serviceAreaId: string;
+                serviceArea: {
+                    id: string;
+                    latitude: unknown;
+                    longitude: unknown;
+                    radiusKm: unknown;
+                    isActive?: boolean;
+                };
+            }>;
+        };
+    }) {
+        const fromListing = service.areas
+            .filter((row) => row.serviceArea.isActive !== false)
+            .map((row) => ({
+                id: row.serviceArea.id,
+                latitude: toAreaGeoNumber(row.serviceArea.latitude),
+                longitude: toAreaGeoNumber(row.serviceArea.longitude),
+                radiusKm: toAreaGeoNumber(row.serviceArea.radiusKm) ?? 15,
+            }));
+
+        if (fromListing.length > 0) return fromListing;
+
+        const fromProvider = service.providerProfile.serviceAreas
+            .filter((row) => row.serviceArea.isActive !== false)
+            .map((row) => ({
+                id: row.serviceArea.id,
+                latitude: toAreaGeoNumber(row.serviceArea.latitude),
+                longitude: toAreaGeoNumber(row.serviceArea.longitude),
+                radiusKm: toAreaGeoNumber(row.serviceArea.radiusKm) ?? 15,
+            }));
+
+        if (fromProvider.length > 0) return fromProvider;
+
+        if (
+            service.providerProfile.primaryArea &&
+            service.providerProfile.primaryArea.isActive !== false
+        ) {
+            return [
+                {
+                    id: service.providerProfile.primaryArea.id,
+                    latitude: toAreaGeoNumber(service.providerProfile.primaryArea.latitude),
+                    longitude: toAreaGeoNumber(service.providerProfile.primaryArea.longitude),
+                    radiusKm:
+                        toAreaGeoNumber(service.providerProfile.primaryArea.radiusKm) ?? 15,
+                },
+            ];
+        }
+
+        return [];
     }
 
     private static assertBookableSchedule(

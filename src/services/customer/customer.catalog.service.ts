@@ -18,6 +18,56 @@ const getLocalizedText = (lang: "en" | "kh", en?: string | null, kh?: string | n
     return en || kh || "";
 };
 
+type AreaGeoSource = {
+    publicId: string;
+    slug: string;
+    nameEn: string;
+    nameKm: string;
+    latitude: unknown;
+    longitude: unknown;
+    radiusKm: unknown;
+    isActive?: boolean;
+};
+
+const mapAreaRef = (lang: "en" | "kh", area: AreaGeoSource) => ({
+    publicId: area.publicId,
+    slug: area.slug,
+    name: getLocalizedText(lang, area.nameEn, area.nameKm),
+    nameEn: area.nameEn,
+    nameKm: area.nameKm,
+    latitude: area.latitude != null ? Number(area.latitude) : null,
+    longitude: area.longitude != null ? Number(area.longitude) : null,
+    radiusKm: Number(area.radiusKm ?? 15),
+});
+
+/** Prefer listing areas; else provider multi areas; else primary area. Inactive areas are excluded. */
+const resolveServiceAreaRefs = (
+    lang: "en" | "kh",
+    listingAreas: Array<{ serviceArea: AreaGeoSource }>,
+    provider?: {
+        serviceAreas?: Array<{ serviceArea: AreaGeoSource }>;
+        primaryArea?: AreaGeoSource | null;
+    }
+) => {
+    const activeListing = listingAreas.filter(
+        (row) => row.serviceArea.isActive !== false
+    );
+    if (activeListing.length > 0) {
+        return activeListing.map((row) => mapAreaRef(lang, row.serviceArea));
+    }
+
+    const fromProvider = (provider?.serviceAreas || [])
+        .filter((row) => row.serviceArea.isActive !== false)
+        .map((row) => mapAreaRef(lang, row.serviceArea));
+    if (fromProvider.length > 0) return fromProvider;
+
+    if (provider?.primaryArea && provider.primaryArea.isActive !== false) {
+        return [mapAreaRef(lang, provider.primaryArea)];
+    }
+
+    return [];
+};
+
 export class CustomerCatalogService {
     static async listServiceCategories(lang: "en" | "kh", page = 1, limit = 50, search?: string) {
         const safePage = normalizePagination(page, 1);
@@ -225,12 +275,17 @@ export class CustomerCatalogService {
                     averageRating: item.providerProfile.averageRating ? Number(item.providerProfile.averageRating) : null,
                     completedJobs: item.providerProfile.completedJobs,
                 },
-                areas: item.areas.map((listingArea) => ({
+                areas: item.areas
+                    .filter((listingArea) => listingArea.serviceArea.isActive !== false)
+                    .map((listingArea) => ({
                     publicId: listingArea.serviceArea.publicId,
                     slug: listingArea.serviceArea.slug,
                     name: getLocalizedText(lang, listingArea.serviceArea.nameEn, listingArea.serviceArea.nameKm),
                     nameEn: listingArea.serviceArea.nameEn,
                     nameKm: listingArea.serviceArea.nameKm,
+                    latitude: listingArea.serviceArea.latitude != null ? Number(listingArea.serviceArea.latitude) : null,
+                    longitude: listingArea.serviceArea.longitude != null ? Number(listingArea.serviceArea.longitude) : null,
+                    radiusKm: Number(listingArea.serviceArea.radiusKm ?? 15),
                 })),
             })),
             meta: {
@@ -251,7 +306,13 @@ export class CustomerCatalogService {
             },
             include: {
                 category: true,
-                providerProfile: { include: { businessProfile: true } },
+                providerProfile: {
+                    include: {
+                        businessProfile: true,
+                        primaryArea: true,
+                        serviceAreas: { include: { serviceArea: true } },
+                    },
+                },
                 areas: { include: { serviceArea: true } },
                 reviews: {
                     orderBy: { createdAt: "desc" },
@@ -318,13 +379,7 @@ export class CustomerCatalogService {
                 averageRating: item.providerProfile.averageRating ? Number(item.providerProfile.averageRating) : null,
                 completedJobs: item.providerProfile.completedJobs,
             },
-            areas: item.areas.map((listingArea) => ({
-                publicId: listingArea.serviceArea.publicId,
-                slug: listingArea.serviceArea.slug,
-                name: getLocalizedText(lang, listingArea.serviceArea.nameEn, listingArea.serviceArea.nameKm),
-                nameEn: listingArea.serviceArea.nameEn,
-                nameKm: listingArea.serviceArea.nameKm,
-            })),
+            areas: resolveServiceAreaRefs(lang, item.areas, item.providerProfile),
         };
     }
 
@@ -387,12 +442,17 @@ export class CustomerCatalogService {
                     averageRating: item.providerProfile.averageRating ? Number(item.providerProfile.averageRating) : null,
                     completedJobs: item.providerProfile.completedJobs,
                 },
-                areas: item.areas.map((listingArea) => ({
+                areas: item.areas
+                    .filter((listingArea) => listingArea.serviceArea.isActive !== false)
+                    .map((listingArea) => ({
                     publicId: listingArea.serviceArea.publicId,
                     slug: listingArea.serviceArea.slug,
                     name: getLocalizedText(lang, listingArea.serviceArea.nameEn, listingArea.serviceArea.nameKm),
                     nameEn: listingArea.serviceArea.nameEn,
                     nameKm: listingArea.serviceArea.nameKm,
+                    latitude: listingArea.serviceArea.latitude != null ? Number(listingArea.serviceArea.latitude) : null,
+                    longitude: listingArea.serviceArea.longitude != null ? Number(listingArea.serviceArea.longitude) : null,
+                    radiusKm: Number(listingArea.serviceArea.radiusKm ?? 15),
                 })),
             })),
             source: "default",
@@ -617,7 +677,9 @@ export class CustomerCatalogService {
                     nameKm: service.category.nameKm,
                     iconName: service.category.iconName,
                 },
-                areas: service.areas.map((listingArea) => ({
+                areas: service.areas
+                    .filter((listingArea) => listingArea.serviceArea.isActive !== false)
+                    .map((listingArea) => ({
                     publicId: listingArea.serviceArea.publicId,
                     slug: listingArea.serviceArea.slug,
                     name: getLocalizedText(lang, listingArea.serviceArea.nameEn, listingArea.serviceArea.nameKm),

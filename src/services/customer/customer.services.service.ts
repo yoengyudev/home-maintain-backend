@@ -27,6 +27,12 @@ const serviceInclude = {
     providerProfile: {
         include: {
             businessProfile: true,
+            primaryArea: true,
+            serviceAreas: {
+                include: {
+                    serviceArea: true,
+                },
+            },
         },
     },
     areas: {
@@ -308,6 +314,28 @@ export class CustomerServicesService {
                     businessName: string;
                     logoUrl?: string | null;
                 } | null;
+                primaryArea?: {
+                    publicId: string;
+                    slug: string;
+                    nameEn: string;
+                    nameKm: string;
+                    latitude?: unknown;
+                    longitude?: unknown;
+                    radiusKm?: unknown;
+                    isActive?: boolean;
+                } | null;
+                serviceAreas?: Array<{
+                    serviceArea: {
+                        publicId: string;
+                        slug: string;
+                        nameEn: string;
+                        nameKm: string;
+                        latitude?: unknown;
+                        longitude?: unknown;
+                        radiusKm?: unknown;
+                        isActive?: boolean;
+                    };
+                }>;
             };
             areas: Array<{
                 serviceArea: {
@@ -315,6 +343,10 @@ export class CustomerServicesService {
                     slug: string;
                     nameEn: string;
                     nameKm: string;
+                    latitude?: unknown;
+                    longitude?: unknown;
+                    radiusKm?: unknown;
+                    isActive?: boolean;
                 };
             }>;
             _count: {
@@ -334,6 +366,48 @@ export class CustomerServicesService {
         lang: Lang
     ) {
         const isKh = lang === "kh";
+
+        const mapArea = (serviceArea: {
+            publicId: string;
+            slug: string;
+            nameEn: string;
+            nameKm: string;
+            latitude?: unknown;
+            longitude?: unknown;
+            radiusKm?: unknown;
+        }) => ({
+            publicId: serviceArea.publicId,
+            slug: serviceArea.slug,
+            name: isKh ? serviceArea.nameKm : serviceArea.nameEn,
+            nameEn: serviceArea.nameEn,
+            nameKm: serviceArea.nameKm,
+            latitude: this.toNumber(serviceArea.latitude as any),
+            longitude: this.toNumber(serviceArea.longitude as any),
+            radiusKm: this.toNumber(serviceArea.radiusKm as any) ?? 15,
+        });
+
+        const listingAreas = service.areas
+            .filter(({ serviceArea }) => serviceArea.isActive !== false)
+            .map(({ serviceArea }) => mapArea(serviceArea));
+        const providerAreas = (service.providerProfile.serviceAreas || [])
+            .filter((row) => row.serviceArea.isActive !== false)
+            .map((row) => mapArea(row.serviceArea));
+        const primaryArea =
+            service.providerProfile.primaryArea &&
+            service.providerProfile.primaryArea.isActive !== false
+                ? [mapArea(service.providerProfile.primaryArea)]
+                : [];
+        const areas =
+            listingAreas.length > 0
+                ? listingAreas
+                : providerAreas.length > 0
+                  ? providerAreas
+                  : primaryArea;
+        const hadLinkedAreas =
+            service.areas.length > 0 ||
+            (service.providerProfile.serviceAreas || []).length > 0 ||
+            Boolean(service.providerProfile.primaryArea);
+        const coverageUnavailable = hadLinkedAreas && areas.length === 0;
 
         return {
             id: service.id,
@@ -383,13 +457,8 @@ export class CustomerServicesService {
                 averageRating: this.toNumber(service.providerProfile.averageRating),
                 completedJobs: service.providerProfile.completedJobs,
             },
-            areas: service.areas.map(({ serviceArea }) => ({
-                publicId: serviceArea.publicId,
-                slug: serviceArea.slug,
-                name: isKh ? serviceArea.nameKm : serviceArea.nameEn,
-                nameEn: serviceArea.nameEn,
-                nameKm: serviceArea.nameKm,
-            })),
+            areas,
+            coverageUnavailable,
         };
     }
 

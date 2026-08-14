@@ -1,13 +1,24 @@
 import { prisma } from "../../database/prisma.client";
-import { NotFoundException } from "../../utils/app-error.util";
+import { BadRequestException, NotFoundException } from "../../utils/app-error.util";
 import {
     buildPaginationMeta,
     parsePaginationQuery,
 } from "../../utils/pagination.util";
 import type { Lang } from "../../i18n/messages";
 import { t } from "../../i18n/translate";
+import { toAreaGeoNumber } from "../../utils/provider-service-areas.util";
 
 type ServiceAreasQuery = { page?: unknown; limit?: unknown; isActive?: unknown };
+
+type ServiceAreaUpsert = {
+    nameEn: string;
+    nameKm: string;
+    provinceOrCity?: string;
+    latitude?: number | null;
+    longitude?: number | null;
+    radiusKm?: number;
+    isActive?: boolean;
+};
 
 function formatArea(a: any, providerCount: number) {
     return {
@@ -17,11 +28,23 @@ function formatArea(a: any, providerCount: number) {
         nameKm: a.nameKm,
         slug: a.slug,
         provinceOrCity: a.provinceOrCity,
+        latitude: toAreaGeoNumber(a.latitude),
+        longitude: toAreaGeoNumber(a.longitude),
+        radiusKm: toAreaGeoNumber(a.radiusKm) ?? 15,
         isActive: a.isActive,
         providerCount,
         createdAt: a.createdAt.toISOString(),
         updatedAt: a.updatedAt.toISOString(),
     };
+}
+
+async function countProvidersForArea(areaId: string) {
+    const [primaryCount, junctionCount] = await Promise.all([
+        prisma.providerProfile.count({ where: { primaryAreaId: areaId } }),
+        prisma.providerServiceArea.count({ where: { serviceAreaId: areaId } }),
+    ]);
+    // Prefer junction count when present; fall back to primary for legacy rows.
+    return Math.max(primaryCount, junctionCount);
 }
 
 export class AdminServiceAreasService {
@@ -49,17 +72,32 @@ export class AdminServiceAreasService {
         ]);
 
         const areaIds = areas.map((a) => a.id);
-        const providerCounts = await prisma.providerProfile.groupBy({
-            by: ["primaryAreaId"],
-            where: { primaryAreaId: { in: areaIds } },
-            _count: { id: true },
-        });
-        const countMap = new Map(
-            providerCounts.map((r) => [r.primaryAreaId, r._count.id])
+        const [primaryCounts, junctionCounts] = await Promise.all([
+            prisma.providerProfile.groupBy({
+                by: ["primaryAreaId"],
+                where: { primaryAreaId: { in: areaIds } },
+                _count: { id: true },
+            }),
+            prisma.providerServiceArea.groupBy({
+                by: ["serviceAreaId"],
+                where: { serviceAreaId: { in: areaIds } },
+                _count: { id: true },
+            }),
+        ]);
+        const primaryMap = new Map(
+            primaryCounts.map((r) => [r.primaryAreaId, r._count.id])
+        );
+        const junctionMap = new Map(
+            junctionCounts.map((r) => [r.serviceAreaId, r._count.id])
         );
 
         return {
-            items: areas.map((a) => formatArea(a, countMap.get(a.id) ?? 0)),
+            items: areas.map((a) =>
+                formatArea(
+                    a,
+                    Math.max(primaryMap.get(a.id) ?? 0, junctionMap.get(a.id) ?? 0)
+                )
+            ),
             meta: buildPaginationMeta(page, limit, total),
         };
     }
@@ -69,24 +107,29 @@ export class AdminServiceAreasService {
             where: { OR: [{ id }, { publicId: id }] },
         });
         if (!a) throw new NotFoundException(t("ADMIN_SERVICE_AREA_NOT_FOUND", lang));
-        const count = await prisma.providerProfile.count({ where: { primaryAreaId: a.id } });
+        const count = await countProvidersForArea(a.id);
         return formatArea(a, count);
     }
 
-    static async create(
-        data: {
-            nameEn: string;
-            nameKm: string;
-            provinceOrCity?: string;
-            isActive?: boolean;
-        },
-        adminUserId: string,
-        lang: Lang
-    ) {
+    static async create(data: ServiceAreaUpsert, adminUserId: string, lang: Lang) {
         const slug = data.nameEn
             .toLowerCase()
             .replace(/[^a-z0-9]+/g, "-")
             .replace(/^-|-$/g, "");
+
+        if (
+            data.latitude == null ||
+            data.longitude == null ||
+            !Number.isFinite(Number(data.latitude)) ||
+            !Number.isFinite(Number(data.longitude))
+        ) {
+            throw new BadRequestException(t("ADMIN_SERVICE_AREA_LOCATION_REQUIRED", lang));
+        }
+
+        const radiusKm =
+            data.radiusKm !== undefined && Number.isFinite(Number(data.radiusKm))
+                ? Math.max(0.5, Number(data.radiusKm))
+                : 15;
 
         const area = await prisma.serviceArea.create({
             data: {
@@ -95,6 +138,9 @@ export class AdminServiceAreasService {
                 nameKm: data.nameKm,
                 slug,
                 provinceOrCity: data.provinceOrCity,
+                latitude: Number(data.latitude),
+                longitude: Number(data.longitude),
+                radiusKm,
                 isActive: data.isActive ?? true,
             },
         });
@@ -104,12 +150,7 @@ export class AdminServiceAreasService {
 
     static async update(
         id: string,
-        data: Partial<{
-            nameEn: string;
-            nameKm: string;
-            provinceOrCity: string;
-            isActive: boolean;
-        }>,
+        data: Partial<ServiceAreaUpsert>,
         adminUserId: string,
         lang: Lang
     ) {
@@ -118,7 +159,18 @@ export class AdminServiceAreasService {
         });
         if (!a) throw new NotFoundException(t("ADMIN_SERVICE_AREA_NOT_FOUND", lang));
 
-        await prisma.serviceArea.update({ where: { id: a.id }, data });
+        const patch: Record<string, unknown> = {};
+        if (data.nameEn !== undefined) patch.nameEn = data.nameEn;
+        if (data.nameKm !== undefined) patch.nameKm = data.nameKm;
+        if (data.provinceOrCity !== undefined) patch.provinceOrCity = data.provinceOrCity;
+        if (data.isActive !== undefined) patch.isActive = data.isActive;
+        if (data.latitude !== undefined) patch.latitude = data.latitude;
+        if (data.longitude !== undefined) patch.longitude = data.longitude;
+        if (data.radiusKm !== undefined && Number.isFinite(Number(data.radiusKm))) {
+            patch.radiusKm = Math.max(0.5, Number(data.radiusKm));
+        }
+
+        await prisma.serviceArea.update({ where: { id: a.id }, data: patch });
         return this.getById(id, lang);
     }
 
@@ -182,8 +234,13 @@ export class AdminServiceAreasService {
         });
         if (!a) throw new NotFoundException(t("ADMIN_SERVICE_AREA_NOT_FOUND", lang));
 
-        const providerCount = await prisma.providerProfile.count({ where: { primaryAreaId: a.id } });
-        if (providerCount > 0) {
+        const [primaryCount, junctionCount, listingCount] = await Promise.all([
+            prisma.providerProfile.count({ where: { primaryAreaId: a.id } }),
+            prisma.providerServiceArea.count({ where: { serviceAreaId: a.id } }),
+            prisma.serviceListingArea.count({ where: { serviceAreaId: a.id } }),
+        ]);
+        const providerCount = Math.max(primaryCount, junctionCount);
+        if (providerCount > 0 || listingCount > 0) {
             const { BadRequestException } = await import("../../utils/app-error.util");
             throw new BadRequestException(
                 t("ADMIN_SERVICE_AREA_DELETE_HAS_LINKS", lang, {

@@ -299,6 +299,7 @@ export class CustomerProvidersService {
                 slug: string;
                 nameEn: string;
                 nameKm: string;
+                isActive?: boolean;
             } | null;
             primaryCategory: {
                 id?: string;
@@ -317,12 +318,16 @@ export class CustomerProvidersService {
     ) {
         const isKh = lang === "kh";
         const business = provider.businessProfile;
+        const activePrimaryArea =
+            provider.primaryArea && provider.primaryArea.isActive !== false
+                ? provider.primaryArea
+                : null;
         const location =
             [business?.district, business?.cityProvince].filter(Boolean).join(", ") ||
-            (provider.primaryArea
+            (activePrimaryArea
                 ? isKh
-                    ? provider.primaryArea.nameKm
-                    : provider.primaryArea.nameEn
+                    ? activePrimaryArea.nameKm
+                    : activePrimaryArea.nameEn
                 : null);
 
         return {
@@ -343,13 +348,13 @@ export class CustomerProvidersService {
             activeServiceCount: provider._count.serviceListings,
             isVerified: true,
             memberSince: String((provider.approvedAt ?? provider.createdAt).getFullYear()),
-            primaryArea: provider.primaryArea
+            primaryArea: activePrimaryArea
                 ? {
-                      publicId: provider.primaryArea.publicId,
-                      slug: provider.primaryArea.slug,
-                      name: isKh ? provider.primaryArea.nameKm : provider.primaryArea.nameEn,
-                      nameEn: provider.primaryArea.nameEn,
-                      nameKm: provider.primaryArea.nameKm,
+                      publicId: activePrimaryArea.publicId,
+                      slug: activePrimaryArea.slug,
+                      name: isKh ? activePrimaryArea.nameKm : activePrimaryArea.nameEn,
+                      nameEn: activePrimaryArea.nameEn,
+                      nameKm: activePrimaryArea.nameKm,
                   }
                 : null,
             primaryCategory: provider.primaryCategory
@@ -397,6 +402,7 @@ export class CustomerProvidersService {
                 slug: string;
                 nameEn: string;
                 nameKm: string;
+                isActive?: boolean;
             } | null;
             primaryCategory: {
                 publicId: string;
@@ -432,6 +438,7 @@ export class CustomerProvidersService {
                         slug: string;
                         nameEn: string;
                         nameKm: string;
+                        isActive?: boolean;
                     };
                 }>;
                 _count: { reviews: number };
@@ -466,7 +473,7 @@ export class CustomerProvidersService {
             { publicId: string; slug: string; name: string; nameEn: string; nameKm: string }
         >();
 
-        if (provider.primaryArea) {
+        if (provider.primaryArea && provider.primaryArea.isActive !== false) {
             areaMap.set(provider.primaryArea.publicId, {
                 publicId: provider.primaryArea.publicId,
                 slug: provider.primaryArea.slug,
@@ -478,6 +485,7 @@ export class CustomerProvidersService {
 
         for (const listing of provider.serviceListings) {
             for (const { serviceArea } of listing.areas) {
+                if (serviceArea.isActive === false) continue;
                 if (areaMap.has(serviceArea.publicId)) continue;
                 areaMap.set(serviceArea.publicId, {
                     publicId: serviceArea.publicId,
@@ -520,7 +528,9 @@ export class CustomerProvidersService {
                     nameKm: listing.category.nameKm,
                     iconName: listing.category.iconName,
                 },
-                areas: listing.areas.map(({ serviceArea }) => ({
+                areas: listing.areas
+                    .filter(({ serviceArea }) => serviceArea.isActive !== false)
+                    .map(({ serviceArea }) => ({
                     publicId: serviceArea.publicId,
                     slug: serviceArea.slug,
                     name: isKh ? serviceArea.nameKm : serviceArea.nameEn,

@@ -118,6 +118,8 @@ export const messages = {
         ADMIN_SERVICE_AREA_RESTORED: "Service area restored",
         ADMIN_SERVICE_AREA_DELETED: "Service area deleted",
         ADMIN_SERVICE_AREA_NOT_FOUND: "Service area not found",
+        ADMIN_SERVICE_AREA_LOCATION_REQUIRED:
+            "Pick a map location (latitude and longitude) for this service area",
         ADMIN_SERVICE_AREA_DELETE_HAS_LINKS: "Cannot delete service area: it has {providers} provider(s) linked to it",
 
         // admin help
@@ -201,6 +203,12 @@ export const messages = {
         CUSTOMER_BOOKING_INVALID_DATE: "Invalid scheduled date",
         CUSTOMER_BOOKING_CANNOT_CANCEL: "This booking can no longer be cancelled",
         CUSTOMER_BOOKING_CANNOT_RESCHEDULE: "This booking can no longer be rescheduled",
+        CUSTOMER_BOOKING_OUTSIDE_SERVICE_AREA:
+            "This address is outside the provider's service area. Choose another address or provider.",
+        CUSTOMER_BOOKING_ADDRESS_LOCATION_REQUIRED:
+            "This address needs a map location before booking. Please update the address pin.",
+        CUSTOMER_BOOKING_NO_ACTIVE_SERVICE_AREA:
+            "This service is not available right now because its service area is disabled.",
         CUSTOMER_REVIEW_CREATED_SUCCESSFULLY: "Review submitted successfully",
         CUSTOMER_REVIEW_FETCHED_SUCCESSFULLY: "Review fetched successfully",
         CUSTOMER_REVIEW_NOT_FOUND: "Review not found",
@@ -435,6 +443,8 @@ export const messages = {
         ADMIN_SERVICE_AREA_RESTORED: "បានស្តារតំបន់សេវា",
         ADMIN_SERVICE_AREA_DELETED: "បានលុបតំបន់សេវា",
         ADMIN_SERVICE_AREA_NOT_FOUND: "រកមិនឃើញតំបន់សេវា",
+        ADMIN_SERVICE_AREA_LOCATION_REQUIRED:
+            "សូមជ្រើសទីតាំងនៅលើផែនទី (រយៈទទឹង និងរយៈបណ្តោយ) សម្រាប់តំបន់សេវានេះ",
         ADMIN_SERVICE_AREA_DELETE_HAS_LINKS: "មិនអាចលុបតំបន់សេវាបានទេ៖ មានអ្នកផ្តល់សេវា {providers} ភ្ជាប់ជាមួយវា",
 
         // admin help
@@ -518,6 +528,12 @@ export const messages = {
         CUSTOMER_BOOKING_INVALID_DATE: "កាលបរិច្ឆេទកក់មិនត្រឹមត្រូវ",
         CUSTOMER_BOOKING_CANNOT_CANCEL: "មិនអាចលុបចោលការកក់នេះបានទៀតទេ",
         CUSTOMER_BOOKING_CANNOT_RESCHEDULE: "មិនអាចកំណត់ពេលការកក់នេះឡើងវិញបានទៀតទេ",
+        CUSTOMER_BOOKING_OUTSIDE_SERVICE_AREA:
+            "អាសយដ្ឋាននេះស្ថិតនៅក្រៅតំបន់សេវារបស់អ្នកផ្តល់សេវា។ សូមជ្រើសអាសយដ្ឋាន ឬអ្នកផ្តល់សេវាផ្សេង។",
+        CUSTOMER_BOOKING_ADDRESS_LOCATION_REQUIRED:
+            "អាសយដ្ឋាននេះត្រូវការទីតាំងនៅលើផែនទីមុនពេលកក់។ សូមធ្វើបច្ចុប្បន្នភាពម្ជុលទីតាំង។",
+        CUSTOMER_BOOKING_NO_ACTIVE_SERVICE_AREA:
+            "សេវានេះមិនអាចកក់បានទេ ព្រោះតំបន់សេវាត្រូវបានបិទ។",
         CUSTOMER_REVIEW_CREATED_SUCCESSFULLY: "បានដាក់ការវាយតម្លៃដោយជោគជ័យ",
         CUSTOMER_REVIEW_FETCHED_SUCCESSFULLY: "បានទាញយកការវាយតម្លៃដោយជោគជ័យ",
         CUSTOMER_REVIEW_NOT_FOUND: "រកមិនឃើញការវាយតម្លៃ",

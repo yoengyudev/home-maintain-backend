@@ -68,6 +68,11 @@ export type ServiceCategory = Prisma.ServiceCategoryModel
  */
 export type ServiceArea = Prisma.ServiceAreaModel
 /**
+ * Model ProviderServiceArea
+ * 
+ */
+export type ProviderServiceArea = Prisma.ProviderServiceAreaModel
+/**
  * Model ProviderVerification
  * 
  */
