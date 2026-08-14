@@ -7,6 +7,7 @@ import {
 } from "../generated/prisma/enums";
 import { nextPublicId } from "../utils/public-id.util";
 import { sendPushToUserSafe } from "./fcm-push.service";
+import { broadcastRealtimeNotification } from "../websocket/booking-ws";
 
 export type NotificationCopy = {
     titleEn: string;
@@ -113,6 +114,12 @@ export class NotificationsHelper {
                 messageKm: payload.messageKm,
             },
         });
+
+        try {
+            broadcastRealtimeNotification(notification);
+        } catch {
+            // Ignore broadcast failure
+        }
 
         return notification;
     }

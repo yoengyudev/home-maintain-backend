@@ -18,12 +18,48 @@ type ClientMessage = {
 
 type SocketMeta = {
     userId: string;
-    role: typeof UserRole.CUSTOMER | typeof UserRole.PROVIDER;
+    role: typeof UserRole.CUSTOMER | typeof UserRole.PROVIDER | typeof UserRole.ADMIN;
     lang: "en" | "kh";
     bookingIds: Set<string>;
 };
 
 const sockets = new Map<WebSocket, SocketMeta>();
+
+export function broadcastRealtimeNotification(notification: {
+    id: string;
+    publicId: string;
+    userId: string;
+    titleEn: string;
+    titleKm?: string | null;
+    messageEn: string;
+    messageKm?: string | null;
+    relatedModule?: string | null;
+    relatedRecordId?: string | null;
+    relatedRoute?: string | null;
+    priority?: string | null;
+    createdAt?: Date | string;
+}) {
+    sockets.forEach((meta, client) => {
+        if (meta.userId === notification.userId || meta.role === UserRole.ADMIN) {
+            sendJson(client, {
+                type: "notification.created",
+                notification: {
+                    id: notification.id,
+                    publicId: notification.publicId,
+                    titleEn: notification.titleEn,
+                    titleKm: notification.titleKm,
+                    messageEn: notification.messageEn,
+                    messageKm: notification.messageKm,
+                    url: notification.relatedRoute || "/admin/notifications",
+                    relatedModule: notification.relatedModule,
+                    relatedRecordId: notification.relatedRecordId,
+                    priority: notification.priority,
+                    createdAt: notification.createdAt,
+                },
+            });
+        }
+    });
+}
 
 function readUrl(req: IncomingMessage) {
     const host = req.headers.host || "localhost";
@@ -167,7 +203,7 @@ async function handleConnection(socket: WebSocket, req: IncomingMessage) {
 
     if (
         !decoded?.userId ||
-        (role !== UserRole.CUSTOMER && role !== UserRole.PROVIDER)
+        (role !== UserRole.CUSTOMER && role !== UserRole.PROVIDER && role !== UserRole.ADMIN)
     ) {
         socket.close(4401, "Unauthorized");
         return;
@@ -176,7 +212,7 @@ async function handleConnection(socket: WebSocket, req: IncomingMessage) {
     try {
         if (role === UserRole.CUSTOMER) {
             await assertActiveCustomerSession(decoded.userId, decoded.sid, "en");
-        } else {
+        } else if (role === UserRole.PROVIDER) {
             await assertActiveProviderSession(decoded.userId, decoded.sid, "en");
         }
     } catch {
