@@ -27,12 +27,18 @@ import * as serviceAreasController from "../controllers/admin/admin.service.area
 import * as notificationsController from "../controllers/admin/admin.notifications.controller";
 import * as auditController from "../controllers/admin/admin.audit.controller";
 import * as helpController from "../controllers/admin/admin.help.controller";
+import * as commissionController from "../controllers/admin/admin.commission.controller";
 import {
     createFaqSchema,
     updateFaqSchema,
     updateSupportPageSchema,
     updateSupportRequestSchema,
 } from "../validators/admin/admin.help.validator";
+import {
+    updateCommissionSettingSchema,
+    generateInvoiceSchema,
+    markInvoicePaidSchema,
+} from "../validators/admin/admin.commission.validator";
 
 const router = Router();
 
@@ -172,6 +178,29 @@ router.post("/notifications/:id/unread", asyncHandler(notificationsController.ma
 
 router.get("/notes", asyncHandler(notesController.listNotes));
 router.post("/notes", validate(createAdminNoteSchema), asyncHandler(notesController.createNote));
+
+// ==========================================
+// Commission & Invoices
+// ==========================================
+router.get("/commission/setting", asyncHandler(commissionController.getCommissionSetting));
+router.put(
+    "/commission/setting",
+    validate(updateCommissionSettingSchema),
+    asyncHandler(commissionController.updateCommissionSetting)
+);
+router.get("/commission/records", asyncHandler(commissionController.listCommissions));
+router.get("/commission/invoices", asyncHandler(commissionController.listInvoices));
+router.post(
+    "/commission/invoices",
+    validate(generateInvoiceSchema),
+    asyncHandler(commissionController.generateInvoice)
+);
+router.get("/commission/invoices/:id", asyncHandler(commissionController.getInvoiceById));
+router.post(
+    "/commission/invoices/:id/paid",
+    validate(markInvoicePaidSchema),
+    asyncHandler(commissionController.markInvoicePaid)
+);
 
 // ==========================================
 // Audit Log

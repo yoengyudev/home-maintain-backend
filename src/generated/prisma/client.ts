@@ -194,3 +194,18 @@ export type SupportRequest = Prisma.SupportRequestModel
  * 
  */
 export type SupportPage = Prisma.SupportPageModel
+/**
+ * Model CommissionSetting
+ * 
+ */
+export type CommissionSetting = Prisma.CommissionSettingModel
+/**
+ * Model BookingCommission
+ * 
+ */
+export type BookingCommission = Prisma.BookingCommissionModel
+/**
+ * Model ProviderInvoice
+ * 
+ */
+export type ProviderInvoice = Prisma.ProviderInvoiceModel

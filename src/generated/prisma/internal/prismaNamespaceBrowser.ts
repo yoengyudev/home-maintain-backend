@@ -81,7 +81,10 @@ export const ModelName = {
   InternalAdminNote: 'InternalAdminNote',
   Faq: 'Faq',
   SupportRequest: 'SupportRequest',
-  SupportPage: 'SupportPage'
+  SupportPage: 'SupportPage',
+  CommissionSetting: 'CommissionSetting',
+  BookingCommission: 'BookingCommission',
+  ProviderInvoice: 'ProviderInvoice'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -625,6 +628,62 @@ export const SupportPageScalarFieldEnum = {
 } as const
 
 export type SupportPageScalarFieldEnum = (typeof SupportPageScalarFieldEnum)[keyof typeof SupportPageScalarFieldEnum]
+
+
+export const CommissionSettingScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  type: 'type',
+  value: 'value',
+  description: 'description',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommissionSettingScalarFieldEnum = (typeof CommissionSettingScalarFieldEnum)[keyof typeof CommissionSettingScalarFieldEnum]
+
+
+export const BookingCommissionScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  bookingId: 'bookingId',
+  providerProfileId: 'providerProfileId',
+  invoiceId: 'invoiceId',
+  commissionType: 'commissionType',
+  commissionRate: 'commissionRate',
+  bookingAmount: 'bookingAmount',
+  commissionAmount: 'commissionAmount',
+  providerEarning: 'providerEarning',
+  status: 'status',
+  paidAt: 'paidAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BookingCommissionScalarFieldEnum = (typeof BookingCommissionScalarFieldEnum)[keyof typeof BookingCommissionScalarFieldEnum]
+
+
+export const ProviderInvoiceScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  invoiceNumber: 'invoiceNumber',
+  providerProfileId: 'providerProfileId',
+  totalBookingAmount: 'totalBookingAmount',
+  totalCommission: 'totalCommission',
+  status: 'status',
+  issuedAt: 'issuedAt',
+  dueAt: 'dueAt',
+  paidAt: 'paidAt',
+  paymentReference: 'paymentReference',
+  paymentProofUrl: 'paymentProofUrl',
+  paymentProofSubmittedAt: 'paymentProofSubmittedAt',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProviderInvoiceScalarFieldEnum = (typeof ProviderInvoiceScalarFieldEnum)[keyof typeof ProviderInvoiceScalarFieldEnum]
 
 
 export const SortOrder = {

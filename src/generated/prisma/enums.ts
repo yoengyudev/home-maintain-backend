@@ -79,6 +79,30 @@ export const BookingStatus = {
 export type BookingStatus = (typeof BookingStatus)[keyof typeof BookingStatus]
 
 
+export const CommissionType = {
+  PERCENTAGE: 'PERCENTAGE',
+  FIXED: 'FIXED'
+} as const
+
+export type CommissionType = (typeof CommissionType)[keyof typeof CommissionType]
+
+
+export const CommissionStatus = {
+  UNPAID: 'UNPAID',
+  PAID: 'PAID'
+} as const
+
+export type CommissionStatus = (typeof CommissionStatus)[keyof typeof CommissionStatus]
+
+
+export const InvoiceStatus = {
+  UNPAID: 'UNPAID',
+  PAID: 'PAID'
+} as const
+
+export type InvoiceStatus = (typeof InvoiceStatus)[keyof typeof InvoiceStatus]
+
+
 export const BookingIssueStatus = {
   NONE: 'NONE',
   NEEDS_REVIEW: 'NEEDS_REVIEW',

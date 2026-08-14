@@ -281,6 +281,45 @@ export class VendorBookingsService {
                 },
             });
 
+            if (options.next === BookingStatus.COMPLETED) {
+                const existingCommission = await tx.bookingCommission.findUnique({
+                    where: { bookingId: booking.id },
+                });
+
+                if (!existingCommission) {
+                    const activeSetting = await tx.commissionSetting.findFirst({
+                        where: { isActive: true },
+                        orderBy: { createdAt: "desc" },
+                    });
+
+                    const commType = activeSetting?.type ?? "PERCENTAGE";
+                    const commRate = activeSetting?.value ? Number(activeSetting.value) : 5.0; // default 5% if not yet configured
+                    const bookingAmount = decimalNumber(booking.estimatedTotal);
+
+                    let commissionAmount = 0;
+                    if (commType === "FIXED") {
+                        commissionAmount = parseFloat(Math.min(commRate, bookingAmount).toFixed(2));
+                    } else {
+                        commissionAmount = parseFloat(((bookingAmount * commRate) / 100).toFixed(2));
+                    }
+                    const providerEarning = parseFloat(Math.max(0, bookingAmount - commissionAmount).toFixed(2));
+
+                    await tx.bookingCommission.create({
+                        data: {
+                            publicId: `COM-${booking.publicId}`,
+                            bookingId: booking.id,
+                            providerProfileId: booking.providerProfileId,
+                            commissionType: commType,
+                            commissionRate: commRate,
+                            bookingAmount,
+                            commissionAmount,
+                            providerEarning,
+                            status: "UNPAID",
+                        },
+                    });
+                }
+            }
+
             return next;
         });
 

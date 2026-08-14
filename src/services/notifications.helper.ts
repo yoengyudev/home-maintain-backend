@@ -339,3 +339,31 @@ export const BookingNotificationCopy = {
         };
     },
 };
+
+export const InvoiceNotificationCopy = {
+    generatedForVendor(invoiceNumber: string, amount: number): NotificationCopy {
+        return {
+            titleEn: "New invoice issued",
+            titleKm: "វិក្កយបត្រថ្មីត្រូវបានចេញ",
+            messageEn: `Invoice ${invoiceNumber} for $${amount.toFixed(2)} platform service fee has been issued.`,
+            messageKm: `វិក្កយបត្រ ${invoiceNumber} ចំនួន $${amount.toFixed(2)} សម្រាប់កម្រៃសេវាប្រព័ន្ធត្រូវបានចេញ។`,
+        };
+    },
+    paidForVendor(invoiceNumber: string, amount: number): NotificationCopy {
+        return {
+            titleEn: "Invoice payment confirmed",
+            titleKm: "ការទូទាត់វិក្កយបត្រត្រូវបានបញ្ជាក់",
+            messageEn: `Payment for invoice ${invoiceNumber} ($${amount.toFixed(2)}) has been confirmed.`,
+            messageKm: `ការទូទាត់សម្រាប់វិក្កយបត្រ ${invoiceNumber} ($${amount.toFixed(2)}) ត្រូវបានបញ្ជាក់រួចរាល់។`,
+        };
+    },
+    paymentSubmittedForAdmin(providerName: string, invoiceNumber: string, amount: number): NotificationCopy {
+        return {
+            titleEn: "Invoice payment proof submitted",
+            titleKm: "បានបញ្ជូនភស្តុតាងទូទាត់វិក្កយបត្រ",
+            messageEn: `${providerName} submitted payment proof for invoice ${invoiceNumber} ($${amount.toFixed(2)}). Please verify and confirm.`,
+            messageKm: `${providerName} បានបញ្ជូនភស្តុតាងទូទាត់សម្រាប់វិក្កយបត្រ ${invoiceNumber} ($${amount.toFixed(2)})។ សូមពិនិត្យផ្ទៀងផ្ទាត់។`,
+        };
+    },
+};
+

@@ -324,6 +324,23 @@ export const messages = {
         VENDOR_OTP_SENT_TO_PHONE: "OTP sent to phone",
         VENDOR_HELP_RETRIEVED: "Help content retrieved successfully",
         VENDOR_SUPPORT_REQUEST_SUBMITTED: "Support request submitted successfully",
+
+        // commission & invoices
+        ADMIN_COMMISSION_SETTING_RETRIEVED: "Commission setting retrieved successfully",
+        ADMIN_COMMISSION_SETTING_UPDATED: "Commission setting updated successfully",
+        ADMIN_COMMISSION_RECORDS_RETRIEVED: "Commission records retrieved successfully",
+        ADMIN_COMMISSION_RECORD_NOT_FOUND: "Commission record not found",
+        ADMIN_COMMISSION_INVOICES_RETRIEVED: "Invoices retrieved successfully",
+        ADMIN_COMMISSION_INVOICE_GENERATED: "Invoice generated successfully",
+        ADMIN_COMMISSION_INVOICE_RETRIEVED: "Invoice retrieved successfully",
+        ADMIN_COMMISSION_INVOICE_MARKED_PAID: "Invoice marked as paid successfully",
+        ADMIN_COMMISSION_INVOICE_NOT_FOUND: "Invoice not found",
+        ADMIN_COMMISSION_INVALID_RECORDS: "Please select valid unpaid commission records belonging to the same provider",
+        ADMIN_COMMISSION_MIXED_PROVIDERS: "Cannot generate invoice: Selected records belong to multiple providers. All records in an invoice must belong to the same provider.",
+        VENDOR_COMMISSION_SUMMARY_RETRIEVED: "Commission summary retrieved successfully",
+        VENDOR_COMMISSION_INVOICES_RETRIEVED: "Invoices retrieved successfully",
+        VENDOR_COMMISSION_INVOICE_RETRIEVED: "Invoice retrieved successfully",
+        VENDOR_COMMISSION_INVOICE_NOT_FOUND: "Invoice not found",
     },
     kh: {
         ERROR_INTERNAL: "កំហុសម៉ាស៊ីនមេខាងក្នុង",
@@ -649,6 +666,23 @@ export const messages = {
         VENDOR_OTP_SENT_TO_PHONE: "បានផ្ញើ OTP ទៅលេខទូរស័ព្ទ",
         VENDOR_HELP_RETRIEVED: "បានទាញយកខ្លឹមសារជំនួយដោយជោគជ័យ",
         VENDOR_SUPPORT_REQUEST_SUBMITTED: "បានផ្ញើសំណើគាំទ្រដោយជោគជ័យ",
+
+        // commission & invoices
+        ADMIN_COMMISSION_SETTING_RETRIEVED: "បានទាញយកការកំណត់កម្រៃជើងសារដោយជោគជ័យ",
+        ADMIN_COMMISSION_SETTING_UPDATED: "បានធ្វើបច្ចុប្បន្នភាពការកំណត់កម្រៃជើងសារដោយជោគជ័យ",
+        ADMIN_COMMISSION_RECORDS_RETRIEVED: "បានទាញយកកំណត់ត្រាកម្រៃជើងសារដោយជោគជ័យ",
+        ADMIN_COMMISSION_RECORD_NOT_FOUND: "រកមិនឃើញកំណត់ត្រាកម្រៃជើងសារ",
+        ADMIN_COMMISSION_INVOICES_RETRIEVED: "បានទាញយកវិក្កយបត្រដោយជោគជ័យ",
+        ADMIN_COMMISSION_INVOICE_GENERATED: "បានបង្កើតវិក្កយបត្រដោយជោគជ័យ",
+        ADMIN_COMMISSION_INVOICE_RETRIEVED: "បានទាញយកវិក្កយបត្រដោយជោគជ័យ",
+        ADMIN_COMMISSION_INVOICE_MARKED_PAID: "បានសម្គាល់វិក្កយបត្រថាបានបង់ប្រាក់ដោយជោគជ័យ",
+        ADMIN_COMMISSION_INVOICE_NOT_FOUND: "រកមិនឃើញវិក្កយបត្រ",
+        ADMIN_COMMISSION_INVALID_RECORDS: "សូមជ្រើសរើសកំណត់ត្រាកម្រៃជើងសារដែលមិនទាន់ទូទាត់របស់អ្នកផ្តល់សេវាដូចគ្នា",
+        ADMIN_COMMISSION_MIXED_PROVIDERS: "មិនអាចបង្កើតវិក្កយបត្របានទេ៖ កំណត់ត្រាដែលបានជ្រើសរើសជារបស់អ្នកផ្តល់សេវាផ្សេងៗគ្នា។ សូមជ្រើសរើសកំណត់ត្រាសម្រាប់អ្នកផ្តល់សេវាតែមួយ។",
+        VENDOR_COMMISSION_SUMMARY_RETRIEVED: "បានទាញយកសេចក្តីសង្ខេបកម្រៃជើងសារដោយជោគជ័យ",
+        VENDOR_COMMISSION_INVOICES_RETRIEVED: "បានទាញយកវិក្កយបត្រដោយជោគជ័យ",
+        VENDOR_COMMISSION_INVOICE_RETRIEVED: "បានទាញយកវិក្កយបត្រដោយជោគជ័យ",
+        VENDOR_COMMISSION_INVOICE_NOT_FOUND: "រកមិនឃើញវិក្កយបត្រ",
     },
 } as const;
 

@@ -56,6 +56,21 @@ enum BookingStatus {
   RESCHEDULED
 }
 
+enum CommissionType {
+  PERCENTAGE
+  FIXED
+}
+
+enum CommissionStatus {
+  UNPAID
+  PAID
+}
+
+enum InvoiceStatus {
+  UNPAID
+  PAID
+}
+
 enum BookingIssueStatus {
   NONE
   NEEDS_REVIEW
@@ -202,6 +217,8 @@ model ProviderProfile {
   serviceAreas          ProviderServiceArea[]
   bookings              Booking[]
   reviews               Review[]
+  commissions           BookingCommission[]
+  invoices              ProviderInvoice[]
 
   @@index([status])
   @@index([primaryCategoryId])
@@ -544,6 +561,7 @@ model Booking {
   issues              BookingIssue[]
   statusHistory       BookingStatusHistory[]
   review              Review?
+  commission          BookingCommission?
 
   @@index([customerProfileId])
   @@index([providerProfileId])
@@ -766,3 +784,69 @@ model SupportPage {
   @@index([isActive])
   @@map("support_pages")
 }
+
+model CommissionSetting {
+  id           String         @id @default(cuid())
+  publicId     String         @unique
+  type         CommissionType @default(PERCENTAGE)
+  value        Decimal        @db.Decimal(10, 4)
+  description  String?
+  isActive     Boolean        @default(true)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@index([isActive])
+  @@map("commission_settings")
+}
+
+model BookingCommission {
+  id                  String           @id @default(cuid())
+  publicId            String           @unique
+  bookingId           String           @unique
+  providerProfileId   String
+  invoiceId           String?
+  commissionType      CommissionType
+  commissionRate      Decimal          @db.Decimal(10, 4)
+  bookingAmount       Decimal          @db.Decimal(10, 2)
+  commissionAmount    Decimal          @db.Decimal(10, 2)
+  providerEarning     Decimal          @db.Decimal(10, 2)
+  status              CommissionStatus @default(UNPAID)
+  paidAt              DateTime?
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  booking             Booking          @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  providerProfile     ProviderProfile  @relation(fields: [providerProfileId], references: [id], onDelete: Restrict)
+  invoice             ProviderInvoice? @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+
+  @@index([providerProfileId])
+  @@index([status])
+  @@index([invoiceId])
+  @@map("booking_commissions")
+}
+
+model ProviderInvoice {
+  id                       String              @id @default(cuid())
+  publicId                 String              @unique
+  invoiceNumber            String              @unique
+  providerProfileId        String
+  totalBookingAmount       Decimal             @db.Decimal(10, 2)
+  totalCommission          Decimal             @db.Decimal(10, 2)
+  status                   InvoiceStatus       @default(UNPAID)
+  issuedAt                 DateTime            @default(now())
+  dueAt                    DateTime?
+  paidAt                   DateTime?
+  paymentReference         String?
+  paymentProofUrl          String?
+  paymentProofSubmittedAt  DateTime?
+  notes                    String?
+  createdAt                DateTime            @default(now())
+  updatedAt                DateTime            @updatedAt
+  providerProfile          ProviderProfile     @relation(fields: [providerProfileId], references: [id], onDelete: Restrict)
+  commissions              BookingCommission[]
+
+  @@index([providerProfileId])
+  @@index([status])
+  @@index([invoiceNumber])
+  @@map("provider_invoices")
+}
+

@@ -9,6 +9,7 @@ import vendorBookingsRoutes from "./vendor/vendor.bookings.routes";
 import vendorNotificationsRoutes from "./vendor/vendor.notifications.routes";
 import vendorHelpRoutes from "./vendor/vendor.help.routes";
 import vendorLocationsRoutes from "./vendor/vendor.locations.routes";
+import vendorCommissionRoutes from "./vendor/vendor.commission.routes";
 import {
     acceptBooking,
     completeBooking,
@@ -33,6 +34,7 @@ router.post("/bookings/:id/reject", authenticate, authorize(UserRole.PROVIDER), 
 router.post("/bookings/:id/start", authenticate, authorize(UserRole.PROVIDER), asyncHandler(startBooking));
 router.post("/bookings/:id/complete", authenticate, authorize(UserRole.PROVIDER), asyncHandler(completeBooking));
 router.use("/bookings", vendorBookingsRoutes);
+router.use("/commission", vendorCommissionRoutes);
 router.use("/notifications", vendorNotificationsRoutes);
 router.use("/help", vendorHelpRoutes);
 router.use("/locations", vendorLocationsRoutes);

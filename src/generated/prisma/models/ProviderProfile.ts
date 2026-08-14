@@ -309,6 +309,8 @@ export type ProviderProfileWhereInput = {
   serviceAreas?: Prisma.ProviderServiceAreaListRelationFilter
   bookings?: Prisma.BookingListRelationFilter
   reviews?: Prisma.ReviewListRelationFilter
+  commissions?: Prisma.BookingCommissionListRelationFilter
+  invoices?: Prisma.ProviderInvoiceListRelationFilter
 }
 
 export type ProviderProfileOrderByWithRelationInput = {
@@ -336,6 +338,8 @@ export type ProviderProfileOrderByWithRelationInput = {
   serviceAreas?: Prisma.ProviderServiceAreaOrderByRelationAggregateInput
   bookings?: Prisma.BookingOrderByRelationAggregateInput
   reviews?: Prisma.ReviewOrderByRelationAggregateInput
+  commissions?: Prisma.BookingCommissionOrderByRelationAggregateInput
+  invoices?: Prisma.ProviderInvoiceOrderByRelationAggregateInput
 }
 
 export type ProviderProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -366,6 +370,8 @@ export type ProviderProfileWhereUniqueInput = Prisma.AtLeast<{
   serviceAreas?: Prisma.ProviderServiceAreaListRelationFilter
   bookings?: Prisma.BookingListRelationFilter
   reviews?: Prisma.ReviewListRelationFilter
+  commissions?: Prisma.BookingCommissionListRelationFilter
+  invoices?: Prisma.ProviderInvoiceListRelationFilter
 }, "id" | "publicId" | "userId">
 
 export type ProviderProfileOrderByWithAggregationInput = {
@@ -434,6 +440,8 @@ export type ProviderProfileCreateInput = {
   serviceAreas?: Prisma.ProviderServiceAreaCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutProviderProfileInput
+  commissions?: Prisma.BookingCommissionCreateNestedManyWithoutProviderProfileInput
+  invoices?: Prisma.ProviderInvoiceCreateNestedManyWithoutProviderProfileInput
 }
 
 export type ProviderProfileUncheckedCreateInput = {
@@ -458,6 +466,8 @@ export type ProviderProfileUncheckedCreateInput = {
   serviceAreas?: Prisma.ProviderServiceAreaUncheckedCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutProviderProfileInput
+  commissions?: Prisma.BookingCommissionUncheckedCreateNestedManyWithoutProviderProfileInput
+  invoices?: Prisma.ProviderInvoiceUncheckedCreateNestedManyWithoutProviderProfileInput
 }
 
 export type ProviderProfileUpdateInput = {
@@ -482,6 +492,8 @@ export type ProviderProfileUpdateInput = {
   serviceAreas?: Prisma.ProviderServiceAreaUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutProviderProfileNestedInput
+  commissions?: Prisma.BookingCommissionUpdateManyWithoutProviderProfileNestedInput
+  invoices?: Prisma.ProviderInvoiceUpdateManyWithoutProviderProfileNestedInput
 }
 
 export type ProviderProfileUncheckedUpdateInput = {
@@ -506,6 +518,8 @@ export type ProviderProfileUncheckedUpdateInput = {
   serviceAreas?: Prisma.ProviderServiceAreaUncheckedUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutProviderProfileNestedInput
+  commissions?: Prisma.BookingCommissionUncheckedUpdateManyWithoutProviderProfileNestedInput
+  invoices?: Prisma.ProviderInvoiceUncheckedUpdateManyWithoutProviderProfileNestedInput
 }
 
 export type ProviderProfileCreateManyInput = {
@@ -863,6 +877,34 @@ export type ProviderProfileUpdateOneRequiredWithoutReviewsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProviderProfileUpdateToOneWithWhereWithoutReviewsInput, Prisma.ProviderProfileUpdateWithoutReviewsInput>, Prisma.ProviderProfileUncheckedUpdateWithoutReviewsInput>
 }
 
+export type ProviderProfileCreateNestedOneWithoutCommissionsInput = {
+  create?: Prisma.XOR<Prisma.ProviderProfileCreateWithoutCommissionsInput, Prisma.ProviderProfileUncheckedCreateWithoutCommissionsInput>
+  connectOrCreate?: Prisma.ProviderProfileCreateOrConnectWithoutCommissionsInput
+  connect?: Prisma.ProviderProfileWhereUniqueInput
+}
+
+export type ProviderProfileUpdateOneRequiredWithoutCommissionsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProviderProfileCreateWithoutCommissionsInput, Prisma.ProviderProfileUncheckedCreateWithoutCommissionsInput>
+  connectOrCreate?: Prisma.ProviderProfileCreateOrConnectWithoutCommissionsInput
+  upsert?: Prisma.ProviderProfileUpsertWithoutCommissionsInput
+  connect?: Prisma.ProviderProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProviderProfileUpdateToOneWithWhereWithoutCommissionsInput, Prisma.ProviderProfileUpdateWithoutCommissionsInput>, Prisma.ProviderProfileUncheckedUpdateWithoutCommissionsInput>
+}
+
+export type ProviderProfileCreateNestedOneWithoutInvoicesInput = {
+  create?: Prisma.XOR<Prisma.ProviderProfileCreateWithoutInvoicesInput, Prisma.ProviderProfileUncheckedCreateWithoutInvoicesInput>
+  connectOrCreate?: Prisma.ProviderProfileCreateOrConnectWithoutInvoicesInput
+  connect?: Prisma.ProviderProfileWhereUniqueInput
+}
+
+export type ProviderProfileUpdateOneRequiredWithoutInvoicesNestedInput = {
+  create?: Prisma.XOR<Prisma.ProviderProfileCreateWithoutInvoicesInput, Prisma.ProviderProfileUncheckedCreateWithoutInvoicesInput>
+  connectOrCreate?: Prisma.ProviderProfileCreateOrConnectWithoutInvoicesInput
+  upsert?: Prisma.ProviderProfileUpsertWithoutInvoicesInput
+  connect?: Prisma.ProviderProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProviderProfileUpdateToOneWithWhereWithoutInvoicesInput, Prisma.ProviderProfileUpdateWithoutInvoicesInput>, Prisma.ProviderProfileUncheckedUpdateWithoutInvoicesInput>
+}
+
 export type ProviderProfileCreateWithoutUserInput = {
   id?: string
   publicId: string
@@ -884,6 +926,8 @@ export type ProviderProfileCreateWithoutUserInput = {
   serviceAreas?: Prisma.ProviderServiceAreaCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutProviderProfileInput
+  commissions?: Prisma.BookingCommissionCreateNestedManyWithoutProviderProfileInput
+  invoices?: Prisma.ProviderInvoiceCreateNestedManyWithoutProviderProfileInput
 }
 
 export type ProviderProfileUncheckedCreateWithoutUserInput = {
@@ -907,6 +951,8 @@ export type ProviderProfileUncheckedCreateWithoutUserInput = {
   serviceAreas?: Prisma.ProviderServiceAreaUncheckedCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutProviderProfileInput
+  commissions?: Prisma.BookingCommissionUncheckedCreateNestedManyWithoutProviderProfileInput
+  invoices?: Prisma.ProviderInvoiceUncheckedCreateNestedManyWithoutProviderProfileInput
 }
 
 export type ProviderProfileCreateOrConnectWithoutUserInput = {
@@ -946,6 +992,8 @@ export type ProviderProfileUpdateWithoutUserInput = {
   serviceAreas?: Prisma.ProviderServiceAreaUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutProviderProfileNestedInput
+  commissions?: Prisma.BookingCommissionUpdateManyWithoutProviderProfileNestedInput
+  invoices?: Prisma.ProviderInvoiceUpdateManyWithoutProviderProfileNestedInput
 }
 
 export type ProviderProfileUncheckedUpdateWithoutUserInput = {
@@ -969,6 +1017,8 @@ export type ProviderProfileUncheckedUpdateWithoutUserInput = {
   serviceAreas?: Prisma.ProviderServiceAreaUncheckedUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutProviderProfileNestedInput
+  commissions?: Prisma.BookingCommissionUncheckedUpdateManyWithoutProviderProfileNestedInput
+  invoices?: Prisma.ProviderInvoiceUncheckedUpdateManyWithoutProviderProfileNestedInput
 }
 
 export type ProviderProfileCreateWithoutBusinessProfileInput = {
@@ -992,6 +1042,8 @@ export type ProviderProfileCreateWithoutBusinessProfileInput = {
   serviceAreas?: Prisma.ProviderServiceAreaCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutProviderProfileInput
+  commissions?: Prisma.BookingCommissionCreateNestedManyWithoutProviderProfileInput
+  invoices?: Prisma.ProviderInvoiceCreateNestedManyWithoutProviderProfileInput
 }
 
 export type ProviderProfileUncheckedCreateWithoutBusinessProfileInput = {
@@ -1015,6 +1067,8 @@ export type ProviderProfileUncheckedCreateWithoutBusinessProfileInput = {
   serviceAreas?: Prisma.ProviderServiceAreaUncheckedCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutProviderProfileInput
+  commissions?: Prisma.BookingCommissionUncheckedCreateNestedManyWithoutProviderProfileInput
+  invoices?: Prisma.ProviderInvoiceUncheckedCreateNestedManyWithoutProviderProfileInput
 }
 
 export type ProviderProfileCreateOrConnectWithoutBusinessProfileInput = {
@@ -1054,6 +1108,8 @@ export type ProviderProfileUpdateWithoutBusinessProfileInput = {
   serviceAreas?: Prisma.ProviderServiceAreaUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutProviderProfileNestedInput
+  commissions?: Prisma.BookingCommissionUpdateManyWithoutProviderProfileNestedInput
+  invoices?: Prisma.ProviderInvoiceUpdateManyWithoutProviderProfileNestedInput
 }
 
 export type ProviderProfileUncheckedUpdateWithoutBusinessProfileInput = {
@@ -1077,6 +1133,8 @@ export type ProviderProfileUncheckedUpdateWithoutBusinessProfileInput = {
   serviceAreas?: Prisma.ProviderServiceAreaUncheckedUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutProviderProfileNestedInput
+  commissions?: Prisma.BookingCommissionUncheckedUpdateManyWithoutProviderProfileNestedInput
+  invoices?: Prisma.ProviderInvoiceUncheckedUpdateManyWithoutProviderProfileNestedInput
 }
 
 export type ProviderProfileCreateWithoutPrimaryCategoryInput = {
@@ -1100,6 +1158,8 @@ export type ProviderProfileCreateWithoutPrimaryCategoryInput = {
   serviceAreas?: Prisma.ProviderServiceAreaCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutProviderProfileInput
+  commissions?: Prisma.BookingCommissionCreateNestedManyWithoutProviderProfileInput
+  invoices?: Prisma.ProviderInvoiceCreateNestedManyWithoutProviderProfileInput
 }
 
 export type ProviderProfileUncheckedCreateWithoutPrimaryCategoryInput = {
@@ -1123,6 +1183,8 @@ export type ProviderProfileUncheckedCreateWithoutPrimaryCategoryInput = {
   serviceAreas?: Prisma.ProviderServiceAreaUncheckedCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutProviderProfileInput
+  commissions?: Prisma.BookingCommissionUncheckedCreateNestedManyWithoutProviderProfileInput
+  invoices?: Prisma.ProviderInvoiceUncheckedCreateNestedManyWithoutProviderProfileInput
 }
 
 export type ProviderProfileCreateOrConnectWithoutPrimaryCategoryInput = {
@@ -1193,6 +1255,8 @@ export type ProviderProfileCreateWithoutPrimaryAreaInput = {
   serviceAreas?: Prisma.ProviderServiceAreaCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutProviderProfileInput
+  commissions?: Prisma.BookingCommissionCreateNestedManyWithoutProviderProfileInput
+  invoices?: Prisma.ProviderInvoiceCreateNestedManyWithoutProviderProfileInput
 }
 
 export type ProviderProfileUncheckedCreateWithoutPrimaryAreaInput = {
@@ -1216,6 +1280,8 @@ export type ProviderProfileUncheckedCreateWithoutPrimaryAreaInput = {
   serviceAreas?: Prisma.ProviderServiceAreaUncheckedCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutProviderProfileInput
+  commissions?: Prisma.BookingCommissionUncheckedCreateNestedManyWithoutProviderProfileInput
+  invoices?: Prisma.ProviderInvoiceUncheckedCreateNestedManyWithoutProviderProfileInput
 }
 
 export type ProviderProfileCreateOrConnectWithoutPrimaryAreaInput = {
@@ -1265,6 +1331,8 @@ export type ProviderProfileCreateWithoutServiceAreasInput = {
   serviceListings?: Prisma.ServiceListingCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutProviderProfileInput
+  commissions?: Prisma.BookingCommissionCreateNestedManyWithoutProviderProfileInput
+  invoices?: Prisma.ProviderInvoiceCreateNestedManyWithoutProviderProfileInput
 }
 
 export type ProviderProfileUncheckedCreateWithoutServiceAreasInput = {
@@ -1288,6 +1356,8 @@ export type ProviderProfileUncheckedCreateWithoutServiceAreasInput = {
   serviceListings?: Prisma.ServiceListingUncheckedCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutProviderProfileInput
+  commissions?: Prisma.BookingCommissionUncheckedCreateNestedManyWithoutProviderProfileInput
+  invoices?: Prisma.ProviderInvoiceUncheckedCreateNestedManyWithoutProviderProfileInput
 }
 
 export type ProviderProfileCreateOrConnectWithoutServiceAreasInput = {
@@ -1327,6 +1397,8 @@ export type ProviderProfileUpdateWithoutServiceAreasInput = {
   serviceListings?: Prisma.ServiceListingUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutProviderProfileNestedInput
+  commissions?: Prisma.BookingCommissionUpdateManyWithoutProviderProfileNestedInput
+  invoices?: Prisma.ProviderInvoiceUpdateManyWithoutProviderProfileNestedInput
 }
 
 export type ProviderProfileUncheckedUpdateWithoutServiceAreasInput = {
@@ -1350,6 +1422,8 @@ export type ProviderProfileUncheckedUpdateWithoutServiceAreasInput = {
   serviceListings?: Prisma.ServiceListingUncheckedUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutProviderProfileNestedInput
+  commissions?: Prisma.BookingCommissionUncheckedUpdateManyWithoutProviderProfileNestedInput
+  invoices?: Prisma.ProviderInvoiceUncheckedUpdateManyWithoutProviderProfileNestedInput
 }
 
 export type ProviderProfileCreateWithoutVerificationsInput = {
@@ -1373,6 +1447,8 @@ export type ProviderProfileCreateWithoutVerificationsInput = {
   serviceAreas?: Prisma.ProviderServiceAreaCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutProviderProfileInput
+  commissions?: Prisma.BookingCommissionCreateNestedManyWithoutProviderProfileInput
+  invoices?: Prisma.ProviderInvoiceCreateNestedManyWithoutProviderProfileInput
 }
 
 export type ProviderProfileUncheckedCreateWithoutVerificationsInput = {
@@ -1396,6 +1472,8 @@ export type ProviderProfileUncheckedCreateWithoutVerificationsInput = {
   serviceAreas?: Prisma.ProviderServiceAreaUncheckedCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutProviderProfileInput
+  commissions?: Prisma.BookingCommissionUncheckedCreateNestedManyWithoutProviderProfileInput
+  invoices?: Prisma.ProviderInvoiceUncheckedCreateNestedManyWithoutProviderProfileInput
 }
 
 export type ProviderProfileCreateOrConnectWithoutVerificationsInput = {
@@ -1435,6 +1513,8 @@ export type ProviderProfileUpdateWithoutVerificationsInput = {
   serviceAreas?: Prisma.ProviderServiceAreaUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutProviderProfileNestedInput
+  commissions?: Prisma.BookingCommissionUpdateManyWithoutProviderProfileNestedInput
+  invoices?: Prisma.ProviderInvoiceUpdateManyWithoutProviderProfileNestedInput
 }
 
 export type ProviderProfileUncheckedUpdateWithoutVerificationsInput = {
@@ -1458,6 +1538,8 @@ export type ProviderProfileUncheckedUpdateWithoutVerificationsInput = {
   serviceAreas?: Prisma.ProviderServiceAreaUncheckedUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutProviderProfileNestedInput
+  commissions?: Prisma.BookingCommissionUncheckedUpdateManyWithoutProviderProfileNestedInput
+  invoices?: Prisma.ProviderInvoiceUncheckedUpdateManyWithoutProviderProfileNestedInput
 }
 
 export type ProviderProfileCreateWithoutServiceListingsInput = {
@@ -1481,6 +1563,8 @@ export type ProviderProfileCreateWithoutServiceListingsInput = {
   serviceAreas?: Prisma.ProviderServiceAreaCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutProviderProfileInput
+  commissions?: Prisma.BookingCommissionCreateNestedManyWithoutProviderProfileInput
+  invoices?: Prisma.ProviderInvoiceCreateNestedManyWithoutProviderProfileInput
 }
 
 export type ProviderProfileUncheckedCreateWithoutServiceListingsInput = {
@@ -1504,6 +1588,8 @@ export type ProviderProfileUncheckedCreateWithoutServiceListingsInput = {
   serviceAreas?: Prisma.ProviderServiceAreaUncheckedCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutProviderProfileInput
+  commissions?: Prisma.BookingCommissionUncheckedCreateNestedManyWithoutProviderProfileInput
+  invoices?: Prisma.ProviderInvoiceUncheckedCreateNestedManyWithoutProviderProfileInput
 }
 
 export type ProviderProfileCreateOrConnectWithoutServiceListingsInput = {
@@ -1543,6 +1629,8 @@ export type ProviderProfileUpdateWithoutServiceListingsInput = {
   serviceAreas?: Prisma.ProviderServiceAreaUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutProviderProfileNestedInput
+  commissions?: Prisma.BookingCommissionUpdateManyWithoutProviderProfileNestedInput
+  invoices?: Prisma.ProviderInvoiceUpdateManyWithoutProviderProfileNestedInput
 }
 
 export type ProviderProfileUncheckedUpdateWithoutServiceListingsInput = {
@@ -1566,6 +1654,8 @@ export type ProviderProfileUncheckedUpdateWithoutServiceListingsInput = {
   serviceAreas?: Prisma.ProviderServiceAreaUncheckedUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutProviderProfileNestedInput
+  commissions?: Prisma.BookingCommissionUncheckedUpdateManyWithoutProviderProfileNestedInput
+  invoices?: Prisma.ProviderInvoiceUncheckedUpdateManyWithoutProviderProfileNestedInput
 }
 
 export type ProviderProfileCreateWithoutBookingsInput = {
@@ -1589,6 +1679,8 @@ export type ProviderProfileCreateWithoutBookingsInput = {
   serviceListings?: Prisma.ServiceListingCreateNestedManyWithoutProviderProfileInput
   serviceAreas?: Prisma.ProviderServiceAreaCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutProviderProfileInput
+  commissions?: Prisma.BookingCommissionCreateNestedManyWithoutProviderProfileInput
+  invoices?: Prisma.ProviderInvoiceCreateNestedManyWithoutProviderProfileInput
 }
 
 export type ProviderProfileUncheckedCreateWithoutBookingsInput = {
@@ -1612,6 +1704,8 @@ export type ProviderProfileUncheckedCreateWithoutBookingsInput = {
   serviceListings?: Prisma.ServiceListingUncheckedCreateNestedManyWithoutProviderProfileInput
   serviceAreas?: Prisma.ProviderServiceAreaUncheckedCreateNestedManyWithoutProviderProfileInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutProviderProfileInput
+  commissions?: Prisma.BookingCommissionUncheckedCreateNestedManyWithoutProviderProfileInput
+  invoices?: Prisma.ProviderInvoiceUncheckedCreateNestedManyWithoutProviderProfileInput
 }
 
 export type ProviderProfileCreateOrConnectWithoutBookingsInput = {
@@ -1651,6 +1745,8 @@ export type ProviderProfileUpdateWithoutBookingsInput = {
   serviceListings?: Prisma.ServiceListingUpdateManyWithoutProviderProfileNestedInput
   serviceAreas?: Prisma.ProviderServiceAreaUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutProviderProfileNestedInput
+  commissions?: Prisma.BookingCommissionUpdateManyWithoutProviderProfileNestedInput
+  invoices?: Prisma.ProviderInvoiceUpdateManyWithoutProviderProfileNestedInput
 }
 
 export type ProviderProfileUncheckedUpdateWithoutBookingsInput = {
@@ -1674,6 +1770,8 @@ export type ProviderProfileUncheckedUpdateWithoutBookingsInput = {
   serviceListings?: Prisma.ServiceListingUncheckedUpdateManyWithoutProviderProfileNestedInput
   serviceAreas?: Prisma.ProviderServiceAreaUncheckedUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutProviderProfileNestedInput
+  commissions?: Prisma.BookingCommissionUncheckedUpdateManyWithoutProviderProfileNestedInput
+  invoices?: Prisma.ProviderInvoiceUncheckedUpdateManyWithoutProviderProfileNestedInput
 }
 
 export type ProviderProfileCreateWithoutReviewsInput = {
@@ -1697,6 +1795,8 @@ export type ProviderProfileCreateWithoutReviewsInput = {
   serviceListings?: Prisma.ServiceListingCreateNestedManyWithoutProviderProfileInput
   serviceAreas?: Prisma.ProviderServiceAreaCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingCreateNestedManyWithoutProviderProfileInput
+  commissions?: Prisma.BookingCommissionCreateNestedManyWithoutProviderProfileInput
+  invoices?: Prisma.ProviderInvoiceCreateNestedManyWithoutProviderProfileInput
 }
 
 export type ProviderProfileUncheckedCreateWithoutReviewsInput = {
@@ -1720,6 +1820,8 @@ export type ProviderProfileUncheckedCreateWithoutReviewsInput = {
   serviceListings?: Prisma.ServiceListingUncheckedCreateNestedManyWithoutProviderProfileInput
   serviceAreas?: Prisma.ProviderServiceAreaUncheckedCreateNestedManyWithoutProviderProfileInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutProviderProfileInput
+  commissions?: Prisma.BookingCommissionUncheckedCreateNestedManyWithoutProviderProfileInput
+  invoices?: Prisma.ProviderInvoiceUncheckedCreateNestedManyWithoutProviderProfileInput
 }
 
 export type ProviderProfileCreateOrConnectWithoutReviewsInput = {
@@ -1759,6 +1861,8 @@ export type ProviderProfileUpdateWithoutReviewsInput = {
   serviceListings?: Prisma.ServiceListingUpdateManyWithoutProviderProfileNestedInput
   serviceAreas?: Prisma.ProviderServiceAreaUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutProviderProfileNestedInput
+  commissions?: Prisma.BookingCommissionUpdateManyWithoutProviderProfileNestedInput
+  invoices?: Prisma.ProviderInvoiceUpdateManyWithoutProviderProfileNestedInput
 }
 
 export type ProviderProfileUncheckedUpdateWithoutReviewsInput = {
@@ -1782,6 +1886,240 @@ export type ProviderProfileUncheckedUpdateWithoutReviewsInput = {
   serviceListings?: Prisma.ServiceListingUncheckedUpdateManyWithoutProviderProfileNestedInput
   serviceAreas?: Prisma.ProviderServiceAreaUncheckedUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutProviderProfileNestedInput
+  commissions?: Prisma.BookingCommissionUncheckedUpdateManyWithoutProviderProfileNestedInput
+  invoices?: Prisma.ProviderInvoiceUncheckedUpdateManyWithoutProviderProfileNestedInput
+}
+
+export type ProviderProfileCreateWithoutCommissionsInput = {
+  id?: string
+  publicId: string
+  contactName: string
+  status?: $Enums.ProviderStatus
+  avatarUrl?: string | null
+  approvedAt?: Date | string | null
+  suspendedAt?: Date | string | null
+  suspensionReason?: string | null
+  averageRating?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  completedJobs?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutProviderProfileInput
+  primaryCategory?: Prisma.ServiceCategoryCreateNestedOneWithoutPrimaryProvidersInput
+  primaryArea?: Prisma.ServiceAreaCreateNestedOneWithoutPrimaryProvidersInput
+  businessProfile?: Prisma.ProviderBusinessProfileCreateNestedOneWithoutProviderProfileInput
+  verifications?: Prisma.ProviderVerificationCreateNestedManyWithoutProviderProfileInput
+  serviceListings?: Prisma.ServiceListingCreateNestedManyWithoutProviderProfileInput
+  serviceAreas?: Prisma.ProviderServiceAreaCreateNestedManyWithoutProviderProfileInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutProviderProfileInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutProviderProfileInput
+  invoices?: Prisma.ProviderInvoiceCreateNestedManyWithoutProviderProfileInput
+}
+
+export type ProviderProfileUncheckedCreateWithoutCommissionsInput = {
+  id?: string
+  publicId: string
+  userId: string
+  contactName: string
+  status?: $Enums.ProviderStatus
+  avatarUrl?: string | null
+  primaryCategoryId?: string | null
+  primaryAreaId?: string | null
+  approvedAt?: Date | string | null
+  suspendedAt?: Date | string | null
+  suspensionReason?: string | null
+  averageRating?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  completedJobs?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  businessProfile?: Prisma.ProviderBusinessProfileUncheckedCreateNestedOneWithoutProviderProfileInput
+  verifications?: Prisma.ProviderVerificationUncheckedCreateNestedManyWithoutProviderProfileInput
+  serviceListings?: Prisma.ServiceListingUncheckedCreateNestedManyWithoutProviderProfileInput
+  serviceAreas?: Prisma.ProviderServiceAreaUncheckedCreateNestedManyWithoutProviderProfileInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutProviderProfileInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutProviderProfileInput
+  invoices?: Prisma.ProviderInvoiceUncheckedCreateNestedManyWithoutProviderProfileInput
+}
+
+export type ProviderProfileCreateOrConnectWithoutCommissionsInput = {
+  where: Prisma.ProviderProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProviderProfileCreateWithoutCommissionsInput, Prisma.ProviderProfileUncheckedCreateWithoutCommissionsInput>
+}
+
+export type ProviderProfileUpsertWithoutCommissionsInput = {
+  update: Prisma.XOR<Prisma.ProviderProfileUpdateWithoutCommissionsInput, Prisma.ProviderProfileUncheckedUpdateWithoutCommissionsInput>
+  create: Prisma.XOR<Prisma.ProviderProfileCreateWithoutCommissionsInput, Prisma.ProviderProfileUncheckedCreateWithoutCommissionsInput>
+  where?: Prisma.ProviderProfileWhereInput
+}
+
+export type ProviderProfileUpdateToOneWithWhereWithoutCommissionsInput = {
+  where?: Prisma.ProviderProfileWhereInput
+  data: Prisma.XOR<Prisma.ProviderProfileUpdateWithoutCommissionsInput, Prisma.ProviderProfileUncheckedUpdateWithoutCommissionsInput>
+}
+
+export type ProviderProfileUpdateWithoutCommissionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  averageRating?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  completedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutProviderProfileNestedInput
+  primaryCategory?: Prisma.ServiceCategoryUpdateOneWithoutPrimaryProvidersNestedInput
+  primaryArea?: Prisma.ServiceAreaUpdateOneWithoutPrimaryProvidersNestedInput
+  businessProfile?: Prisma.ProviderBusinessProfileUpdateOneWithoutProviderProfileNestedInput
+  verifications?: Prisma.ProviderVerificationUpdateManyWithoutProviderProfileNestedInput
+  serviceListings?: Prisma.ServiceListingUpdateManyWithoutProviderProfileNestedInput
+  serviceAreas?: Prisma.ProviderServiceAreaUpdateManyWithoutProviderProfileNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutProviderProfileNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutProviderProfileNestedInput
+  invoices?: Prisma.ProviderInvoiceUpdateManyWithoutProviderProfileNestedInput
+}
+
+export type ProviderProfileUncheckedUpdateWithoutCommissionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  primaryCategoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  primaryAreaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  averageRating?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  completedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessProfile?: Prisma.ProviderBusinessProfileUncheckedUpdateOneWithoutProviderProfileNestedInput
+  verifications?: Prisma.ProviderVerificationUncheckedUpdateManyWithoutProviderProfileNestedInput
+  serviceListings?: Prisma.ServiceListingUncheckedUpdateManyWithoutProviderProfileNestedInput
+  serviceAreas?: Prisma.ProviderServiceAreaUncheckedUpdateManyWithoutProviderProfileNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutProviderProfileNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutProviderProfileNestedInput
+  invoices?: Prisma.ProviderInvoiceUncheckedUpdateManyWithoutProviderProfileNestedInput
+}
+
+export type ProviderProfileCreateWithoutInvoicesInput = {
+  id?: string
+  publicId: string
+  contactName: string
+  status?: $Enums.ProviderStatus
+  avatarUrl?: string | null
+  approvedAt?: Date | string | null
+  suspendedAt?: Date | string | null
+  suspensionReason?: string | null
+  averageRating?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  completedJobs?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutProviderProfileInput
+  primaryCategory?: Prisma.ServiceCategoryCreateNestedOneWithoutPrimaryProvidersInput
+  primaryArea?: Prisma.ServiceAreaCreateNestedOneWithoutPrimaryProvidersInput
+  businessProfile?: Prisma.ProviderBusinessProfileCreateNestedOneWithoutProviderProfileInput
+  verifications?: Prisma.ProviderVerificationCreateNestedManyWithoutProviderProfileInput
+  serviceListings?: Prisma.ServiceListingCreateNestedManyWithoutProviderProfileInput
+  serviceAreas?: Prisma.ProviderServiceAreaCreateNestedManyWithoutProviderProfileInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutProviderProfileInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutProviderProfileInput
+  commissions?: Prisma.BookingCommissionCreateNestedManyWithoutProviderProfileInput
+}
+
+export type ProviderProfileUncheckedCreateWithoutInvoicesInput = {
+  id?: string
+  publicId: string
+  userId: string
+  contactName: string
+  status?: $Enums.ProviderStatus
+  avatarUrl?: string | null
+  primaryCategoryId?: string | null
+  primaryAreaId?: string | null
+  approvedAt?: Date | string | null
+  suspendedAt?: Date | string | null
+  suspensionReason?: string | null
+  averageRating?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  completedJobs?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  businessProfile?: Prisma.ProviderBusinessProfileUncheckedCreateNestedOneWithoutProviderProfileInput
+  verifications?: Prisma.ProviderVerificationUncheckedCreateNestedManyWithoutProviderProfileInput
+  serviceListings?: Prisma.ServiceListingUncheckedCreateNestedManyWithoutProviderProfileInput
+  serviceAreas?: Prisma.ProviderServiceAreaUncheckedCreateNestedManyWithoutProviderProfileInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutProviderProfileInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutProviderProfileInput
+  commissions?: Prisma.BookingCommissionUncheckedCreateNestedManyWithoutProviderProfileInput
+}
+
+export type ProviderProfileCreateOrConnectWithoutInvoicesInput = {
+  where: Prisma.ProviderProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProviderProfileCreateWithoutInvoicesInput, Prisma.ProviderProfileUncheckedCreateWithoutInvoicesInput>
+}
+
+export type ProviderProfileUpsertWithoutInvoicesInput = {
+  update: Prisma.XOR<Prisma.ProviderProfileUpdateWithoutInvoicesInput, Prisma.ProviderProfileUncheckedUpdateWithoutInvoicesInput>
+  create: Prisma.XOR<Prisma.ProviderProfileCreateWithoutInvoicesInput, Prisma.ProviderProfileUncheckedCreateWithoutInvoicesInput>
+  where?: Prisma.ProviderProfileWhereInput
+}
+
+export type ProviderProfileUpdateToOneWithWhereWithoutInvoicesInput = {
+  where?: Prisma.ProviderProfileWhereInput
+  data: Prisma.XOR<Prisma.ProviderProfileUpdateWithoutInvoicesInput, Prisma.ProviderProfileUncheckedUpdateWithoutInvoicesInput>
+}
+
+export type ProviderProfileUpdateWithoutInvoicesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  averageRating?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  completedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutProviderProfileNestedInput
+  primaryCategory?: Prisma.ServiceCategoryUpdateOneWithoutPrimaryProvidersNestedInput
+  primaryArea?: Prisma.ServiceAreaUpdateOneWithoutPrimaryProvidersNestedInput
+  businessProfile?: Prisma.ProviderBusinessProfileUpdateOneWithoutProviderProfileNestedInput
+  verifications?: Prisma.ProviderVerificationUpdateManyWithoutProviderProfileNestedInput
+  serviceListings?: Prisma.ServiceListingUpdateManyWithoutProviderProfileNestedInput
+  serviceAreas?: Prisma.ProviderServiceAreaUpdateManyWithoutProviderProfileNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutProviderProfileNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutProviderProfileNestedInput
+  commissions?: Prisma.BookingCommissionUpdateManyWithoutProviderProfileNestedInput
+}
+
+export type ProviderProfileUncheckedUpdateWithoutInvoicesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  primaryCategoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  primaryAreaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  averageRating?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  completedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessProfile?: Prisma.ProviderBusinessProfileUncheckedUpdateOneWithoutProviderProfileNestedInput
+  verifications?: Prisma.ProviderVerificationUncheckedUpdateManyWithoutProviderProfileNestedInput
+  serviceListings?: Prisma.ServiceListingUncheckedUpdateManyWithoutProviderProfileNestedInput
+  serviceAreas?: Prisma.ProviderServiceAreaUncheckedUpdateManyWithoutProviderProfileNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutProviderProfileNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutProviderProfileNestedInput
+  commissions?: Prisma.BookingCommissionUncheckedUpdateManyWithoutProviderProfileNestedInput
 }
 
 export type ProviderProfileCreateManyPrimaryCategoryInput = {
@@ -1822,6 +2160,8 @@ export type ProviderProfileUpdateWithoutPrimaryCategoryInput = {
   serviceAreas?: Prisma.ProviderServiceAreaUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutProviderProfileNestedInput
+  commissions?: Prisma.BookingCommissionUpdateManyWithoutProviderProfileNestedInput
+  invoices?: Prisma.ProviderInvoiceUpdateManyWithoutProviderProfileNestedInput
 }
 
 export type ProviderProfileUncheckedUpdateWithoutPrimaryCategoryInput = {
@@ -1845,6 +2185,8 @@ export type ProviderProfileUncheckedUpdateWithoutPrimaryCategoryInput = {
   serviceAreas?: Prisma.ProviderServiceAreaUncheckedUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutProviderProfileNestedInput
+  commissions?: Prisma.BookingCommissionUncheckedUpdateManyWithoutProviderProfileNestedInput
+  invoices?: Prisma.ProviderInvoiceUncheckedUpdateManyWithoutProviderProfileNestedInput
 }
 
 export type ProviderProfileUncheckedUpdateManyWithoutPrimaryCategoryInput = {
@@ -1902,6 +2244,8 @@ export type ProviderProfileUpdateWithoutPrimaryAreaInput = {
   serviceAreas?: Prisma.ProviderServiceAreaUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutProviderProfileNestedInput
+  commissions?: Prisma.BookingCommissionUpdateManyWithoutProviderProfileNestedInput
+  invoices?: Prisma.ProviderInvoiceUpdateManyWithoutProviderProfileNestedInput
 }
 
 export type ProviderProfileUncheckedUpdateWithoutPrimaryAreaInput = {
@@ -1925,6 +2269,8 @@ export type ProviderProfileUncheckedUpdateWithoutPrimaryAreaInput = {
   serviceAreas?: Prisma.ProviderServiceAreaUncheckedUpdateManyWithoutProviderProfileNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutProviderProfileNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutProviderProfileNestedInput
+  commissions?: Prisma.BookingCommissionUncheckedUpdateManyWithoutProviderProfileNestedInput
+  invoices?: Prisma.ProviderInvoiceUncheckedUpdateManyWithoutProviderProfileNestedInput
 }
 
 export type ProviderProfileUncheckedUpdateManyWithoutPrimaryAreaInput = {
@@ -1955,6 +2301,8 @@ export type ProviderProfileCountOutputType = {
   serviceAreas: number
   bookings: number
   reviews: number
+  commissions: number
+  invoices: number
 }
 
 export type ProviderProfileCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1963,6 +2311,8 @@ export type ProviderProfileCountOutputTypeSelect<ExtArgs extends runtime.Types.E
   serviceAreas?: boolean | ProviderProfileCountOutputTypeCountServiceAreasArgs
   bookings?: boolean | ProviderProfileCountOutputTypeCountBookingsArgs
   reviews?: boolean | ProviderProfileCountOutputTypeCountReviewsArgs
+  commissions?: boolean | ProviderProfileCountOutputTypeCountCommissionsArgs
+  invoices?: boolean | ProviderProfileCountOutputTypeCountInvoicesArgs
 }
 
 /**
@@ -2010,6 +2360,20 @@ export type ProviderProfileCountOutputTypeCountReviewsArgs<ExtArgs extends runti
   where?: Prisma.ReviewWhereInput
 }
 
+/**
+ * ProviderProfileCountOutputType without action
+ */
+export type ProviderProfileCountOutputTypeCountCommissionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BookingCommissionWhereInput
+}
+
+/**
+ * ProviderProfileCountOutputType without action
+ */
+export type ProviderProfileCountOutputTypeCountInvoicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProviderInvoiceWhereInput
+}
+
 
 export type ProviderProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2036,6 +2400,8 @@ export type ProviderProfileSelect<ExtArgs extends runtime.Types.Extensions.Inter
   serviceAreas?: boolean | Prisma.ProviderProfile$serviceAreasArgs<ExtArgs>
   bookings?: boolean | Prisma.ProviderProfile$bookingsArgs<ExtArgs>
   reviews?: boolean | Prisma.ProviderProfile$reviewsArgs<ExtArgs>
+  commissions?: boolean | Prisma.ProviderProfile$commissionsArgs<ExtArgs>
+  invoices?: boolean | Prisma.ProviderProfile$invoicesArgs<ExtArgs>
   _count?: boolean | Prisma.ProviderProfileCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["providerProfile"]>
 
@@ -2110,6 +2476,8 @@ export type ProviderProfileInclude<ExtArgs extends runtime.Types.Extensions.Inte
   serviceAreas?: boolean | Prisma.ProviderProfile$serviceAreasArgs<ExtArgs>
   bookings?: boolean | Prisma.ProviderProfile$bookingsArgs<ExtArgs>
   reviews?: boolean | Prisma.ProviderProfile$reviewsArgs<ExtArgs>
+  commissions?: boolean | Prisma.ProviderProfile$commissionsArgs<ExtArgs>
+  invoices?: boolean | Prisma.ProviderProfile$invoicesArgs<ExtArgs>
   _count?: boolean | Prisma.ProviderProfileCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProviderProfileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2135,6 +2503,8 @@ export type $ProviderProfilePayload<ExtArgs extends runtime.Types.Extensions.Int
     serviceAreas: Prisma.$ProviderServiceAreaPayload<ExtArgs>[]
     bookings: Prisma.$BookingPayload<ExtArgs>[]
     reviews: Prisma.$ReviewPayload<ExtArgs>[]
+    commissions: Prisma.$BookingCommissionPayload<ExtArgs>[]
+    invoices: Prisma.$ProviderInvoicePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2555,6 +2925,8 @@ export interface Prisma__ProviderProfileClient<T, Null = never, ExtArgs extends 
   serviceAreas<T extends Prisma.ProviderProfile$serviceAreasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProviderProfile$serviceAreasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProviderServiceAreaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   bookings<T extends Prisma.ProviderProfile$bookingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProviderProfile$bookingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reviews<T extends Prisma.ProviderProfile$reviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProviderProfile$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  commissions<T extends Prisma.ProviderProfile$commissionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProviderProfile$commissionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookingCommissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  invoices<T extends Prisma.ProviderProfile$invoicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProviderProfile$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProviderInvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3174,6 +3546,54 @@ export type ProviderProfile$reviewsArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.ReviewScalarFieldEnum | Prisma.ReviewScalarFieldEnum[]
+}
+
+/**
+ * ProviderProfile.commissions
+ */
+export type ProviderProfile$commissionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BookingCommission
+   */
+  select?: Prisma.BookingCommissionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BookingCommission
+   */
+  omit?: Prisma.BookingCommissionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BookingCommissionInclude<ExtArgs> | null
+  where?: Prisma.BookingCommissionWhereInput
+  orderBy?: Prisma.BookingCommissionOrderByWithRelationInput | Prisma.BookingCommissionOrderByWithRelationInput[]
+  cursor?: Prisma.BookingCommissionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BookingCommissionScalarFieldEnum | Prisma.BookingCommissionScalarFieldEnum[]
+}
+
+/**
+ * ProviderProfile.invoices
+ */
+export type ProviderProfile$invoicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProviderInvoice
+   */
+  select?: Prisma.ProviderInvoiceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProviderInvoice
+   */
+  omit?: Prisma.ProviderInvoiceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProviderInvoiceInclude<ExtArgs> | null
+  where?: Prisma.ProviderInvoiceWhereInput
+  orderBy?: Prisma.ProviderInvoiceOrderByWithRelationInput | Prisma.ProviderInvoiceOrderByWithRelationInput[]
+  cursor?: Prisma.ProviderInvoiceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProviderInvoiceScalarFieldEnum | Prisma.ProviderInvoiceScalarFieldEnum[]
 }
 
 /**
