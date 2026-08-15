@@ -14,4 +14,6 @@ export const Env = {
     NODE_ENV: getEnv("NODE_ENV", "development"),
     PORT: getEnv("PORT", "8000"),
     FRONTEND_ORIGIN: getEnv("FRONTEND_ORIGIN"),
+    TELEGRAM_BOT_TOKEN: getEnv("TELEGRAM_BOT_TOKEN", ""),
+    TELEGRAM_DEFAULT_CHAT_ID: getEnv("TELEGRAM_DEFAULT_CHAT_ID", ""),
 } as const;

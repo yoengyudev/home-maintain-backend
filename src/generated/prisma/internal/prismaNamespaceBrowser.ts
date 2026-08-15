@@ -59,6 +59,8 @@ export const ModelName = {
   UserPreference: 'UserPreference',
   AccountSession: 'AccountSession',
   FcmToken: 'FcmToken',
+  TelegramAccount: 'TelegramAccount',
+  TelegramLinkToken: 'TelegramLinkToken',
   ServiceCategory: 'ServiceCategory',
   ServiceArea: 'ServiceArea',
   ProviderServiceArea: 'ProviderServiceArea',
@@ -240,6 +242,35 @@ export const FcmTokenScalarFieldEnum = {
 } as const
 
 export type FcmTokenScalarFieldEnum = (typeof FcmTokenScalarFieldEnum)[keyof typeof FcmTokenScalarFieldEnum]
+
+
+export const TelegramAccountScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  userId: 'userId',
+  chatId: 'chatId',
+  username: 'username',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  isConnected: 'isConnected',
+  connectedAt: 'connectedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TelegramAccountScalarFieldEnum = (typeof TelegramAccountScalarFieldEnum)[keyof typeof TelegramAccountScalarFieldEnum]
+
+
+export const TelegramLinkTokenScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  userId: 'userId',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type TelegramLinkTokenScalarFieldEnum = (typeof TelegramLinkTokenScalarFieldEnum)[keyof typeof TelegramLinkTokenScalarFieldEnum]
 
 
 export const ServiceCategoryScalarFieldEnum = {

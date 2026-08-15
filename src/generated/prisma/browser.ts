@@ -58,6 +58,16 @@ export type AccountSession = Prisma.AccountSessionModel
  */
 export type FcmToken = Prisma.FcmTokenModel
 /**
+ * Model TelegramAccount
+ * 
+ */
+export type TelegramAccount = Prisma.TelegramAccountModel
+/**
+ * Model TelegramLinkToken
+ * 
+ */
+export type TelegramLinkToken = Prisma.TelegramLinkTokenModel
+/**
  * Model ServiceCategory
  * 
  */

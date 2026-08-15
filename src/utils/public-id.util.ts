@@ -12,6 +12,7 @@ export async function nextPublicId(
         | "bookingTimelineItem"
         | "review"
         | "notification"
+        | "telegramAccount"
 ): Promise<string> {
     const year = new Date().getFullYear();
     const yearPrefix = `${prefix}-${year}-`;
@@ -48,6 +49,13 @@ export async function nextPublicId(
         lastPublicId = last?.publicId ?? null;
     } else if (model === "review") {
         const last = await prisma.review.findFirst({
+            where: { publicId: { startsWith: yearPrefix } },
+            orderBy: { publicId: "desc" },
+            select: { publicId: true },
+        });
+        lastPublicId = last?.publicId ?? null;
+    } else if (model === "telegramAccount") {
+        const last = await prisma.telegramAccount.findFirst({
             where: { publicId: { startsWith: yearPrefix } },
             orderBy: { publicId: "desc" },
             select: { publicId: true },

@@ -8,6 +8,10 @@ import {
 import { nextPublicId } from "../utils/public-id.util";
 import { sendPushToUserSafe } from "./fcm-push.service";
 import { broadcastRealtimeNotification } from "../websocket/booking-ws";
+import { telegramQueueService } from "./telegram/queue/telegram-queue.service";
+import { TelegramAccountService } from "./telegram/telegram-account.service";
+import { GenericTelegramTemplate } from "./telegram/templates";
+import { Env } from "../config/env.config";
 
 export type NotificationCopy = {
     titleEn: string;
@@ -121,6 +125,38 @@ export class NotificationsHelper {
             // Ignore broadcast failure
         }
 
+        // Automatic Telegram Channel Delivery
+        try {
+            const chatIds = await TelegramAccountService.getConnectedChatIdsForUser(userId);
+            const fullActionUrl = relatedRoute
+                ? relatedRoute.startsWith("http")
+                    ? relatedRoute
+                    : `${Env.FRONTEND_ORIGIN?.split(",")[0] || "http://localhost:3000"}${relatedRoute}`
+                : undefined;
+
+            for (const chatId of chatIds) {
+                const genericMsg = GenericTelegramTemplate.format(
+                    {
+                        titleEn: payload.titleEn,
+                        titleKm: payload.titleKm,
+                        messageEn: payload.messageEn,
+                        messageKm: payload.messageKm,
+                        type: String(type),
+                        relatedModule,
+                        relatedRecordId: payload.relatedRecordId ?? null,
+                        actionUrl: fullActionUrl,
+                    },
+                    "en"
+                );
+                telegramQueueService.enqueueMessage(chatId, genericMsg.text, {
+                    parse_mode: "HTML",
+                    reply_markup: genericMsg.replyMarkup,
+                });
+            }
+        } catch (tgErr) {
+            console.warn("[Notifications] Telegram dispatch warning:", tgErr);
+        }
+
         return notification;
     }
 }
@@ -206,16 +242,17 @@ function scheduleLabel(ctx: BookingCopyCtx) {
 export const BookingNotificationCopy = {
     createdForCustomer(ctx: BookingCopyCtx): NotificationCopy {
         const provider = ctx.providerName?.trim() || "Your provider";
+        const service = ctx.serviceName?.trim() || "your service";
         const when = scheduleLabel(ctx);
         return {
-            titleEn: "Booking pending confirmation",
-            titleKm: "ការកក់កំពុងរង់ចាំការបញ្ជាក់",
+            titleEn: "Booking Placed Successfully",
+            titleKm: "ការកក់ទទួលបានជោគជ័យ",
             messageEn: when
-                ? `${provider} received your booking for ${when}.`
-                : `${provider} received your booking.`,
+                ? `Your booking for ${service} with ${provider} on ${when} has been placed successfully.`
+                : `Your booking for ${service} with ${provider} has been placed successfully.`,
             messageKm: when
-                ? `${provider} បានទទួលការកក់របស់អ្នកសម្រាប់ ${when}។`
-                : `${provider} បានទទួលការកក់របស់អ្នក។`,
+                ? `ការកក់សេវាកម្ម ${service} ជាមួយ ${provider} នៅ ${when} ត្រូវបានដាក់ស្នើដោយជោគជ័យ។`
+                : `ការកក់សេវាកម្ម ${service} ជាមួយ ${provider} ត្រូវបានដាក់ស្នើដោយជោគជ័យ។`,
         };
     },
 

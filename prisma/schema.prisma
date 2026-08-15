@@ -148,6 +148,8 @@ model User {
   preference        UserPreference?
   accountSessions   AccountSession[]
   fcmTokens         FcmToken[]
+  telegramAccounts  TelegramAccount[]
+  telegramLinkTokens TelegramLinkToken[]
   notifications     Notification[]
   supportRequests   SupportRequest[]
 
@@ -300,6 +302,40 @@ model FcmToken {
   @@index([userId])
   @@index([userId, isActive])
   @@map("fcm_tokens")
+}
+
+model TelegramAccount {
+  id           String    @id @default(cuid())
+  publicId     String    @unique
+  userId       String
+  chatId       String    @unique
+  username     String?
+  firstName    String?
+  lastName     String?
+  isConnected  Boolean   @default(true)
+  connectedAt  DateTime  @default(now())
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([chatId])
+  @@index([userId, isConnected])
+  @@map("telegram_accounts")
+}
+
+model TelegramLinkToken {
+  id        String    @id @default(cuid())
+  token     String    @unique
+  userId    String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+  @@map("telegram_link_tokens")
 }
 
 model ServiceCategory {

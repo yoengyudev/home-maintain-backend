@@ -1,12 +1,13 @@
 import "dotenv/config";
-import fs from "fs";
-import path from "path";
-import admin from "firebase-admin";
+import * as fs from "fs";
+import * as path from "path";
+import { initializeApp, cert, getApps, type ServiceAccount } from "firebase-admin/app";
+import { getMessaging, type Messaging } from "firebase-admin/messaging";
 
 let initialized = false;
 let available = false;
 
-function buildCredential(): admin.credential.Credential | null {
+function buildCredential() {
     const raw = process.env.FIREBASE_SERVICE_ACCOUNT_KEY?.trim();
     if (!raw) {
         console.warn(
@@ -16,8 +17,8 @@ function buildCredential(): admin.credential.Credential | null {
     }
 
     try {
-        const parsed = JSON.parse(raw) as admin.ServiceAccount;
-        return admin.credential.cert(parsed);
+        const parsed = JSON.parse(raw) as ServiceAccount;
+        return cert(parsed);
     } catch {
         // Not JSON -> treat as path to service-account file
     }
@@ -25,8 +26,8 @@ function buildCredential(): admin.credential.Credential | null {
     try {
         const keyPath = path.isAbsolute(raw) ? raw : path.resolve(process.cwd(), raw);
         const fileContent = fs.readFileSync(keyPath, "utf8");
-        const serviceAccount = JSON.parse(fileContent) as admin.ServiceAccount;
-        return admin.credential.cert(serviceAccount);
+        const serviceAccount = JSON.parse(fileContent) as ServiceAccount;
+        return cert(serviceAccount);
     } catch (error) {
         console.warn(
             "[FCM] Failed to load Firebase credentials:",
@@ -41,7 +42,7 @@ function ensureInitialized() {
     initialized = true;
 
     try {
-        if (admin.apps.length) {
+        if (getApps().length > 0) {
             available = true;
             return true;
         }
@@ -52,7 +53,7 @@ function ensureInitialized() {
             return false;
         }
 
-        admin.initializeApp({ credential });
+        initializeApp({ credential });
         available = true;
         console.log("[FCM] firebase-admin initialized");
         return true;
@@ -66,9 +67,8 @@ function ensureInitialized() {
     }
 }
 
-export function getFirebaseMessaging() {
+export function getFirebaseMessaging(): Messaging | null {
     if (!ensureInitialized()) return null;
-    return admin.messaging();
+    return getMessaging();
 }
 
-export const firebaseAdmin = admin;

@@ -392,6 +392,8 @@ export const ModelName = {
   UserPreference: 'UserPreference',
   AccountSession: 'AccountSession',
   FcmToken: 'FcmToken',
+  TelegramAccount: 'TelegramAccount',
+  TelegramLinkToken: 'TelegramLinkToken',
   ServiceCategory: 'ServiceCategory',
   ServiceArea: 'ServiceArea',
   ProviderServiceArea: 'ProviderServiceArea',
@@ -433,7 +435,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "adminProfile" | "customerProfile" | "providerProfile" | "providerBusinessProfile" | "userPreference" | "accountSession" | "fcmToken" | "serviceCategory" | "serviceArea" | "providerServiceArea" | "providerVerification" | "providerVerificationDocument" | "providerVerificationChecklistItem" | "providerVerificationDecision" | "providerVerificationTimelineItem" | "serviceListing" | "serviceListingArea" | "serviceModerationHistory" | "customerAddress" | "booking" | "bookingTimelineItem" | "bookingIssue" | "bookingStatusHistory" | "review" | "notification" | "auditLog" | "internalAdminNote" | "faq" | "supportRequest" | "supportPage" | "commissionSetting" | "bookingCommission" | "providerInvoice"
+    modelProps: "user" | "adminProfile" | "customerProfile" | "providerProfile" | "providerBusinessProfile" | "userPreference" | "accountSession" | "fcmToken" | "telegramAccount" | "telegramLinkToken" | "serviceCategory" | "serviceArea" | "providerServiceArea" | "providerVerification" | "providerVerificationDocument" | "providerVerificationChecklistItem" | "providerVerificationDecision" | "providerVerificationTimelineItem" | "serviceListing" | "serviceListingArea" | "serviceModerationHistory" | "customerAddress" | "booking" | "bookingTimelineItem" | "bookingIssue" | "bookingStatusHistory" | "review" | "notification" | "auditLog" | "internalAdminNote" | "faq" | "supportRequest" | "supportPage" | "commissionSetting" | "bookingCommission" | "providerInvoice"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1026,6 +1028,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.FcmTokenCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.FcmTokenCountAggregateOutputType> | number
+        }
+      }
+    }
+    TelegramAccount: {
+      payload: Prisma.$TelegramAccountPayload<ExtArgs>
+      fields: Prisma.TelegramAccountFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TelegramAccountFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAccountPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TelegramAccountFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAccountPayload>
+        }
+        findFirst: {
+          args: Prisma.TelegramAccountFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAccountPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TelegramAccountFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAccountPayload>
+        }
+        findMany: {
+          args: Prisma.TelegramAccountFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAccountPayload>[]
+        }
+        create: {
+          args: Prisma.TelegramAccountCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAccountPayload>
+        }
+        createMany: {
+          args: Prisma.TelegramAccountCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TelegramAccountCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAccountPayload>[]
+        }
+        delete: {
+          args: Prisma.TelegramAccountDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAccountPayload>
+        }
+        update: {
+          args: Prisma.TelegramAccountUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAccountPayload>
+        }
+        deleteMany: {
+          args: Prisma.TelegramAccountDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TelegramAccountUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TelegramAccountUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAccountPayload>[]
+        }
+        upsert: {
+          args: Prisma.TelegramAccountUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAccountPayload>
+        }
+        aggregate: {
+          args: Prisma.TelegramAccountAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTelegramAccount>
+        }
+        groupBy: {
+          args: Prisma.TelegramAccountGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TelegramAccountGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TelegramAccountCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TelegramAccountCountAggregateOutputType> | number
+        }
+      }
+    }
+    TelegramLinkToken: {
+      payload: Prisma.$TelegramLinkTokenPayload<ExtArgs>
+      fields: Prisma.TelegramLinkTokenFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TelegramLinkTokenFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramLinkTokenPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TelegramLinkTokenFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramLinkTokenPayload>
+        }
+        findFirst: {
+          args: Prisma.TelegramLinkTokenFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramLinkTokenPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TelegramLinkTokenFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramLinkTokenPayload>
+        }
+        findMany: {
+          args: Prisma.TelegramLinkTokenFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramLinkTokenPayload>[]
+        }
+        create: {
+          args: Prisma.TelegramLinkTokenCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramLinkTokenPayload>
+        }
+        createMany: {
+          args: Prisma.TelegramLinkTokenCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TelegramLinkTokenCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramLinkTokenPayload>[]
+        }
+        delete: {
+          args: Prisma.TelegramLinkTokenDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramLinkTokenPayload>
+        }
+        update: {
+          args: Prisma.TelegramLinkTokenUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramLinkTokenPayload>
+        }
+        deleteMany: {
+          args: Prisma.TelegramLinkTokenDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TelegramLinkTokenUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TelegramLinkTokenUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramLinkTokenPayload>[]
+        }
+        upsert: {
+          args: Prisma.TelegramLinkTokenUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramLinkTokenPayload>
+        }
+        aggregate: {
+          args: Prisma.TelegramLinkTokenAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTelegramLinkToken>
+        }
+        groupBy: {
+          args: Prisma.TelegramLinkTokenGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TelegramLinkTokenGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TelegramLinkTokenCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TelegramLinkTokenCountAggregateOutputType> | number
         }
       }
     }
@@ -3131,6 +3281,35 @@ export const FcmTokenScalarFieldEnum = {
 export type FcmTokenScalarFieldEnum = (typeof FcmTokenScalarFieldEnum)[keyof typeof FcmTokenScalarFieldEnum]
 
 
+export const TelegramAccountScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  userId: 'userId',
+  chatId: 'chatId',
+  username: 'username',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  isConnected: 'isConnected',
+  connectedAt: 'connectedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TelegramAccountScalarFieldEnum = (typeof TelegramAccountScalarFieldEnum)[keyof typeof TelegramAccountScalarFieldEnum]
+
+
+export const TelegramLinkTokenScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  userId: 'userId',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type TelegramLinkTokenScalarFieldEnum = (typeof TelegramLinkTokenScalarFieldEnum)[keyof typeof TelegramLinkTokenScalarFieldEnum]
+
+
 export const ServiceCategoryScalarFieldEnum = {
   id: 'id',
   publicId: 'publicId',
@@ -4117,6 +4296,8 @@ export type GlobalOmitConfig = {
   userPreference?: Prisma.UserPreferenceOmit
   accountSession?: Prisma.AccountSessionOmit
   fcmToken?: Prisma.FcmTokenOmit
+  telegramAccount?: Prisma.TelegramAccountOmit
+  telegramLinkToken?: Prisma.TelegramLinkTokenOmit
   serviceCategory?: Prisma.ServiceCategoryOmit
   serviceArea?: Prisma.ServiceAreaOmit
   providerServiceArea?: Prisma.ProviderServiceAreaOmit

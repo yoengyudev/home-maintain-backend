@@ -16,6 +16,8 @@ import { logger } from "./utils/logger.util";
 import { getLang } from "./utils/get-lang.util";
 import { t } from "./i18n/translate";
 import { attachBookingWebSocket } from "./websocket/booking-ws";
+import { telegramBotService } from "./services/telegram/telegram-bot.service";
+import { TelegramCommandRouter } from "./services/telegram/telegram-command-router";
 const app = express();
 
 const server = http.createServer(app);
@@ -69,12 +71,17 @@ const startServer = async () => {
 
     attachBookingWebSocket(server);
 
+    if (telegramBotService.isConfigured()) {
+        void telegramBotService.startPolling((update) => TelegramCommandRouter.handleUpdate(update));
+    }
+
     server.listen(Env.PORT, () => {
         logger.info(`Server is running on port ${Env.PORT} in ${Env.NODE_ENV} mode`);
     });
 
     const shutdown = async (signal: string) => {
         logger.info(`${signal} received. Shutting down gracefully...`);
+        telegramBotService.stopPolling();
         server.close(() => {
             logger.info("HTTP server closed.");
             process.exit(0);
