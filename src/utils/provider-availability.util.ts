@@ -22,6 +22,7 @@ type BusinessAvailability = {
     workingHours?: unknown;
     unavailableDates?: Array<Date | string> | null;
     temporarilyPaused?: boolean | null;
+    maxBookingsPerSlot?: number | null;
 };
 
 const DAY_NAMES = [
@@ -159,9 +160,37 @@ export function resolveSchedule(profile: BusinessAvailability | null | undefined
     return { workingDays, hours };
 }
 
+export function matchSlotCount(
+    bookedCounts: Map<string, number> | Record<string, number> | undefined,
+    ymd: string,
+    slot: AvailabilitySlot
+): number {
+    if (!bookedCounts) return 0;
+    const getCount = (k: string) => {
+        if (bookedCounts instanceof Map) return bookedCounts.get(k) ?? 0;
+        return (bookedCounts as Record<string, number>)[k] ?? 0;
+    };
+
+    const keys = [
+        `${ymd}_${slot.id}`,
+        `${ymd}_${slot.label.toLowerCase()}`,
+        `${ymd}_${slot.start}-${slot.end}`,
+        slot.id,
+        slot.label.toLowerCase(),
+        `${slot.start}-${slot.end}`,
+    ];
+
+    for (const key of keys) {
+        const count = getCount(key);
+        if (count > 0) return count;
+    }
+    return 0;
+}
+
 export function evaluateAvailabilityDay(
     profile: BusinessAvailability | null | undefined,
-    ymd: string
+    ymd: string,
+    bookedSlotCounts?: Map<string, number> | Record<string, number>
 ): AvailabilityDay {
     const dayName = weekdayFromYmd(ymd);
     if (profile?.temporarilyPaused) {
@@ -182,23 +211,34 @@ export function evaluateAvailabilityDay(
     }
 
     const ranges = hours[dayName] ?? [];
-    const slots = ranges.length > 0 ? buildSlots(ranges, ymd) : [];
+    const allSlots = ranges.length > 0 ? buildSlots(ranges, ymd) : [];
 
-    if (slots.length === 0) {
+    if (allSlots.length === 0) {
         return { date: ymd, dayName, available: false, reason: "closed", slots: [] };
     }
 
-    return { date: ymd, dayName, available: true, reason: null, slots };
+    const maxCapacity = Math.max(1, profile?.maxBookingsPerSlot ?? 1);
+    const availableSlots = allSlots.filter((slot) => {
+        const count = matchSlotCount(bookedSlotCounts, ymd, slot);
+        return count < maxCapacity;
+    });
+
+    if (availableSlots.length === 0) {
+        return { date: ymd, dayName, available: false, reason: "closed", slots: [] };
+    }
+
+    return { date: ymd, dayName, available: true, reason: null, slots: availableSlots };
 }
 
 export function buildAvailabilityCalendar(
     profile: BusinessAvailability | null | undefined,
-    days = 30
+    days = 30,
+    bookedSlotCounts?: Map<string, number> | Record<string, number>
 ): AvailabilityDay[] {
     const start = addDaysYmd(todayYmdIct(), 1);
     const count = Math.min(60, Math.max(7, days));
     return Array.from({ length: count }, (_, index) =>
-        evaluateAvailabilityDay(profile, addDaysYmd(start, index))
+        evaluateAvailabilityDay(profile, addDaysYmd(start, index), bookedSlotCounts)
     );
 }
 
@@ -210,3 +250,4 @@ export function isSlotOnDay(day: AvailabilityDay, timeSlot: string): boolean {
         return label === token || compact === token.replace(/\s/g, "") || slot.id === timeSlot;
     });
 }
+

@@ -8,6 +8,7 @@ import {
     parsePaginationQuery,
 } from "../../utils/pagination.util";
 import {
+    BookingStatus,
     ServiceModerationStatus,
     ServiceStatus,
 } from "../../generated/prisma/enums";
@@ -263,7 +264,38 @@ export class CustomerServicesService {
         const daysRaw = Number(firstQueryString(query.days) ?? 30);
         const days = Number.isFinite(daysRaw) ? Math.min(Math.max(Math.trunc(daysRaw), 7), 60) : 30;
         const profile = service.providerProfile.businessProfile;
-        const calendar = buildAvailabilityCalendar(profile, days);
+
+        // Fetch active bookings within the availability date range to filter full slots
+        const startYmd = new Date().toISOString().slice(0, 10);
+        const activeBookings = await prisma.booking.findMany({
+            where: {
+                providerProfileId: service.providerProfileId,
+                status: {
+                    in: [BookingStatus.PENDING, BookingStatus.ACCEPTED, BookingStatus.IN_PROGRESS],
+                },
+                scheduledAt: {
+                    gte: new Date(`${startYmd}T00:00:00.000Z`),
+                },
+            },
+            select: {
+                scheduledAt: true,
+                timeSlot: true,
+            },
+        });
+
+        const bookedCounts = new Map<string, number>();
+        for (const b of activeBookings) {
+            const dateYmd = b.scheduledAt.toISOString().slice(0, 10);
+            const slotStr = b.timeSlot?.trim() || "";
+            if (slotStr) {
+                const k1 = `${dateYmd}_${slotStr.toLowerCase()}`;
+                const k2 = `${dateYmd}_${slotStr.toLowerCase().replace(/\s/g, "")}`;
+                bookedCounts.set(k1, (bookedCounts.get(k1) ?? 0) + 1);
+                bookedCounts.set(k2, (bookedCounts.get(k2) ?? 0) + 1);
+            }
+        }
+
+        const calendar = buildAvailabilityCalendar(profile, days, bookedCounts);
         const resolved = resolveSchedule(profile);
 
         return {

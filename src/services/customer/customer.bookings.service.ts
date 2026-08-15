@@ -161,7 +161,8 @@ export class CustomerBookingsService {
             throw new BadRequestException(t("CUSTOMER_PROVIDER_UNAVAILABLE", lang));
         }
 
-        this.assertBookableSchedule(
+        await this.assertBookableSchedule(
+            service.providerProfileId,
             service.providerProfile.businessProfile,
             data.scheduledDate,
             data.timeSlot,
@@ -508,7 +509,8 @@ export class CustomerBookingsService {
             throw new BadRequestException(t("CUSTOMER_PROVIDER_UNAVAILABLE", lang));
         }
 
-        this.assertBookableSchedule(
+        await this.assertBookableSchedule(
+            booking.providerProfileId,
             providerProfile?.businessProfile,
             data.scheduledDate,
             data.timeSlot,
@@ -692,13 +694,15 @@ export class CustomerBookingsService {
         return [];
     }
 
-    private static assertBookableSchedule(
+    private static async assertBookableSchedule(
+        providerProfileId: string | undefined,
         profile:
             | {
                   workingDays?: string[];
                   workingHours?: unknown;
                   unavailableDates?: Date[];
                   temporarilyPaused?: boolean;
+                  maxBookingsPerSlot?: number;
               }
             | null
             | undefined,
@@ -706,7 +710,38 @@ export class CustomerBookingsService {
         timeSlot: string,
         lang: Lang
     ) {
-        const day = evaluateAvailabilityDay(profile, scheduledDate.slice(0, 10));
+        const ymd = scheduledDate.slice(0, 10);
+        const bookedCounts = new Map<string, number>();
+
+        if (providerProfileId) {
+            const activeBookings = await prisma.booking.findMany({
+                where: {
+                    providerProfileId,
+                    status: {
+                        in: [BookingStatus.PENDING, BookingStatus.ACCEPTED, BookingStatus.IN_PROGRESS],
+                    },
+                    scheduledAt: {
+                        gte: new Date(`${ymd}T00:00:00.000Z`),
+                        lt: new Date(`${ymd}T23:59:59.999Z`),
+                    },
+                },
+                select: {
+                    timeSlot: true,
+                },
+            });
+
+            for (const b of activeBookings) {
+                const slotStr = b.timeSlot?.trim() || "";
+                if (slotStr) {
+                    const k1 = `${ymd}_${slotStr.toLowerCase()}`;
+                    const k2 = `${ymd}_${slotStr.toLowerCase().replace(/\s/g, "")}`;
+                    bookedCounts.set(k1, (bookedCounts.get(k1) ?? 0) + 1);
+                    bookedCounts.set(k2, (bookedCounts.get(k2) ?? 0) + 1);
+                }
+            }
+        }
+
+        const day = evaluateAvailabilityDay(profile, ymd, bookedCounts);
         if (!day.available) {
             throw new BadRequestException(
                 day.reason === "paused"

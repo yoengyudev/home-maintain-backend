@@ -29,11 +29,13 @@ export type AggregateProviderBusinessProfile = {
 export type ProviderBusinessProfileAvgAggregateOutputType = {
   latitude: runtime.Decimal | null
   longitude: runtime.Decimal | null
+  maxBookingsPerSlot: number | null
 }
 
 export type ProviderBusinessProfileSumAggregateOutputType = {
   latitude: runtime.Decimal | null
   longitude: runtime.Decimal | null
+  maxBookingsPerSlot: number | null
 }
 
 export type ProviderBusinessProfileMinAggregateOutputType = {
@@ -51,6 +53,7 @@ export type ProviderBusinessProfileMinAggregateOutputType = {
   longitude: runtime.Decimal | null
   detectedAddress: string | null
   temporarilyPaused: boolean | null
+  maxBookingsPerSlot: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -70,6 +73,7 @@ export type ProviderBusinessProfileMaxAggregateOutputType = {
   longitude: runtime.Decimal | null
   detectedAddress: string | null
   temporarilyPaused: boolean | null
+  maxBookingsPerSlot: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -92,6 +96,7 @@ export type ProviderBusinessProfileCountAggregateOutputType = {
   workingHours: number
   unavailableDates: number
   temporarilyPaused: number
+  maxBookingsPerSlot: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -101,11 +106,13 @@ export type ProviderBusinessProfileCountAggregateOutputType = {
 export type ProviderBusinessProfileAvgAggregateInputType = {
   latitude?: true
   longitude?: true
+  maxBookingsPerSlot?: true
 }
 
 export type ProviderBusinessProfileSumAggregateInputType = {
   latitude?: true
   longitude?: true
+  maxBookingsPerSlot?: true
 }
 
 export type ProviderBusinessProfileMinAggregateInputType = {
@@ -123,6 +130,7 @@ export type ProviderBusinessProfileMinAggregateInputType = {
   longitude?: true
   detectedAddress?: true
   temporarilyPaused?: true
+  maxBookingsPerSlot?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -142,6 +150,7 @@ export type ProviderBusinessProfileMaxAggregateInputType = {
   longitude?: true
   detectedAddress?: true
   temporarilyPaused?: true
+  maxBookingsPerSlot?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -164,6 +173,7 @@ export type ProviderBusinessProfileCountAggregateInputType = {
   workingHours?: true
   unavailableDates?: true
   temporarilyPaused?: true
+  maxBookingsPerSlot?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -273,6 +283,7 @@ export type ProviderBusinessProfileGroupByOutputType = {
   workingHours: runtime.JsonValue | null
   unavailableDates: Date[]
   temporarilyPaused: boolean
+  maxBookingsPerSlot: number
   createdAt: Date
   updatedAt: Date
   _count: ProviderBusinessProfileCountAggregateOutputType | null
@@ -318,6 +329,7 @@ export type ProviderBusinessProfileWhereInput = {
   workingHours?: Prisma.JsonNullableFilter<"ProviderBusinessProfile">
   unavailableDates?: Prisma.DateTimeNullableListFilter<"ProviderBusinessProfile">
   temporarilyPaused?: Prisma.BoolFilter<"ProviderBusinessProfile"> | boolean
+  maxBookingsPerSlot?: Prisma.IntFilter<"ProviderBusinessProfile"> | number
   createdAt?: Prisma.DateTimeFilter<"ProviderBusinessProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ProviderBusinessProfile"> | Date | string
   providerProfile?: Prisma.XOR<Prisma.ProviderProfileScalarRelationFilter, Prisma.ProviderProfileWhereInput>
@@ -341,6 +353,7 @@ export type ProviderBusinessProfileOrderByWithRelationInput = {
   workingHours?: Prisma.SortOrderInput | Prisma.SortOrder
   unavailableDates?: Prisma.SortOrder
   temporarilyPaused?: Prisma.SortOrder
+  maxBookingsPerSlot?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   providerProfile?: Prisma.ProviderProfileOrderByWithRelationInput
@@ -367,6 +380,7 @@ export type ProviderBusinessProfileWhereUniqueInput = Prisma.AtLeast<{
   workingHours?: Prisma.JsonNullableFilter<"ProviderBusinessProfile">
   unavailableDates?: Prisma.DateTimeNullableListFilter<"ProviderBusinessProfile">
   temporarilyPaused?: Prisma.BoolFilter<"ProviderBusinessProfile"> | boolean
+  maxBookingsPerSlot?: Prisma.IntFilter<"ProviderBusinessProfile"> | number
   createdAt?: Prisma.DateTimeFilter<"ProviderBusinessProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ProviderBusinessProfile"> | Date | string
   providerProfile?: Prisma.XOR<Prisma.ProviderProfileScalarRelationFilter, Prisma.ProviderProfileWhereInput>
@@ -390,6 +404,7 @@ export type ProviderBusinessProfileOrderByWithAggregationInput = {
   workingHours?: Prisma.SortOrderInput | Prisma.SortOrder
   unavailableDates?: Prisma.SortOrder
   temporarilyPaused?: Prisma.SortOrder
+  maxBookingsPerSlot?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ProviderBusinessProfileCountOrderByAggregateInput
@@ -420,6 +435,7 @@ export type ProviderBusinessProfileScalarWhereWithAggregatesInput = {
   workingHours?: Prisma.JsonNullableWithAggregatesFilter<"ProviderBusinessProfile">
   unavailableDates?: Prisma.DateTimeNullableListFilter<"ProviderBusinessProfile">
   temporarilyPaused?: Prisma.BoolWithAggregatesFilter<"ProviderBusinessProfile"> | boolean
+  maxBookingsPerSlot?: Prisma.IntWithAggregatesFilter<"ProviderBusinessProfile"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ProviderBusinessProfile"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ProviderBusinessProfile"> | Date | string
 }
@@ -441,6 +457,7 @@ export type ProviderBusinessProfileCreateInput = {
   workingHours?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   unavailableDates?: Prisma.ProviderBusinessProfileCreateunavailableDatesInput | Date[] | string[]
   temporarilyPaused?: boolean
+  maxBookingsPerSlot?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   providerProfile: Prisma.ProviderProfileCreateNestedOneWithoutBusinessProfileInput
@@ -464,6 +481,7 @@ export type ProviderBusinessProfileUncheckedCreateInput = {
   workingHours?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   unavailableDates?: Prisma.ProviderBusinessProfileCreateunavailableDatesInput | Date[] | string[]
   temporarilyPaused?: boolean
+  maxBookingsPerSlot?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -485,6 +503,7 @@ export type ProviderBusinessProfileUpdateInput = {
   workingHours?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   unavailableDates?: Prisma.ProviderBusinessProfileUpdateunavailableDatesInput | Date[] | string[]
   temporarilyPaused?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  maxBookingsPerSlot?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   providerProfile?: Prisma.ProviderProfileUpdateOneRequiredWithoutBusinessProfileNestedInput
@@ -508,6 +527,7 @@ export type ProviderBusinessProfileUncheckedUpdateInput = {
   workingHours?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   unavailableDates?: Prisma.ProviderBusinessProfileUpdateunavailableDatesInput | Date[] | string[]
   temporarilyPaused?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  maxBookingsPerSlot?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -530,6 +550,7 @@ export type ProviderBusinessProfileCreateManyInput = {
   workingHours?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   unavailableDates?: Prisma.ProviderBusinessProfileCreateunavailableDatesInput | Date[] | string[]
   temporarilyPaused?: boolean
+  maxBookingsPerSlot?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -551,6 +572,7 @@ export type ProviderBusinessProfileUpdateManyMutationInput = {
   workingHours?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   unavailableDates?: Prisma.ProviderBusinessProfileUpdateunavailableDatesInput | Date[] | string[]
   temporarilyPaused?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  maxBookingsPerSlot?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -573,6 +595,7 @@ export type ProviderBusinessProfileUncheckedUpdateManyInput = {
   workingHours?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   unavailableDates?: Prisma.ProviderBusinessProfileUpdateunavailableDatesInput | Date[] | string[]
   temporarilyPaused?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  maxBookingsPerSlot?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -616,6 +639,7 @@ export type ProviderBusinessProfileCountOrderByAggregateInput = {
   workingHours?: Prisma.SortOrder
   unavailableDates?: Prisma.SortOrder
   temporarilyPaused?: Prisma.SortOrder
+  maxBookingsPerSlot?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -623,6 +647,7 @@ export type ProviderBusinessProfileCountOrderByAggregateInput = {
 export type ProviderBusinessProfileAvgOrderByAggregateInput = {
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
+  maxBookingsPerSlot?: Prisma.SortOrder
 }
 
 export type ProviderBusinessProfileMaxOrderByAggregateInput = {
@@ -640,6 +665,7 @@ export type ProviderBusinessProfileMaxOrderByAggregateInput = {
   longitude?: Prisma.SortOrder
   detectedAddress?: Prisma.SortOrder
   temporarilyPaused?: Prisma.SortOrder
+  maxBookingsPerSlot?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -659,6 +685,7 @@ export type ProviderBusinessProfileMinOrderByAggregateInput = {
   longitude?: Prisma.SortOrder
   detectedAddress?: Prisma.SortOrder
   temporarilyPaused?: Prisma.SortOrder
+  maxBookingsPerSlot?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -666,6 +693,7 @@ export type ProviderBusinessProfileMinOrderByAggregateInput = {
 export type ProviderBusinessProfileSumOrderByAggregateInput = {
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
+  maxBookingsPerSlot?: Prisma.SortOrder
 }
 
 export type ProviderBusinessProfileCreateNestedOneWithoutProviderProfileInput = {
@@ -739,6 +767,7 @@ export type ProviderBusinessProfileCreateWithoutProviderProfileInput = {
   workingHours?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   unavailableDates?: Prisma.ProviderBusinessProfileCreateunavailableDatesInput | Date[] | string[]
   temporarilyPaused?: boolean
+  maxBookingsPerSlot?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -760,6 +789,7 @@ export type ProviderBusinessProfileUncheckedCreateWithoutProviderProfileInput = 
   workingHours?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   unavailableDates?: Prisma.ProviderBusinessProfileCreateunavailableDatesInput | Date[] | string[]
   temporarilyPaused?: boolean
+  maxBookingsPerSlot?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -797,6 +827,7 @@ export type ProviderBusinessProfileUpdateWithoutProviderProfileInput = {
   workingHours?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   unavailableDates?: Prisma.ProviderBusinessProfileUpdateunavailableDatesInput | Date[] | string[]
   temporarilyPaused?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  maxBookingsPerSlot?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -818,6 +849,7 @@ export type ProviderBusinessProfileUncheckedUpdateWithoutProviderProfileInput = 
   workingHours?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   unavailableDates?: Prisma.ProviderBusinessProfileUpdateunavailableDatesInput | Date[] | string[]
   temporarilyPaused?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  maxBookingsPerSlot?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -842,6 +874,7 @@ export type ProviderBusinessProfileSelect<ExtArgs extends runtime.Types.Extensio
   workingHours?: boolean
   unavailableDates?: boolean
   temporarilyPaused?: boolean
+  maxBookingsPerSlot?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   providerProfile?: boolean | Prisma.ProviderProfileDefaultArgs<ExtArgs>
@@ -865,6 +898,7 @@ export type ProviderBusinessProfileSelectCreateManyAndReturn<ExtArgs extends run
   workingHours?: boolean
   unavailableDates?: boolean
   temporarilyPaused?: boolean
+  maxBookingsPerSlot?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   providerProfile?: boolean | Prisma.ProviderProfileDefaultArgs<ExtArgs>
@@ -888,6 +922,7 @@ export type ProviderBusinessProfileSelectUpdateManyAndReturn<ExtArgs extends run
   workingHours?: boolean
   unavailableDates?: boolean
   temporarilyPaused?: boolean
+  maxBookingsPerSlot?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   providerProfile?: boolean | Prisma.ProviderProfileDefaultArgs<ExtArgs>
@@ -911,11 +946,12 @@ export type ProviderBusinessProfileSelectScalar = {
   workingHours?: boolean
   unavailableDates?: boolean
   temporarilyPaused?: boolean
+  maxBookingsPerSlot?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ProviderBusinessProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "providerProfileId" | "businessName" | "providerType" | "description" | "logoUrl" | "addressLine" | "district" | "cityProvince" | "coverageSummary" | "latitude" | "longitude" | "detectedAddress" | "workingDays" | "workingHours" | "unavailableDates" | "temporarilyPaused" | "createdAt" | "updatedAt", ExtArgs["result"]["providerBusinessProfile"]>
+export type ProviderBusinessProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "providerProfileId" | "businessName" | "providerType" | "description" | "logoUrl" | "addressLine" | "district" | "cityProvince" | "coverageSummary" | "latitude" | "longitude" | "detectedAddress" | "workingDays" | "workingHours" | "unavailableDates" | "temporarilyPaused" | "maxBookingsPerSlot" | "createdAt" | "updatedAt", ExtArgs["result"]["providerBusinessProfile"]>
 export type ProviderBusinessProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   providerProfile?: boolean | Prisma.ProviderProfileDefaultArgs<ExtArgs>
 }
@@ -949,6 +985,7 @@ export type $ProviderBusinessProfilePayload<ExtArgs extends runtime.Types.Extens
     workingHours: runtime.JsonValue | null
     unavailableDates: Date[]
     temporarilyPaused: boolean
+    maxBookingsPerSlot: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["providerBusinessProfile"]>
@@ -1392,6 +1429,7 @@ export interface ProviderBusinessProfileFieldRefs {
   readonly workingHours: Prisma.FieldRef<"ProviderBusinessProfile", 'Json'>
   readonly unavailableDates: Prisma.FieldRef<"ProviderBusinessProfile", 'DateTime[]'>
   readonly temporarilyPaused: Prisma.FieldRef<"ProviderBusinessProfile", 'Boolean'>
+  readonly maxBookingsPerSlot: Prisma.FieldRef<"ProviderBusinessProfile", 'Int'>
   readonly createdAt: Prisma.FieldRef<"ProviderBusinessProfile", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ProviderBusinessProfile", 'DateTime'>
 }

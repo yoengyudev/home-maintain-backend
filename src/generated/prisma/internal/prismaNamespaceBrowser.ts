@@ -190,6 +190,7 @@ export const ProviderBusinessProfileScalarFieldEnum = {
   workingHours: 'workingHours',
   unavailableDates: 'unavailableDates',
   temporarilyPaused: 'temporarilyPaused',
+  maxBookingsPerSlot: 'maxBookingsPerSlot',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

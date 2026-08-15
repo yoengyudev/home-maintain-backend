@@ -9,6 +9,7 @@ interface UpdateAvailabilityData {
   workingHours?: Record<string, { start: string; end: string }[]>;
   unavailableDates?: string[];
   temporaryPause?: boolean;
+  maxBookingsPerSlot?: number;
 }
 
 export class VendorAvailabilityService {
@@ -29,7 +30,8 @@ export class VendorAvailabilityService {
         workingDays: [],
         workingHours: {},
         unavailableDates: [],
-        temporaryPause: false
+        temporaryPause: false,
+        maxBookingsPerSlot: 1
       };
     }
 
@@ -39,7 +41,8 @@ export class VendorAvailabilityService {
       workingDays: resolved.workingDays,
       workingHours: resolved.hours,
       unavailableDates: providerProfile.businessProfile.unavailableDates.map((date: Date) => date.toISOString().split('T')[0]),
-      temporaryPause: providerProfile.businessProfile.temporarilyPaused
+      temporaryPause: providerProfile.businessProfile.temporarilyPaused,
+      maxBookingsPerSlot: providerProfile.businessProfile.maxBookingsPerSlot ?? 1
     };
   }
 
@@ -61,6 +64,9 @@ export class VendorAvailabilityService {
       : [];
 
     const workingHoursJson = data.workingHours ?? {};
+    const maxCapacity = data.maxBookingsPerSlot !== undefined
+      ? Math.max(1, Math.trunc(Number(data.maxBookingsPerSlot) || 1))
+      : undefined;
 
     if (providerProfile.businessProfile) {
       // Update existing business profile
@@ -70,7 +76,8 @@ export class VendorAvailabilityService {
           ...(data.workingDays !== undefined && { workingDays: data.workingDays }),
           ...(data.workingHours !== undefined && { workingHours: workingHoursJson }),
           ...(data.unavailableDates !== undefined && { unavailableDates: unavailableDatesAsDates }),
-          ...(data.temporaryPause !== undefined && { temporarilyPaused: data.temporaryPause })
+          ...(data.temporaryPause !== undefined && { temporarilyPaused: data.temporaryPause }),
+          ...(maxCapacity !== undefined && { maxBookingsPerSlot: maxCapacity })
         }
       });
 
@@ -91,7 +98,8 @@ export class VendorAvailabilityService {
         workingDays: updated.workingDays,
         workingHours,
         unavailableDates: updated.unavailableDates.map((date: Date) => date.toISOString().split('T')[0]),
-        temporaryPause: updated.temporarilyPaused
+        temporaryPause: updated.temporarilyPaused,
+        maxBookingsPerSlot: updated.maxBookingsPerSlot ?? 1
       };
     } else {
       // Create new business profile
@@ -102,7 +110,8 @@ export class VendorAvailabilityService {
           workingDays: data.workingDays || [],
           workingHours: workingHoursJson,
           unavailableDates: unavailableDatesAsDates,
-          temporarilyPaused: data.temporaryPause || false
+          temporarilyPaused: data.temporaryPause || false,
+          maxBookingsPerSlot: maxCapacity ?? 1
         }
       });
 
@@ -123,7 +132,8 @@ export class VendorAvailabilityService {
         workingDays: created.workingDays,
         workingHours,
         unavailableDates: created.unavailableDates.map((date: Date) => date.toISOString().split('T')[0]),
-        temporaryPause: created.temporarilyPaused
+        temporaryPause: created.temporarilyPaused,
+        maxBookingsPerSlot: created.maxBookingsPerSlot ?? 1
       };
     }
   }
