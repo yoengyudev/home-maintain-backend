@@ -8,6 +8,7 @@ import {
     parsePaginationQuery,
 } from "../../utils/pagination.util";
 import {
+    BookingStatus,
     ServiceModerationStatus,
     ServiceStatus,
 } from "../../generated/prisma/enums";
@@ -121,6 +122,11 @@ export class CustomerProvidersService {
                             serviceListings: {
                                 where: activeServiceWhere,
                             },
+                            bookings: {
+                                where: {
+                                    status: BookingStatus.COMPLETED,
+                                },
+                            },
                         },
                     },
                 },
@@ -157,6 +163,11 @@ export class CustomerProvidersService {
                     reviews: true,
                     serviceListings: {
                         where: activeServiceWhere,
+                    },
+                    bookings: {
+                        where: {
+                            status: BookingStatus.COMPLETED,
+                        },
                     },
                 },
             },
@@ -262,6 +273,11 @@ export class CustomerProvidersService {
                         serviceListings: {
                             where: activeServiceWhere,
                         },
+                        bookings: {
+                            where: {
+                                status: BookingStatus.COMPLETED,
+                            },
+                        },
                     },
                 },
             },
@@ -312,6 +328,7 @@ export class CustomerProvidersService {
             _count: {
                 reviews: number;
                 serviceListings: number;
+                bookings?: number;
             };
         },
         lang: Lang
@@ -343,7 +360,7 @@ export class CustomerProvidersService {
             location,
             coverageSummary: business?.coverageSummary ?? null,
             averageRating: this.toNumber(provider.averageRating),
-            completedJobs: provider.completedJobs,
+            completedJobs: Math.max(provider.completedJobs ?? 0, provider._count?.bookings ?? 0),
             reviewCount: provider._count.reviews,
             activeServiceCount: provider._count.serviceListings,
             isVerified: true,

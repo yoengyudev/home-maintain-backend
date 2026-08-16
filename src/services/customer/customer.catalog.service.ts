@@ -1,5 +1,5 @@
 import { prisma } from "../../database/prisma.client";
-import { ProviderStatus, ServiceModerationStatus, ServiceStatus } from "../../generated/prisma/enums";
+import { BookingStatus, ProviderStatus, ServiceModerationStatus, ServiceStatus } from "../../generated/prisma/enums";
 
 const normalizePagination = (value: unknown, fallback: number) => {
     const parsed = Number(value);
@@ -527,7 +527,10 @@ export class CustomerCatalogService {
                 location: [item.businessProfile?.cityProvince, item.businessProfile?.district].filter(Boolean).join(", ") || null,
                 coverageSummary: item.businessProfile?.coverageSummary ?? null,
                 averageRating: item.averageRating ? Number(item.averageRating) : null,
-                completedJobs: item.completedJobs,
+                completedJobs: Math.max(
+                    item.completedJobs ?? 0,
+                    item.bookings?.filter((b) => b.status === BookingStatus.COMPLETED).length ?? 0
+                ),
                 reviewCount: item.reviews.length,
                 activeServiceCount: item.serviceListings.length,
                 isVerified: item.status === ProviderStatus.ACTIVE,

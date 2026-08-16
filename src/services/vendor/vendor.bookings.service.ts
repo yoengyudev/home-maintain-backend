@@ -282,6 +282,13 @@ export class VendorBookingsService {
             });
 
             if (options.next === BookingStatus.COMPLETED) {
+                await tx.providerProfile.update({
+                    where: { id: booking.providerProfileId },
+                    data: {
+                        completedJobs: { increment: 1 },
+                    },
+                });
+
                 const existingCommission = await tx.bookingCommission.findUnique({
                     where: { bookingId: booking.id },
                 });
