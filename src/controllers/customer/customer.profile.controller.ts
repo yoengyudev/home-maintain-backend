@@ -48,3 +48,40 @@ export const updateProfile = async (req: Request, res: Response) => {
         data,
     });
 };
+
+export const requestPhoneChangeOtp = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const userId = (req as any).user?.userId;
+    const data = await CustomerProfileService.requestPhoneChangeOtp(userId, req.body, lang);
+
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: "Verification code sent successfully",
+        data,
+    });
+};
+
+export const resendPhoneChangeOtp = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const userId = (req as any).user?.userId;
+    const data = await CustomerProfileService.resendPhoneChangeOtp(userId, req.body, lang);
+
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: "Verification code resent successfully",
+        data,
+    });
+};
+
+export const verifyPhoneChangeOtp = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const userId = (req as any).user?.userId;
+    const data = await CustomerProfileService.verifyPhoneChangeOtp(userId, req.body, lang);
+
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: "Phone number updated successfully",
+        data,
+    });
+};
+

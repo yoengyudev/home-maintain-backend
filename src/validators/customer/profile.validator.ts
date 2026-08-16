@@ -24,3 +24,17 @@ export const customerUpdateProfileSchema = z.object({
     /** When true and no new avatar file is uploaded, removes the current avatar. */
     removeAvatar: optionalBooleanFromMultipart,
 });
+
+export const customerRequestPhoneChangeOtpSchema = z.object({
+    phone: z.string().refine(validateCambodiaPhone, "Invalid Cambodia phone number"),
+});
+
+export const customerResendPhoneChangeOtpSchema = z.object({
+    phone: z.string().refine(validateCambodiaPhone, "Invalid Cambodia phone number"),
+});
+
+export const customerVerifyPhoneChangeOtpSchema = z.object({
+    phone: z.string().refine(validateCambodiaPhone, "Invalid Cambodia phone number"),
+    otp: z.string().length(6, "OTP must be exactly 6 digits"),
+});
+

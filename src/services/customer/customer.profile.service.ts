@@ -4,6 +4,7 @@ import { isCustomerRole } from "../../helper/check-role.helper";
 import { formatCustomerAuthUser } from "../../helper/customer/auth.helper";
 import type { Lang } from "../../i18n/messages";
 import { t } from "../../i18n/translate";
+import { OtpService } from "../otp/otp.service";
 import {
     BadRequestException,
     InternalServerException,
@@ -151,6 +152,89 @@ export class CustomerProfileService {
 
         return this.formatProfile(updatedUser);
     }
+
+    static async requestPhoneChangeOtp(userId: string, data: { phone: string }, lang: Lang) {
+        const user = await this.findCustomerOrThrow(userId, lang);
+        const { phone } = data;
+
+        if (user.phone === phone) {
+            throw new BadRequestException(t("CUSTOMER_PHONE_OR_EMAIL_EXISTS", lang));
+        }
+
+        const existingPhone = await prisma.user.findFirst({
+            where: {
+                phone,
+                NOT: { id: userId },
+            },
+        });
+
+        if (existingPhone) {
+            throw new BadRequestException(t("CUSTOMER_PHONE_OR_EMAIL_EXISTS", lang));
+        }
+
+        const otpResult = await OtpService.createAndSend<{
+            userId: string;
+            newPhone: string;
+        }>({
+            phone,
+            purpose: "CUSTOMER_CHANGE_PHONE",
+            payload: {
+                userId,
+                newPhone: phone,
+            },
+        });
+
+        return otpResult;
+    }
+
+    static async resendPhoneChangeOtp(userId: string, data: { phone: string }, lang: Lang) {
+        await this.findCustomerOrThrow(userId, lang);
+        return OtpService.resend(data.phone, "CUSTOMER_CHANGE_PHONE", lang);
+    }
+
+    static async verifyPhoneChangeOtp(
+        userId: string,
+        data: { phone: string; otp: string },
+        lang: Lang
+    ) {
+        const user = await this.findCustomerOrThrow(userId, lang);
+        const { phone, otp } = data;
+
+        const pending = OtpService.consume<{
+            userId: string;
+            newPhone: string;
+        }>(phone, "CUSTOMER_CHANGE_PHONE", otp, lang);
+
+        if (pending.userId !== userId || pending.newPhone !== phone) {
+            throw new BadRequestException(t("CUSTOMER_INVALID_CREDENTIALS", lang));
+        }
+
+        const existingPhone = await prisma.user.findFirst({
+            where: {
+                phone,
+                NOT: { id: userId },
+            },
+        });
+
+        if (existingPhone) {
+            throw new BadRequestException(t("CUSTOMER_PHONE_OR_EMAIL_EXISTS", lang));
+        }
+
+        const updatedUser = await prisma.user.update({
+            where: { id: userId },
+            data: {
+                phone,
+                phoneVerifiedAt: new Date(),
+            },
+            include: {
+                customerProfile: true,
+                preference: true,
+            },
+        });
+
+        return this.formatProfile(updatedUser);
+    }
+
 
     private static async uploadAvatar(fileBuffer: Buffer, lang: Lang) {
         try {
