@@ -37,17 +37,46 @@ const allowedOrigins = (Env.FRONTEND_ORIGIN || "")
     .map((origin) => origin.trim())
     .filter(Boolean);
 
+function isOriginAllowed(origin: string | undefined): boolean {
+    if (!origin) return true; // non-browser requests (curl, mobile apps, Postman)
+
+    if (allowedOrigins.includes(origin) || allowedOrigins.includes("*")) {
+        return true;
+    }
+
+    // Automatically allow any localhost, 127.0.0.1, or local LAN IP on any port
+    const isLocalOrLanOrigin =
+        /^https?:\/\/(localhost|127\.0\.0\.1|0\.0\.0\.0)(:\d+)?$/.test(origin) ||
+        /^https?:\/\/(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+)(:\d+)?$/.test(origin);
+
+    if (Env.NODE_ENV !== "production" || isLocalOrLanOrigin) {
+        return true;
+    }
+
+    return false;
+}
+
 app.use(
     cors({
         origin(origin, callback) {
-            // Allow non-browser tools (no Origin), empty allow-list, and configured origins.
-            if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+            if (isOriginAllowed(origin)) {
                 callback(null, true);
                 return;
             }
-            callback(new Error(`CORS blocked for origin: ${origin}`));
+            callback(null, false);
         },
         credentials: true,
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allowedHeaders: [
+            "Content-Type",
+            "Authorization",
+            "Accept-Language",
+            "x-device-token",
+            "x-requested-with",
+            "baggage",
+            "sentry-trace",
+        ],
+        optionsSuccessStatus: 204,
     })
 );
 

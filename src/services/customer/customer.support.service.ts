@@ -85,9 +85,14 @@ export class CustomerSupportService {
                 lang === "kh"
                     ? String(raw.hoursKm || CUSTOMER_CONTACT_DEFAULT.hoursKm)
                     : String(raw.hoursEn || CUSTOMER_CONTACT_DEFAULT.hoursEn),
-        } satisfies ContactContent & {
+        } satisfies {
             publicId: string;
             pageKey: typeof SupportPageKey.CUSTOMER_CONTACT;
+            telegramHandle: string;
+            telegramUrl: string;
+            phone: string;
+            phoneDisplay: string;
+            email: string;
             hours: string;
         };
     }

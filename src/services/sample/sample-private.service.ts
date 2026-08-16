@@ -33,8 +33,8 @@ const firstQueryString = (value: unknown): string | undefined => {
  * Always excludes soft-deleted rows and optionally applies
  * case-insensitive search on `name` using `search` or `q`.
  */
-const buildSampleWhere = (req: Request): Prisma.SampleWhereInput => {
-    const where: Prisma.SampleWhereInput = {
+const buildSampleWhere = (req: Request): any => {
+    const where: any = {
         deletedAt: null,
     };
 
@@ -133,13 +133,13 @@ export const getSamplesService = async (req: Request) => {
     // get samples
 
     const [samples, total] = await Promise.all([
-        prisma.sample.findMany({
+        (prisma as any).sample.findMany({
             where,
             skip,
             take,
             orderBy: { createdAt: "desc" },
         }),
-        prisma.sample.count({ where }),
+        (prisma as any).sample.count({ where }),
     ]);
 
     return {
@@ -166,7 +166,7 @@ export const getSampleByIdService = async (req: Request) => {
     // get sample id
     const id = getSampleIdOrThrow(req, lang);
     // get sample
-    const sample = await prisma.sample.findFirst({
+    const sample = await (prisma as any).sample.findFirst({
         where: {
             id,
             deletedAt: null,
@@ -219,7 +219,7 @@ export const createSampleService = async (req: Request) => {
         throw new BadRequestException(t("SAMPLE_IMAGE_REQUIRED", lang));
     }
 
-    return prisma.sample.create({
+    return (prisma as any).sample.create({
         data: {
             name,
             image,
@@ -243,7 +243,7 @@ export const updateSampleService = async (req: Request) => {
     });
 
     const id = getSampleIdOrThrow(req, lang);
-    const existing = await prisma.sample.findFirst({
+    const existing = await (prisma as any).sample.findFirst({
         where: {
             id,
             deletedAt: null,
@@ -259,7 +259,7 @@ export const updateSampleService = async (req: Request) => {
     };
     const imageFile = getSampleImageFile(req);
 
-    const data: Prisma.SampleUpdateInput = {};
+    const data: any = {};
     if (body.name !== undefined) {
         const name = String(body.name).trim();
         if (!name) {
@@ -287,7 +287,7 @@ export const updateSampleService = async (req: Request) => {
         throw new BadRequestException(t("SAMPLE_NO_UPDATABLE_FIELDS", lang));
     }
 
-    const updated = await prisma.sample.update({
+    const updated = await (prisma as any).sample.update({
         where: { id },
         data,
     });
@@ -314,7 +314,7 @@ export const deleteSampleService = async (req: Request) => {
     });
 
     const id = getSampleIdOrThrow(req, lang);
-    const existing = await prisma.sample.findFirst({
+    const existing = await (prisma as any).sample.findFirst({
         where: {
             id,
             deletedAt: null,
@@ -324,7 +324,7 @@ export const deleteSampleService = async (req: Request) => {
         throw new NotFoundException(t("SAMPLE_NOT_FOUND", lang));
     }
 
-    const deleted = await prisma.sample.update({
+    const deleted = await (prisma as any).sample.update({
         where: { id },
         data: {
             deletedAt: new Date(),

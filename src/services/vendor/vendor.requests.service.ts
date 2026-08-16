@@ -380,6 +380,7 @@ export class VendorVerificationService {
 
         // Update documents if provided
         if (data.documents && data.documents.length > 0) {
+            const documentsToCreate = data.documents;
             await prisma.$transaction(async (tx) => {
                 // Delete existing documents
                 await tx.providerVerificationDocument.deleteMany({
@@ -388,7 +389,7 @@ export class VendorVerificationService {
 
                 // Create new documents
                 await tx.providerVerificationDocument.createMany({
-                    data: data.documents.map(doc => ({
+                    data: documentsToCreate.map(doc => ({
                         publicId: crypto.randomUUID(),
                         providerVerificationId: verification.id,
                         documentType: doc.documentType,

@@ -31,8 +31,8 @@ const firstQueryString = (value: unknown): string | undefined => {
  * Always excludes soft-deleted rows and optionally applies
  * case-insensitive search on `name` using `search` or `q`.
  */
-const buildSampleWhere = (req: Request): Prisma.SampleWhereInput => {
-    const where: Prisma.SampleWhereInput = {
+const buildSampleWhere = (req: Request): any => {
+    const where: any = {
         deletedAt: null,
     };
 
@@ -68,13 +68,13 @@ export const getSamplesPublicService = async (req: Request) => {
     const where = buildSampleWhere(req);
 
     const [samples, total] = await Promise.all([
-        prisma.sample.findMany({
+        (prisma as any).sample.findMany({
             where,
             skip,
             take,
             orderBy: { createdAt: "desc" },
         }),
-        prisma.sample.count({ where }),
+        (prisma as any).sample.count({ where }),
     ]);
 
     return {
@@ -92,7 +92,7 @@ export const getSampleByIdPublicService = async (req: Request) => {
     const lang = getLang(req);
     const id = getSampleIdOrThrow(req, lang);
 
-    const sample = await prisma.sample.findFirst({
+    const sample = await (prisma as any).sample.findFirst({
         where: {
             id,
             deletedAt: null,
