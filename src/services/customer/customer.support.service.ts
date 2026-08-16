@@ -68,32 +68,68 @@ export class CustomerSupportService {
             ? asRecord(lang === "kh" ? page.contentKm : page.contentEn)
             : CUSTOMER_CONTACT_DEFAULT;
 
-        const phone = String(raw.phone || CUSTOMER_CONTACT_DEFAULT.phone).trim();
+        const rawEn = (page ? asRecord(page.contentEn) : CUSTOMER_CONTACT_DEFAULT) as Record<string, any>;
+        const rawKm = (page ? asRecord(page.contentKm) : CUSTOMER_CONTACT_DEFAULT) as Record<string, any>;
+
+        const phone = String(raw.phone || rawEn.phone || CUSTOMER_CONTACT_DEFAULT.phone).trim();
         const phoneDisplay = String(
-            raw.phoneDisplay || raw.phone || CUSTOMER_CONTACT_DEFAULT.phoneDisplay
+            raw.phoneDisplay || rawEn.phoneDisplay || raw.phone || rawEn.phone || CUSTOMER_CONTACT_DEFAULT.phoneDisplay
+        ).trim();
+
+        const address =
+            lang === "kh"
+                ? String(
+                      rawKm.addressKm ||
+                          rawKm.address ||
+                          rawEn.addressEn ||
+                          rawEn.address ||
+                          CUSTOMER_CONTACT_DEFAULT.addressKm
+                  )
+                : String(
+                      rawEn.addressEn ||
+                          rawEn.address ||
+                          rawKm.addressKm ||
+                          rawKm.address ||
+                          CUSTOMER_CONTACT_DEFAULT.addressEn
+                  );
+
+        const companyName = String(
+            raw.companyName || rawEn.companyName || rawKm.companyName || CUSTOMER_CONTACT_DEFAULT.companyName
         ).trim();
 
         return {
             publicId: page?.publicId || "customer-contact-default",
             pageKey: SupportPageKey.CUSTOMER_CONTACT,
-            telegramHandle: String(raw.telegramHandle || CUSTOMER_CONTACT_DEFAULT.telegramHandle),
-            telegramUrl: String(raw.telegramUrl || CUSTOMER_CONTACT_DEFAULT.telegramUrl),
+            companyName,
+            address,
+            addressEn: String(rawEn.addressEn || rawEn.address || CUSTOMER_CONTACT_DEFAULT.addressEn),
+            addressKm: String(rawKm.addressKm || rawKm.address || CUSTOMER_CONTACT_DEFAULT.addressKm),
+            telegramHandle: String(raw.telegramHandle || rawEn.telegramHandle || CUSTOMER_CONTACT_DEFAULT.telegramHandle),
+            telegramUrl: String(raw.telegramUrl || rawEn.telegramUrl || CUSTOMER_CONTACT_DEFAULT.telegramUrl),
             phone,
             phoneDisplay,
-            email: String(raw.email || CUSTOMER_CONTACT_DEFAULT.email),
+            email: String(raw.email || rawEn.email || CUSTOMER_CONTACT_DEFAULT.email),
             hours:
                 lang === "kh"
-                    ? String(raw.hoursKm || CUSTOMER_CONTACT_DEFAULT.hoursKm)
-                    : String(raw.hoursEn || CUSTOMER_CONTACT_DEFAULT.hoursEn),
+                    ? String(rawKm.hoursKm || raw.hoursKm || CUSTOMER_CONTACT_DEFAULT.hoursKm)
+                    : String(rawEn.hoursEn || raw.hoursEn || CUSTOMER_CONTACT_DEFAULT.hoursEn),
+            hoursEn: String(rawEn.hoursEn || CUSTOMER_CONTACT_DEFAULT.hoursEn),
+            hoursKm: String(rawKm.hoursKm || CUSTOMER_CONTACT_DEFAULT.hoursKm),
         } satisfies {
             publicId: string;
             pageKey: typeof SupportPageKey.CUSTOMER_CONTACT;
+            companyName: string;
+            address: string;
+            addressEn: string;
+            addressKm: string;
             telegramHandle: string;
             telegramUrl: string;
             phone: string;
             phoneDisplay: string;
             email: string;
             hours: string;
+            hoursEn: string;
+            hoursKm: string;
         };
     }
 

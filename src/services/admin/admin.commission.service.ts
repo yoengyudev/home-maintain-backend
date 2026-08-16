@@ -563,27 +563,62 @@ export class AdminCommissionService {
             purpose: `FixItHome Invoice ${invoice.invoiceNumber}`,
         });
 
-        // Fetch Platform Admin profile for company details
-        const adminProfile = await prisma.adminProfile.findFirst({
-            include: { user: true },
-            orderBy: { updatedAt: "desc" },
-        });
+        // Fetch Support Contact for company details & Telegram QR
+        const supportPage =
+            (await prisma.supportPage.findFirst({
+                where: {
+                    pageKey: SupportPageKey.PROVIDER_CONTACT,
+                    isActive: true,
+                },
+            })) ||
+            (await prisma.supportPage.findFirst({
+                where: {
+                    pageKey: SupportPageKey.CUSTOMER_CONTACT,
+                    isActive: true,
+                },
+            }));
+
+        const contactEn = (supportPage?.contentEn || {}) as Record<string, any>;
+        const contactKm = (supportPage?.contentKm || {}) as Record<string, any>;
+
+        const companyAddress =
+            lang === "kh" || (lang as string) === "km"
+                ? String(
+                      contactKm.addressKm ||
+                          contactKm.address ||
+                          contactEn.addressEn ||
+                          contactEn.address ||
+                          "រាជធានីភ្នំពេញ កម្ពុជា"
+                  )
+                : String(
+                      contactEn.addressEn ||
+                          contactEn.address ||
+                          contactKm.addressKm ||
+                          contactKm.address ||
+                          "Phnom Penh, Cambodia"
+                  );
 
         const companyInfo = {
-            name: adminProfile?.fullName || "FixItHome",
-            companyName: adminProfile?.jobTitle || "FixItHome Technologies Co., Ltd.",
-            email: adminProfile?.user?.email || "info.gtwotech@gmail.com",
-            phone: adminProfile?.user?.phone || "+855 14 277 299",
-            address: "Phnom Penh, Cambodia",
+            name: "FixItHome",
+            companyName: String(
+                contactEn.companyName ||
+                    contactKm.companyName ||
+                    "FixItHome Technologies Co., Ltd."
+            ),
+            email: String(
+                contactEn.email ||
+                    contactKm.email ||
+                    "info.gtwotech@gmail.com"
+            ),
+            phone: String(
+                contactEn.phoneDisplay ||
+                    contactEn.phone ||
+                    contactKm.phoneDisplay ||
+                    contactKm.phone ||
+                    "014-277-299"
+            ),
+            address: companyAddress,
         };
-
-        // Fetch Support Contact for Telegram QR
-        const supportPage = await prisma.supportPage.findFirst({
-            where: {
-                pageKey: SupportPageKey.PROVIDER_CONTACT,
-                isActive: true,
-            },
-        });
 
         const contactRaw = (supportPage?.contentEn || supportPage?.contentKm) as any;
         let telegramHandle = String(contactRaw?.telegramHandle || "").trim().replace(/^@/, '');
