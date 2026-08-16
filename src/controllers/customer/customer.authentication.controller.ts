@@ -93,6 +93,60 @@ export const login = async (req: Request, res: Response) => {
     });
 };
 
+export const loginWithGoogle = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const data = await CustomerAuthenticationService.loginWithGoogle(req.body, lang);
+
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: t("CUSTOMER_LOGGED_IN_SUCCESSFULLY", lang),
+        data,
+    });
+};
+
+export const loginWithTelegramWidget = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const data = await CustomerAuthenticationService.loginWithTelegramWidget(req.body, lang);
+
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: t("CUSTOMER_LOGGED_IN_SUCCESSFULLY", lang),
+        data,
+    });
+};
+
+export const initTelegramAuth = async (req: Request, res: Response) => {
+    const { TelegramAuthService } = await import("../../services/telegram/telegram-auth.service");
+    const data = await TelegramAuthService.initSession();
+
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: "Telegram auth session initialized",
+        data,
+    });
+};
+
+export const checkTelegramAuth = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const { TelegramAuthService } = await import("../../services/telegram/telegram-auth.service");
+    const token = req.query.token as string || req.body?.token;
+    const fcmToken = req.query.fcmToken as string || req.body?.fcmToken;
+    const platform = req.query.platform as any || req.body?.platform;
+    const deviceName = req.query.deviceName as string || req.body?.deviceName;
+
+    const data = await TelegramAuthService.checkSession(
+        token,
+        { fcmToken, platform, deviceName },
+        lang
+    );
+
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: data.status === "AUTHENTICATED" ? t("CUSTOMER_LOGGED_IN_SUCCESSFULLY", lang) : "Auth status retrieved",
+        data,
+    });
+};
+
 export const logout = async (req: Request, res: Response) => {
     const lang = getLang(req);
     const user = (req as any).user;

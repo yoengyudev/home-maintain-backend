@@ -83,3 +83,39 @@ export const customerChangePasswordSchema = z
         message: "New password must be different from current password",
         path: ["newPassword"],
     });
+
+export const customerGoogleAuthSchema = z.object({
+    idToken: z.string().min(1, "Google ID token is required"),
+    fcmToken: z.string().optional(),
+    platform: devicePlatformSchema,
+    deviceName: z.string().optional(),
+});
+
+export const customerTelegramAuthInitSchema = z.object({
+    fcmToken: z.string().optional(),
+    platform: devicePlatformSchema,
+    deviceName: z.string().optional(),
+});
+
+export const customerTelegramAuthCheckSchema = z.object({
+    token: z.string().min(1, "Session token is required"),
+    fcmToken: z.string().optional(),
+    platform: devicePlatformSchema,
+    deviceName: z.string().optional(),
+});
+
+export const customerTelegramWidgetAuthSchema = z.object({
+    id: z.union([z.string(), z.number()]),
+    first_name: z.string().min(1, "first_name is required"),
+    last_name: z.string().optional().nullable(),
+    username: z.string().optional().nullable(),
+    photo_url: z.string().optional().nullable(),
+    auth_date: z.union([z.string(), z.number()]),
+    hash: z.string().min(1, "hash is required"),
+    phone_number: z.string().optional().nullable(),
+    fcmToken: z.string().optional(),
+    platform: devicePlatformSchema,
+    deviceName: z.string().optional(),
+});
+
+

@@ -134,6 +134,7 @@ model User {
   publicId          String          @unique
   email             String          @unique
   phone             String?         @unique
+  googleId          String?         @unique
   passwordHash      String?
   role              UserRole
   accountStatus     AccountStatus   @default(ACTIVE)
@@ -154,6 +155,7 @@ model User {
   supportRequests   SupportRequest[]
 
   @@index([email])
+  @@index([googleId])
   @@index([role])
   @@index([accountStatus])
   @@map("users")
@@ -885,5 +887,24 @@ model ProviderInvoice {
   @@index([status])
   @@index([invoiceNumber])
   @@map("provider_invoices")
+}
+
+model TelegramAuthSession {
+  id          String   @id @default(cuid())
+  token       String   @unique
+  status      String   @default("PENDING") // PENDING, CONFIRMED, CONSUMED, EXPIRED
+  chatId      String?
+  username    String?
+  firstName   String?
+  lastName    String?
+  photoUrl    String?
+  userId      String?
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([token])
+  @@index([chatId])
+  @@map("telegram_auth_sessions")
 }
 

@@ -1,8 +1,10 @@
 import crypto from "crypto";
+import { OAuth2Client } from "google-auth-library";
 import { prisma } from "../../database/prisma.client";
 import { hashPassword } from "../../utils/password.util";
 import { verifyPassword } from "../../utils/verify-password.util";
 import { signCustomerAccessToken, signCustomerRefreshToken } from "../../utils/jwt.util";
+import { Env } from "../../config/env.config";
 import type { z } from "zod";
 import type {
     customerRegisterSchema,
@@ -14,6 +16,7 @@ import type {
     customerResendForgotPasswordOtpSchema,
     customerResetPasswordSchema,
     customerChangePasswordSchema,
+    customerGoogleAuthSchema,
 } from "../../validators/customer/auth.validator";
 import { AccountStatus, DevicePlatform, UserRole } from "../../generated/prisma/enums";
 import { isCustomerRole } from "../../helper/check-role.helper";
@@ -28,6 +31,8 @@ import { OtpService } from "../otp/otp.service";
 import type { Lang } from "../../i18n/messages";
 import { t } from "../../i18n/translate";
 import { BadRequestException, NotFoundException, UnauthorizedException } from "../../utils/app-error.util";
+
+type GoogleAuthDto = z.infer<typeof customerGoogleAuthSchema>;
 
 type RegisterDto = z.infer<typeof customerRegisterSchema>;
 type LoginDto = z.infer<typeof customerLoginSchema>;
@@ -218,6 +223,338 @@ export class CustomerAuthenticationService {
             platform,
             deviceName,
         });
+
+        await prisma.user.update({
+            where: { id: user.id },
+            data: { lastSignedInAt: new Date() },
+        });
+
+        return {
+            user: formatCustomerAuthUser(user),
+            accessToken,
+            refreshToken,
+        };
+    }
+
+    static async loginWithGoogle(data: GoogleAuthDto, lang: Lang) {
+        const { idToken, fcmToken, platform, deviceName } = data;
+
+        const googleClient = new OAuth2Client(Env.GOOGLE_CLIENT_ID);
+        let googlePayload: any = null;
+
+        try {
+            const ticket = await googleClient.verifyIdToken({
+                idToken,
+                audience: Env.GOOGLE_CLIENT_ID,
+            });
+            googlePayload = ticket.getPayload();
+        } catch (err) {
+            throw new UnauthorizedException(t("CUSTOMER_INVALID_CREDENTIALS", lang));
+        }
+
+        if (!googlePayload || !googlePayload.sub) {
+            throw new UnauthorizedException(t("CUSTOMER_INVALID_CREDENTIALS", lang));
+        }
+
+        const googleId = googlePayload.sub;
+        const email = (googlePayload.email || "").toLowerCase().trim();
+        const fullName = googlePayload.name || "Google User";
+        const avatarUrl = googlePayload.picture || null;
+
+        if (!email) {
+            throw new BadRequestException("Google account must provide an email address.");
+        }
+
+        // 1. Find user by googleId or email
+        let user = await prisma.user.findFirst({
+            where: {
+                OR: [{ googleId }, { email }],
+            },
+            include: {
+                customerProfile: true,
+            },
+        });
+
+        if (!user) {
+            // Register new Customer with Google
+            user = await prisma.$transaction(async (tx) => {
+                return tx.user.create({
+                    data: {
+                        email,
+                        googleId,
+                        role: UserRole.CUSTOMER,
+                        accountStatus: AccountStatus.ACTIVE,
+                        publicId: crypto.randomUUID(),
+                        emailVerifiedAt: new Date(),
+                        customerProfile: {
+                            create: {
+                                publicId: crypto.randomUUID(),
+                                fullName,
+                                avatarUrl,
+                            },
+                        },
+                    },
+                    include: {
+                        customerProfile: true,
+                    },
+                });
+            });
+        } else {
+            // Check role and status
+            if (!isCustomerRole(user.role)) {
+                throw new UnauthorizedException(t("CUSTOMER_INVALID_CREDENTIALS", lang));
+            }
+            if (user.accountStatus !== AccountStatus.ACTIVE) {
+                throw new UnauthorizedException(t("CUSTOMER_ACCOUNT_DISABLED", lang));
+            }
+
+            // Link googleId if missing or update profile avatar if empty
+            const updates: any = {};
+            if (!user.googleId) {
+                updates.googleId = googleId;
+            }
+            if (!user.emailVerifiedAt) {
+                updates.emailVerifiedAt = new Date();
+            }
+
+            if (Object.keys(updates).length > 0) {
+                user = await prisma.user.update({
+                    where: { id: user.id },
+                    data: updates,
+                    include: { customerProfile: true },
+                });
+            }
+
+            if (avatarUrl && user.customerProfile && !user.customerProfile.avatarUrl) {
+                await prisma.customerProfile.update({
+                    where: { id: user.customerProfile.id },
+                    data: { avatarUrl },
+                });
+            }
+        }
+
+        const sessionId = crypto.randomUUID();
+        const tokenPayload = {
+            userId: user.id,
+            role: user.role,
+            sid: sessionId,
+        };
+
+        const accessToken = signCustomerAccessToken(tokenPayload);
+        const refreshToken = signCustomerRefreshToken(tokenPayload);
+
+        await createCustomerSession({
+            userId: user.id,
+            sessionId,
+            refreshToken,
+        });
+
+        if (fcmToken) {
+            await upsertFcmToken({
+                userId: user.id,
+                token: fcmToken,
+                platform,
+                deviceName,
+            });
+        }
+
+        await prisma.user.update({
+            where: { id: user.id },
+            data: { lastSignedInAt: new Date() },
+        });
+
+        return {
+            user: formatCustomerAuthUser(user),
+            accessToken,
+            refreshToken,
+        };
+    }
+
+    static async loginWithTelegramWidget(data: any, lang: Lang) {
+        const botToken = Env.TELEGRAM_BOT_TOKEN;
+        if (!botToken) {
+            throw new BadRequestException("Telegram bot is not configured on server.");
+        }
+
+        const { hash, fcmToken, platform, deviceName, phone_number, ...telegramData } = data;
+
+        if (!hash) {
+            throw new UnauthorizedException(t("CUSTOMER_INVALID_CREDENTIALS", lang));
+        }
+
+        // 1. Verify HMAC-SHA256 hash as per Telegram official spec
+        const dataCheckArr: string[] = [];
+        Object.keys(telegramData)
+            .sort()
+            .forEach((key) => {
+                if (telegramData[key] !== undefined && telegramData[key] !== null) {
+                    dataCheckArr.push(`${key}=${telegramData[key]}`);
+                }
+            });
+        const dataCheckString = dataCheckArr.join("\n");
+
+        const secretKey = crypto.createHash("sha256").update(botToken).digest();
+        const calculatedHash = crypto.createHmac("sha256", secretKey).update(dataCheckString).digest("hex");
+
+        if (calculatedHash !== hash) {
+            throw new UnauthorizedException(t("CUSTOMER_INVALID_CREDENTIALS", lang));
+        }
+
+        // 2. Check auth_date not older than 24 hours
+        const authTimestamp = Number(telegramData.auth_date);
+        const nowTimestamp = Math.floor(Date.now() / 1000);
+        if (nowTimestamp - authTimestamp > 86400) {
+            throw new UnauthorizedException("Telegram authentication session has expired.");
+        }
+
+        const chatId = String(telegramData.id);
+        const firstName = telegramData.first_name || "";
+        const lastName = telegramData.last_name || "";
+        const username = telegramData.username || null;
+        const photoUrl = telegramData.photo_url || null;
+        const fullName = [firstName, lastName].filter(Boolean).join(" ") || (username ? `@${username}` : "Telegram User");
+        const phone = phone_number || null;
+
+        // 3. Find TelegramAccount or User
+        let tgAccount = await prisma.telegramAccount.findUnique({
+            where: { chatId },
+            include: { user: { include: { customerProfile: true } } },
+        });
+
+        let user = tgAccount?.user;
+
+        if (!user) {
+            const fallbackEmail = username ? `${username}@telegram.fixithome.internal` : `tg_${chatId}@telegram.fixithome.internal`;
+
+            // Check if phone or email matches existing user
+            const existingUser = await prisma.user.findFirst({
+                where: {
+                    OR: [
+                        ...(phone ? [{ phone }] : []),
+                        { email: fallbackEmail },
+                    ],
+                },
+                include: { customerProfile: true },
+            });
+
+            if (existingUser) {
+                user = existingUser;
+                // Create or link TelegramAccount
+                await prisma.telegramAccount.upsert({
+                    where: { chatId },
+                    create: {
+                        publicId: crypto.randomUUID(),
+                        userId: user.id,
+                        chatId,
+                        username,
+                        firstName,
+                        lastName,
+                        isConnected: true,
+                        connectedAt: new Date(),
+                    },
+                    update: {
+                        userId: user.id,
+                        username,
+                        firstName,
+                        lastName,
+                        isConnected: true,
+                        connectedAt: new Date(),
+                    },
+                });
+            } else {
+                user = await prisma.$transaction(async (tx) => {
+                    return tx.user.create({
+                        data: {
+                            publicId: crypto.randomUUID(),
+                            email: fallbackEmail,
+                            phone,
+                            role: UserRole.CUSTOMER,
+                            accountStatus: AccountStatus.ACTIVE,
+                            emailVerifiedAt: new Date(),
+                            customerProfile: {
+                                create: {
+                                    publicId: crypto.randomUUID(),
+                                    fullName,
+                                    avatarUrl: photoUrl,
+                                },
+                            },
+                            telegramAccounts: {
+                                create: {
+                                    publicId: crypto.randomUUID(),
+                                    chatId,
+                                    username,
+                                    firstName,
+                                    lastName,
+                                    isConnected: true,
+                                    connectedAt: new Date(),
+                                },
+                            },
+                        },
+                        include: {
+                            customerProfile: true,
+                        },
+                    });
+                });
+            }
+        } else {
+            // Update telegram account details and phone if provided
+            await prisma.telegramAccount.update({
+                where: { chatId },
+                data: {
+                    username,
+                    firstName,
+                    lastName,
+                    isConnected: true,
+                    connectedAt: new Date(),
+                },
+            });
+
+            if (phone && !user.phone) {
+                await prisma.user.update({
+                    where: { id: user.id },
+                    data: { phone },
+                });
+            }
+
+            if (photoUrl && user.customerProfile && !user.customerProfile.avatarUrl) {
+                await prisma.customerProfile.update({
+                    where: { id: user.customerProfile.id },
+                    data: { avatarUrl: photoUrl },
+                });
+            }
+        }
+
+        if (!isCustomerRole(user.role)) {
+            throw new UnauthorizedException(t("CUSTOMER_INVALID_CREDENTIALS", lang));
+        }
+        if (user.accountStatus !== AccountStatus.ACTIVE) {
+            throw new UnauthorizedException(t("CUSTOMER_ACCOUNT_DISABLED", lang));
+        }
+
+        const sessionId = crypto.randomUUID();
+        const tokenPayload = {
+            userId: user.id,
+            role: user.role,
+            sid: sessionId,
+        };
+
+        const accessToken = signCustomerAccessToken(tokenPayload);
+        const refreshToken = signCustomerRefreshToken(tokenPayload);
+
+        await createCustomerSession({
+            userId: user.id,
+            sessionId,
+            refreshToken,
+        });
+
+        if (fcmToken) {
+            await upsertFcmToken({
+                userId: user.id,
+                token: fcmToken,
+                platform,
+                deviceName,
+            });
+        }
 
         await prisma.user.update({
             where: { id: user.id },

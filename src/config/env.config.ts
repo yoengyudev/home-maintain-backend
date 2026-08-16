@@ -16,4 +16,5 @@ export const Env = {
     FRONTEND_ORIGIN: getEnv("FRONTEND_ORIGIN"),
     TELEGRAM_BOT_TOKEN: getEnv("TELEGRAM_BOT_TOKEN", ""),
     TELEGRAM_DEFAULT_CHAT_ID: getEnv("TELEGRAM_DEFAULT_CHAT_ID", ""),
+    GOOGLE_CLIENT_ID: getEnv("GOOGLE_CLIENT_ID", "80447997297-ospi3vfel8uh55mqv777fjat4sdjn8bm.apps.googleusercontent.com"),
 } as const;

@@ -86,7 +86,8 @@ export const ModelName = {
   SupportPage: 'SupportPage',
   CommissionSetting: 'CommissionSetting',
   BookingCommission: 'BookingCommission',
-  ProviderInvoice: 'ProviderInvoice'
+  ProviderInvoice: 'ProviderInvoice',
+  TelegramAuthSession: 'TelegramAuthSession'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -110,6 +111,7 @@ export const UserScalarFieldEnum = {
   publicId: 'publicId',
   email: 'email',
   phone: 'phone',
+  googleId: 'googleId',
   passwordHash: 'passwordHash',
   role: 'role',
   accountStatus: 'accountStatus',
@@ -716,6 +718,24 @@ export const ProviderInvoiceScalarFieldEnum = {
 } as const
 
 export type ProviderInvoiceScalarFieldEnum = (typeof ProviderInvoiceScalarFieldEnum)[keyof typeof ProviderInvoiceScalarFieldEnum]
+
+
+export const TelegramAuthSessionScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  status: 'status',
+  chatId: 'chatId',
+  username: 'username',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  photoUrl: 'photoUrl',
+  userId: 'userId',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TelegramAuthSessionScalarFieldEnum = (typeof TelegramAuthSessionScalarFieldEnum)[keyof typeof TelegramAuthSessionScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -219,3 +219,8 @@ export type BookingCommission = Prisma.BookingCommissionModel
  * 
  */
 export type ProviderInvoice = Prisma.ProviderInvoiceModel
+/**
+ * Model TelegramAuthSession
+ * 
+ */
+export type TelegramAuthSession = Prisma.TelegramAuthSessionModel

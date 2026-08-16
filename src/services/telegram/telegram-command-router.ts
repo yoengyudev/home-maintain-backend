@@ -90,6 +90,34 @@ export class TelegramCommandRouter {
     token: string,
     from?: { username?: string; first_name?: string; last_name?: string }
   ): Promise<void> {
+    // 1. Check if token is for Login Authorization (`auth_...`)
+    if (token.startsWith('auth_')) {
+      const { TelegramAuthService } = await import('./telegram-auth.service');
+      const authResult = await TelegramAuthService.confirmSession(token, {
+        chatId,
+        username: from?.username,
+        firstName: from?.first_name,
+        lastName: from?.last_name,
+      });
+
+      if (authResult.success) {
+        let msg = `👋 <b>Welcome to FixItHome!</b>\n\n`;
+        msg += `✅ <b>Login Authorized Successfully!</b>\n\n`;
+        msg += `You are now signed in to <b>FixItHome</b>. You can return to the browser/app window now.\n\n`;
+        msg += `Your Telegram is also linked to receive booking alerts and updates automatically! 🔔`;
+
+        await telegramBotService.sendMessage(chatId, msg, { parse_mode: 'HTML' });
+      } else {
+        let errorMsg = `⚠️ <b>Login Failed</b>\n\n`;
+        errorMsg += `${authResult.message}\n\n`;
+        errorMsg += `Please return to FixItHome and click <b>Continue with Telegram</b> to try again.`;
+
+        await telegramBotService.sendMessage(chatId, errorMsg, { parse_mode: 'HTML' });
+      }
+      return;
+    }
+
+    // 2. Otherwise token is for linking from Profile Settings (`tg_...`)
     const linkResult = await TelegramAccountService.linkAccountByToken(token, {
       chatId,
       username: from?.username || null,

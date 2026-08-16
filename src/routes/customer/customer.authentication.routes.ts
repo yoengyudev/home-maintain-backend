@@ -10,6 +10,10 @@ import {
     changePassword,
     deleteAccount,
     login,
+    loginWithGoogle,
+    loginWithTelegramWidget,
+    initTelegramAuth,
+    checkTelegramAuth,
     logout,
 } from "../../controllers/customer/customer.authentication.controller";
 import { asyncHandler } from "../../middlewares/async-handler.middlerware";
@@ -24,6 +28,10 @@ import {
     customerResetPasswordSchema,
     customerChangePasswordSchema,
     customerLoginSchema,
+    customerGoogleAuthSchema,
+    customerTelegramWidgetAuthSchema,
+    customerTelegramAuthInitSchema,
+    customerTelegramAuthCheckSchema,
 } from "../../validators/customer/auth.validator";
 import { authenticate } from "../../middlewares/auth.middlerware";
 import { authorize } from "../../middlewares/role.middlerware";
@@ -41,6 +49,11 @@ router.post("/forgot-password/resend-otp", validate(customerResendForgotPassword
 router.post("/forgot-password/reset", validate(customerResetPasswordSchema), asyncHandler(resetPassword));
 
 router.post("/login", validate(customerLoginSchema), asyncHandler(login));
+router.post("/google", validate(customerGoogleAuthSchema), asyncHandler(loginWithGoogle));
+router.post("/telegram/widget", validate(customerTelegramWidgetAuthSchema), asyncHandler(loginWithTelegramWidget));
+router.post("/telegram/init", validate(customerTelegramAuthInitSchema), asyncHandler(initTelegramAuth));
+router.get("/telegram/check", validate(customerTelegramAuthCheckSchema), asyncHandler(checkTelegramAuth));
+router.post("/telegram/check", validate(customerTelegramAuthCheckSchema), asyncHandler(checkTelegramAuth));
 router.post("/logout", authenticate, authorize(UserRole.CUSTOMER), asyncHandler(logout));
 router.post(
     "/change-password",

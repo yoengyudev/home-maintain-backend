@@ -419,7 +419,8 @@ export const ModelName = {
   SupportPage: 'SupportPage',
   CommissionSetting: 'CommissionSetting',
   BookingCommission: 'BookingCommission',
-  ProviderInvoice: 'ProviderInvoice'
+  ProviderInvoice: 'ProviderInvoice',
+  TelegramAuthSession: 'TelegramAuthSession'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -435,7 +436,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "adminProfile" | "customerProfile" | "providerProfile" | "providerBusinessProfile" | "userPreference" | "accountSession" | "fcmToken" | "telegramAccount" | "telegramLinkToken" | "serviceCategory" | "serviceArea" | "providerServiceArea" | "providerVerification" | "providerVerificationDocument" | "providerVerificationChecklistItem" | "providerVerificationDecision" | "providerVerificationTimelineItem" | "serviceListing" | "serviceListingArea" | "serviceModerationHistory" | "customerAddress" | "booking" | "bookingTimelineItem" | "bookingIssue" | "bookingStatusHistory" | "review" | "notification" | "auditLog" | "internalAdminNote" | "faq" | "supportRequest" | "supportPage" | "commissionSetting" | "bookingCommission" | "providerInvoice"
+    modelProps: "user" | "adminProfile" | "customerProfile" | "providerProfile" | "providerBusinessProfile" | "userPreference" | "accountSession" | "fcmToken" | "telegramAccount" | "telegramLinkToken" | "serviceCategory" | "serviceArea" | "providerServiceArea" | "providerVerification" | "providerVerificationDocument" | "providerVerificationChecklistItem" | "providerVerificationDecision" | "providerVerificationTimelineItem" | "serviceListing" | "serviceListingArea" | "serviceModerationHistory" | "customerAddress" | "booking" | "bookingTimelineItem" | "bookingIssue" | "bookingStatusHistory" | "review" | "notification" | "auditLog" | "internalAdminNote" | "faq" | "supportRequest" | "supportPage" | "commissionSetting" | "bookingCommission" | "providerInvoice" | "telegramAuthSession"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3103,6 +3104,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    TelegramAuthSession: {
+      payload: Prisma.$TelegramAuthSessionPayload<ExtArgs>
+      fields: Prisma.TelegramAuthSessionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TelegramAuthSessionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAuthSessionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TelegramAuthSessionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAuthSessionPayload>
+        }
+        findFirst: {
+          args: Prisma.TelegramAuthSessionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAuthSessionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TelegramAuthSessionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAuthSessionPayload>
+        }
+        findMany: {
+          args: Prisma.TelegramAuthSessionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAuthSessionPayload>[]
+        }
+        create: {
+          args: Prisma.TelegramAuthSessionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAuthSessionPayload>
+        }
+        createMany: {
+          args: Prisma.TelegramAuthSessionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TelegramAuthSessionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAuthSessionPayload>[]
+        }
+        delete: {
+          args: Prisma.TelegramAuthSessionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAuthSessionPayload>
+        }
+        update: {
+          args: Prisma.TelegramAuthSessionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAuthSessionPayload>
+        }
+        deleteMany: {
+          args: Prisma.TelegramAuthSessionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TelegramAuthSessionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TelegramAuthSessionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAuthSessionPayload>[]
+        }
+        upsert: {
+          args: Prisma.TelegramAuthSessionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramAuthSessionPayload>
+        }
+        aggregate: {
+          args: Prisma.TelegramAuthSessionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTelegramAuthSession>
+        }
+        groupBy: {
+          args: Prisma.TelegramAuthSessionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TelegramAuthSessionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TelegramAuthSessionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TelegramAuthSessionCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -3147,6 +3222,7 @@ export const UserScalarFieldEnum = {
   publicId: 'publicId',
   email: 'email',
   phone: 'phone',
+  googleId: 'googleId',
   passwordHash: 'passwordHash',
   role: 'role',
   accountStatus: 'accountStatus',
@@ -3755,6 +3831,24 @@ export const ProviderInvoiceScalarFieldEnum = {
 export type ProviderInvoiceScalarFieldEnum = (typeof ProviderInvoiceScalarFieldEnum)[keyof typeof ProviderInvoiceScalarFieldEnum]
 
 
+export const TelegramAuthSessionScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  status: 'status',
+  chatId: 'chatId',
+  username: 'username',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  photoUrl: 'photoUrl',
+  userId: 'userId',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TelegramAuthSessionScalarFieldEnum = (typeof TelegramAuthSessionScalarFieldEnum)[keyof typeof TelegramAuthSessionScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -4325,6 +4419,7 @@ export type GlobalOmitConfig = {
   commissionSetting?: Prisma.CommissionSettingOmit
   bookingCommission?: Prisma.BookingCommissionOmit
   providerInvoice?: Prisma.ProviderInvoiceOmit
+  telegramAuthSession?: Prisma.TelegramAuthSessionOmit
 }
 
 /* Types for Logging */
