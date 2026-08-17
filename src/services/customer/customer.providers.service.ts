@@ -311,12 +311,16 @@ export class CustomerProvidersService {
                 cityProvince: string | null;
                 coverageSummary: string | null;
                 providerType: string | null;
+                latitude?: unknown;
+                longitude?: unknown;
             } | null;
             primaryArea: {
                 publicId: string;
                 slug: string;
                 nameEn: string;
                 nameKm: string;
+                latitude?: unknown;
+                longitude?: unknown;
                 isActive?: boolean;
             } | null;
             primaryCategory: {
@@ -361,6 +365,15 @@ export class CustomerProvidersService {
             coverUrl: business?.coverUrl ?? (provider as any).coverUrl ?? null,
             providerType: business?.providerType ?? null,
             location,
+            address:
+                [business?.addressLine, business?.district, business?.cityProvince].filter(Boolean).join(", ") ||
+                location ||
+                null,
+            addressLine: business?.addressLine ?? null,
+            district: business?.district ?? null,
+            cityProvince: business?.cityProvince ?? null,
+            latitude: this.toNumber(business?.latitude) ?? (activePrimaryArea ? this.toNumber(activePrimaryArea.latitude) : null),
+            longitude: this.toNumber(business?.longitude) ?? (activePrimaryArea ? this.toNumber(activePrimaryArea.longitude) : null),
             coverageSummary: business?.coverageSummary ?? null,
             averageRating: this.toNumber(provider.averageRating),
             completedJobs: Math.max(provider.completedJobs ?? 0, provider._count?.bookings ?? 0),
@@ -416,6 +429,8 @@ export class CustomerProvidersService {
                 cityProvince: string | null;
                 coverageSummary: string | null;
                 providerType: string | null;
+                latitude?: unknown;
+                longitude?: unknown;
                 workingDays: string[];
                 workingHours: unknown;
             } | null;
@@ -424,6 +439,8 @@ export class CustomerProvidersService {
                 slug: string;
                 nameEn: string;
                 nameKm: string;
+                latitude?: unknown;
+                longitude?: unknown;
                 isActive?: boolean;
             } | null;
             primaryCategory: {
@@ -576,11 +593,15 @@ export class CustomerProvidersService {
         };
     }
 
-    private static toNumber(value: { toNumber?: () => number } | number | string | null | undefined) {
+    private static toNumber(value: unknown) {
         if (value === null || value === undefined) return null;
         if (typeof value === "number") return value;
-        if (typeof value === "string") return Number(value);
-        if (typeof value.toNumber === "function") return value.toNumber();
-        return Number(value);
+        if (typeof value === "string") {
+            const num = Number(value);
+            return isNaN(num) ? null : num;
+        }
+        if (typeof (value as any)?.toNumber === "function") return (value as any).toNumber();
+        const num = Number(value);
+        return isNaN(num) ? null : num;
     }
 }
