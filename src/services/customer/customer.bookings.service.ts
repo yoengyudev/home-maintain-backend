@@ -59,6 +59,11 @@ const bookingInclude = {
     providerProfile: {
         include: {
             businessProfile: true,
+            user: {
+                select: {
+                    phone: true,
+                },
+            },
             _count: {
                 select: {
                     reviews: true,
@@ -814,6 +819,9 @@ export class CustomerBookingsService {
                 avatarUrl: string | null;
                 averageRating: { toNumber?: () => number } | number | string | null;
                 completedJobs: number;
+                user?: {
+                    phone: string | null;
+                } | null;
                 businessProfile: {
                     businessName: string;
                     logoUrl: string | null;
@@ -918,6 +926,7 @@ export class CustomerBookingsService {
                 contactName: booking.providerProfile.contactName,
                 businessName: booking.providerProfile.businessProfile?.businessName ?? null,
                 name: providerName,
+                phone: booking.providerProfile.user?.phone ?? null,
                 avatarUrl:
                     booking.providerProfile.avatarUrl ??
                     booking.providerProfile.businessProfile?.logoUrl ??
