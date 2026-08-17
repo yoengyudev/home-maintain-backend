@@ -43,6 +43,7 @@ export type ProviderProfileMinAggregateOutputType = {
   contactName: string | null
   status: $Enums.ProviderStatus | null
   avatarUrl: string | null
+  coverUrl: string | null
   primaryCategoryId: string | null
   primaryAreaId: string | null
   approvedAt: Date | null
@@ -61,6 +62,7 @@ export type ProviderProfileMaxAggregateOutputType = {
   contactName: string | null
   status: $Enums.ProviderStatus | null
   avatarUrl: string | null
+  coverUrl: string | null
   primaryCategoryId: string | null
   primaryAreaId: string | null
   approvedAt: Date | null
@@ -79,6 +81,7 @@ export type ProviderProfileCountAggregateOutputType = {
   contactName: number
   status: number
   avatarUrl: number
+  coverUrl: number
   primaryCategoryId: number
   primaryAreaId: number
   approvedAt: number
@@ -109,6 +112,7 @@ export type ProviderProfileMinAggregateInputType = {
   contactName?: true
   status?: true
   avatarUrl?: true
+  coverUrl?: true
   primaryCategoryId?: true
   primaryAreaId?: true
   approvedAt?: true
@@ -127,6 +131,7 @@ export type ProviderProfileMaxAggregateInputType = {
   contactName?: true
   status?: true
   avatarUrl?: true
+  coverUrl?: true
   primaryCategoryId?: true
   primaryAreaId?: true
   approvedAt?: true
@@ -145,6 +150,7 @@ export type ProviderProfileCountAggregateInputType = {
   contactName?: true
   status?: true
   avatarUrl?: true
+  coverUrl?: true
   primaryCategoryId?: true
   primaryAreaId?: true
   approvedAt?: true
@@ -250,6 +256,7 @@ export type ProviderProfileGroupByOutputType = {
   contactName: string
   status: $Enums.ProviderStatus
   avatarUrl: string | null
+  coverUrl: string | null
   primaryCategoryId: string | null
   primaryAreaId: string | null
   approvedAt: Date | null
@@ -291,6 +298,7 @@ export type ProviderProfileWhereInput = {
   contactName?: Prisma.StringFilter<"ProviderProfile"> | string
   status?: Prisma.EnumProviderStatusFilter<"ProviderProfile"> | $Enums.ProviderStatus
   avatarUrl?: Prisma.StringNullableFilter<"ProviderProfile"> | string | null
+  coverUrl?: Prisma.StringNullableFilter<"ProviderProfile"> | string | null
   primaryCategoryId?: Prisma.StringNullableFilter<"ProviderProfile"> | string | null
   primaryAreaId?: Prisma.StringNullableFilter<"ProviderProfile"> | string | null
   approvedAt?: Prisma.DateTimeNullableFilter<"ProviderProfile"> | Date | string | null
@@ -320,6 +328,7 @@ export type ProviderProfileOrderByWithRelationInput = {
   contactName?: Prisma.SortOrder
   status?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  coverUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   primaryCategoryId?: Prisma.SortOrderInput | Prisma.SortOrder
   primaryAreaId?: Prisma.SortOrderInput | Prisma.SortOrder
   approvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -352,6 +361,7 @@ export type ProviderProfileWhereUniqueInput = Prisma.AtLeast<{
   contactName?: Prisma.StringFilter<"ProviderProfile"> | string
   status?: Prisma.EnumProviderStatusFilter<"ProviderProfile"> | $Enums.ProviderStatus
   avatarUrl?: Prisma.StringNullableFilter<"ProviderProfile"> | string | null
+  coverUrl?: Prisma.StringNullableFilter<"ProviderProfile"> | string | null
   primaryCategoryId?: Prisma.StringNullableFilter<"ProviderProfile"> | string | null
   primaryAreaId?: Prisma.StringNullableFilter<"ProviderProfile"> | string | null
   approvedAt?: Prisma.DateTimeNullableFilter<"ProviderProfile"> | Date | string | null
@@ -381,6 +391,7 @@ export type ProviderProfileOrderByWithAggregationInput = {
   contactName?: Prisma.SortOrder
   status?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  coverUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   primaryCategoryId?: Prisma.SortOrderInput | Prisma.SortOrder
   primaryAreaId?: Prisma.SortOrderInput | Prisma.SortOrder
   approvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -407,6 +418,7 @@ export type ProviderProfileScalarWhereWithAggregatesInput = {
   contactName?: Prisma.StringWithAggregatesFilter<"ProviderProfile"> | string
   status?: Prisma.EnumProviderStatusWithAggregatesFilter<"ProviderProfile"> | $Enums.ProviderStatus
   avatarUrl?: Prisma.StringNullableWithAggregatesFilter<"ProviderProfile"> | string | null
+  coverUrl?: Prisma.StringNullableWithAggregatesFilter<"ProviderProfile"> | string | null
   primaryCategoryId?: Prisma.StringNullableWithAggregatesFilter<"ProviderProfile"> | string | null
   primaryAreaId?: Prisma.StringNullableWithAggregatesFilter<"ProviderProfile"> | string | null
   approvedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ProviderProfile"> | Date | string | null
@@ -424,6 +436,7 @@ export type ProviderProfileCreateInput = {
   contactName: string
   status?: $Enums.ProviderStatus
   avatarUrl?: string | null
+  coverUrl?: string | null
   approvedAt?: Date | string | null
   suspendedAt?: Date | string | null
   suspensionReason?: string | null
@@ -451,6 +464,7 @@ export type ProviderProfileUncheckedCreateInput = {
   contactName: string
   status?: $Enums.ProviderStatus
   avatarUrl?: string | null
+  coverUrl?: string | null
   primaryCategoryId?: string | null
   primaryAreaId?: string | null
   approvedAt?: Date | string | null
@@ -476,6 +490,7 @@ export type ProviderProfileUpdateInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -503,6 +518,7 @@ export type ProviderProfileUncheckedUpdateInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryCategoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryAreaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -529,6 +545,7 @@ export type ProviderProfileCreateManyInput = {
   contactName: string
   status?: $Enums.ProviderStatus
   avatarUrl?: string | null
+  coverUrl?: string | null
   primaryCategoryId?: string | null
   primaryAreaId?: string | null
   approvedAt?: Date | string | null
@@ -546,6 +563,7 @@ export type ProviderProfileUpdateManyMutationInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -562,6 +580,7 @@ export type ProviderProfileUncheckedUpdateManyInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryCategoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryAreaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -585,6 +604,7 @@ export type ProviderProfileCountOrderByAggregateInput = {
   contactName?: Prisma.SortOrder
   status?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
+  coverUrl?: Prisma.SortOrder
   primaryCategoryId?: Prisma.SortOrder
   primaryAreaId?: Prisma.SortOrder
   approvedAt?: Prisma.SortOrder
@@ -608,6 +628,7 @@ export type ProviderProfileMaxOrderByAggregateInput = {
   contactName?: Prisma.SortOrder
   status?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
+  coverUrl?: Prisma.SortOrder
   primaryCategoryId?: Prisma.SortOrder
   primaryAreaId?: Prisma.SortOrder
   approvedAt?: Prisma.SortOrder
@@ -626,6 +647,7 @@ export type ProviderProfileMinOrderByAggregateInput = {
   contactName?: Prisma.SortOrder
   status?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
+  coverUrl?: Prisma.SortOrder
   primaryCategoryId?: Prisma.SortOrder
   primaryAreaId?: Prisma.SortOrder
   approvedAt?: Prisma.SortOrder
@@ -911,6 +933,7 @@ export type ProviderProfileCreateWithoutUserInput = {
   contactName: string
   status?: $Enums.ProviderStatus
   avatarUrl?: string | null
+  coverUrl?: string | null
   approvedAt?: Date | string | null
   suspendedAt?: Date | string | null
   suspensionReason?: string | null
@@ -936,6 +959,7 @@ export type ProviderProfileUncheckedCreateWithoutUserInput = {
   contactName: string
   status?: $Enums.ProviderStatus
   avatarUrl?: string | null
+  coverUrl?: string | null
   primaryCategoryId?: string | null
   primaryAreaId?: string | null
   approvedAt?: Date | string | null
@@ -977,6 +1001,7 @@ export type ProviderProfileUpdateWithoutUserInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1002,6 +1027,7 @@ export type ProviderProfileUncheckedUpdateWithoutUserInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryCategoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryAreaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1027,6 +1053,7 @@ export type ProviderProfileCreateWithoutBusinessProfileInput = {
   contactName: string
   status?: $Enums.ProviderStatus
   avatarUrl?: string | null
+  coverUrl?: string | null
   approvedAt?: Date | string | null
   suspendedAt?: Date | string | null
   suspensionReason?: string | null
@@ -1053,6 +1080,7 @@ export type ProviderProfileUncheckedCreateWithoutBusinessProfileInput = {
   contactName: string
   status?: $Enums.ProviderStatus
   avatarUrl?: string | null
+  coverUrl?: string | null
   primaryCategoryId?: string | null
   primaryAreaId?: string | null
   approvedAt?: Date | string | null
@@ -1093,6 +1121,7 @@ export type ProviderProfileUpdateWithoutBusinessProfileInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1119,6 +1148,7 @@ export type ProviderProfileUncheckedUpdateWithoutBusinessProfileInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryCategoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryAreaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1143,6 +1173,7 @@ export type ProviderProfileCreateWithoutPrimaryCategoryInput = {
   contactName: string
   status?: $Enums.ProviderStatus
   avatarUrl?: string | null
+  coverUrl?: string | null
   approvedAt?: Date | string | null
   suspendedAt?: Date | string | null
   suspensionReason?: string | null
@@ -1169,6 +1200,7 @@ export type ProviderProfileUncheckedCreateWithoutPrimaryCategoryInput = {
   contactName: string
   status?: $Enums.ProviderStatus
   avatarUrl?: string | null
+  coverUrl?: string | null
   primaryAreaId?: string | null
   approvedAt?: Date | string | null
   suspendedAt?: Date | string | null
@@ -1223,6 +1255,7 @@ export type ProviderProfileScalarWhereInput = {
   contactName?: Prisma.StringFilter<"ProviderProfile"> | string
   status?: Prisma.EnumProviderStatusFilter<"ProviderProfile"> | $Enums.ProviderStatus
   avatarUrl?: Prisma.StringNullableFilter<"ProviderProfile"> | string | null
+  coverUrl?: Prisma.StringNullableFilter<"ProviderProfile"> | string | null
   primaryCategoryId?: Prisma.StringNullableFilter<"ProviderProfile"> | string | null
   primaryAreaId?: Prisma.StringNullableFilter<"ProviderProfile"> | string | null
   approvedAt?: Prisma.DateTimeNullableFilter<"ProviderProfile"> | Date | string | null
@@ -1240,6 +1273,7 @@ export type ProviderProfileCreateWithoutPrimaryAreaInput = {
   contactName: string
   status?: $Enums.ProviderStatus
   avatarUrl?: string | null
+  coverUrl?: string | null
   approvedAt?: Date | string | null
   suspendedAt?: Date | string | null
   suspensionReason?: string | null
@@ -1266,6 +1300,7 @@ export type ProviderProfileUncheckedCreateWithoutPrimaryAreaInput = {
   contactName: string
   status?: $Enums.ProviderStatus
   avatarUrl?: string | null
+  coverUrl?: string | null
   primaryCategoryId?: string | null
   approvedAt?: Date | string | null
   suspendedAt?: Date | string | null
@@ -1316,6 +1351,7 @@ export type ProviderProfileCreateWithoutServiceAreasInput = {
   contactName: string
   status?: $Enums.ProviderStatus
   avatarUrl?: string | null
+  coverUrl?: string | null
   approvedAt?: Date | string | null
   suspendedAt?: Date | string | null
   suspensionReason?: string | null
@@ -1342,6 +1378,7 @@ export type ProviderProfileUncheckedCreateWithoutServiceAreasInput = {
   contactName: string
   status?: $Enums.ProviderStatus
   avatarUrl?: string | null
+  coverUrl?: string | null
   primaryCategoryId?: string | null
   primaryAreaId?: string | null
   approvedAt?: Date | string | null
@@ -1382,6 +1419,7 @@ export type ProviderProfileUpdateWithoutServiceAreasInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1408,6 +1446,7 @@ export type ProviderProfileUncheckedUpdateWithoutServiceAreasInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryCategoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryAreaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1432,6 +1471,7 @@ export type ProviderProfileCreateWithoutVerificationsInput = {
   contactName: string
   status?: $Enums.ProviderStatus
   avatarUrl?: string | null
+  coverUrl?: string | null
   approvedAt?: Date | string | null
   suspendedAt?: Date | string | null
   suspensionReason?: string | null
@@ -1458,6 +1498,7 @@ export type ProviderProfileUncheckedCreateWithoutVerificationsInput = {
   contactName: string
   status?: $Enums.ProviderStatus
   avatarUrl?: string | null
+  coverUrl?: string | null
   primaryCategoryId?: string | null
   primaryAreaId?: string | null
   approvedAt?: Date | string | null
@@ -1498,6 +1539,7 @@ export type ProviderProfileUpdateWithoutVerificationsInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1524,6 +1566,7 @@ export type ProviderProfileUncheckedUpdateWithoutVerificationsInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryCategoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryAreaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1548,6 +1591,7 @@ export type ProviderProfileCreateWithoutServiceListingsInput = {
   contactName: string
   status?: $Enums.ProviderStatus
   avatarUrl?: string | null
+  coverUrl?: string | null
   approvedAt?: Date | string | null
   suspendedAt?: Date | string | null
   suspensionReason?: string | null
@@ -1574,6 +1618,7 @@ export type ProviderProfileUncheckedCreateWithoutServiceListingsInput = {
   contactName: string
   status?: $Enums.ProviderStatus
   avatarUrl?: string | null
+  coverUrl?: string | null
   primaryCategoryId?: string | null
   primaryAreaId?: string | null
   approvedAt?: Date | string | null
@@ -1614,6 +1659,7 @@ export type ProviderProfileUpdateWithoutServiceListingsInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1640,6 +1686,7 @@ export type ProviderProfileUncheckedUpdateWithoutServiceListingsInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryCategoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryAreaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1664,6 +1711,7 @@ export type ProviderProfileCreateWithoutBookingsInput = {
   contactName: string
   status?: $Enums.ProviderStatus
   avatarUrl?: string | null
+  coverUrl?: string | null
   approvedAt?: Date | string | null
   suspendedAt?: Date | string | null
   suspensionReason?: string | null
@@ -1690,6 +1738,7 @@ export type ProviderProfileUncheckedCreateWithoutBookingsInput = {
   contactName: string
   status?: $Enums.ProviderStatus
   avatarUrl?: string | null
+  coverUrl?: string | null
   primaryCategoryId?: string | null
   primaryAreaId?: string | null
   approvedAt?: Date | string | null
@@ -1730,6 +1779,7 @@ export type ProviderProfileUpdateWithoutBookingsInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1756,6 +1806,7 @@ export type ProviderProfileUncheckedUpdateWithoutBookingsInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryCategoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryAreaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1780,6 +1831,7 @@ export type ProviderProfileCreateWithoutReviewsInput = {
   contactName: string
   status?: $Enums.ProviderStatus
   avatarUrl?: string | null
+  coverUrl?: string | null
   approvedAt?: Date | string | null
   suspendedAt?: Date | string | null
   suspensionReason?: string | null
@@ -1806,6 +1858,7 @@ export type ProviderProfileUncheckedCreateWithoutReviewsInput = {
   contactName: string
   status?: $Enums.ProviderStatus
   avatarUrl?: string | null
+  coverUrl?: string | null
   primaryCategoryId?: string | null
   primaryAreaId?: string | null
   approvedAt?: Date | string | null
@@ -1846,6 +1899,7 @@ export type ProviderProfileUpdateWithoutReviewsInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1872,6 +1926,7 @@ export type ProviderProfileUncheckedUpdateWithoutReviewsInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryCategoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryAreaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1896,6 +1951,7 @@ export type ProviderProfileCreateWithoutCommissionsInput = {
   contactName: string
   status?: $Enums.ProviderStatus
   avatarUrl?: string | null
+  coverUrl?: string | null
   approvedAt?: Date | string | null
   suspendedAt?: Date | string | null
   suspensionReason?: string | null
@@ -1922,6 +1978,7 @@ export type ProviderProfileUncheckedCreateWithoutCommissionsInput = {
   contactName: string
   status?: $Enums.ProviderStatus
   avatarUrl?: string | null
+  coverUrl?: string | null
   primaryCategoryId?: string | null
   primaryAreaId?: string | null
   approvedAt?: Date | string | null
@@ -1962,6 +2019,7 @@ export type ProviderProfileUpdateWithoutCommissionsInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1988,6 +2046,7 @@ export type ProviderProfileUncheckedUpdateWithoutCommissionsInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryCategoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryAreaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2012,6 +2071,7 @@ export type ProviderProfileCreateWithoutInvoicesInput = {
   contactName: string
   status?: $Enums.ProviderStatus
   avatarUrl?: string | null
+  coverUrl?: string | null
   approvedAt?: Date | string | null
   suspendedAt?: Date | string | null
   suspensionReason?: string | null
@@ -2038,6 +2098,7 @@ export type ProviderProfileUncheckedCreateWithoutInvoicesInput = {
   contactName: string
   status?: $Enums.ProviderStatus
   avatarUrl?: string | null
+  coverUrl?: string | null
   primaryCategoryId?: string | null
   primaryAreaId?: string | null
   approvedAt?: Date | string | null
@@ -2078,6 +2139,7 @@ export type ProviderProfileUpdateWithoutInvoicesInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2104,6 +2166,7 @@ export type ProviderProfileUncheckedUpdateWithoutInvoicesInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryCategoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryAreaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2129,6 +2192,7 @@ export type ProviderProfileCreateManyPrimaryCategoryInput = {
   contactName: string
   status?: $Enums.ProviderStatus
   avatarUrl?: string | null
+  coverUrl?: string | null
   primaryAreaId?: string | null
   approvedAt?: Date | string | null
   suspendedAt?: Date | string | null
@@ -2145,6 +2209,7 @@ export type ProviderProfileUpdateWithoutPrimaryCategoryInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2171,6 +2236,7 @@ export type ProviderProfileUncheckedUpdateWithoutPrimaryCategoryInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryAreaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2196,6 +2262,7 @@ export type ProviderProfileUncheckedUpdateManyWithoutPrimaryCategoryInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryAreaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2213,6 +2280,7 @@ export type ProviderProfileCreateManyPrimaryAreaInput = {
   contactName: string
   status?: $Enums.ProviderStatus
   avatarUrl?: string | null
+  coverUrl?: string | null
   primaryCategoryId?: string | null
   approvedAt?: Date | string | null
   suspendedAt?: Date | string | null
@@ -2229,6 +2297,7 @@ export type ProviderProfileUpdateWithoutPrimaryAreaInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspensionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2255,6 +2324,7 @@ export type ProviderProfileUncheckedUpdateWithoutPrimaryAreaInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryCategoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2280,6 +2350,7 @@ export type ProviderProfileUncheckedUpdateManyWithoutPrimaryAreaInput = {
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryCategoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2382,6 +2453,7 @@ export type ProviderProfileSelect<ExtArgs extends runtime.Types.Extensions.Inter
   contactName?: boolean
   status?: boolean
   avatarUrl?: boolean
+  coverUrl?: boolean
   primaryCategoryId?: boolean
   primaryAreaId?: boolean
   approvedAt?: boolean
@@ -2412,6 +2484,7 @@ export type ProviderProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   contactName?: boolean
   status?: boolean
   avatarUrl?: boolean
+  coverUrl?: boolean
   primaryCategoryId?: boolean
   primaryAreaId?: boolean
   approvedAt?: boolean
@@ -2433,6 +2506,7 @@ export type ProviderProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   contactName?: boolean
   status?: boolean
   avatarUrl?: boolean
+  coverUrl?: boolean
   primaryCategoryId?: boolean
   primaryAreaId?: boolean
   approvedAt?: boolean
@@ -2454,6 +2528,7 @@ export type ProviderProfileSelectScalar = {
   contactName?: boolean
   status?: boolean
   avatarUrl?: boolean
+  coverUrl?: boolean
   primaryCategoryId?: boolean
   primaryAreaId?: boolean
   approvedAt?: boolean
@@ -2465,7 +2540,7 @@ export type ProviderProfileSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ProviderProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "userId" | "contactName" | "status" | "avatarUrl" | "primaryCategoryId" | "primaryAreaId" | "approvedAt" | "suspendedAt" | "suspensionReason" | "averageRating" | "completedJobs" | "createdAt" | "updatedAt", ExtArgs["result"]["providerProfile"]>
+export type ProviderProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "userId" | "contactName" | "status" | "avatarUrl" | "coverUrl" | "primaryCategoryId" | "primaryAreaId" | "approvedAt" | "suspendedAt" | "suspensionReason" | "averageRating" | "completedJobs" | "createdAt" | "updatedAt", ExtArgs["result"]["providerProfile"]>
 export type ProviderProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   primaryCategory?: boolean | Prisma.ProviderProfile$primaryCategoryArgs<ExtArgs>
@@ -2513,6 +2588,7 @@ export type $ProviderProfilePayload<ExtArgs extends runtime.Types.Extensions.Int
     contactName: string
     status: $Enums.ProviderStatus
     avatarUrl: string | null
+    coverUrl: string | null
     primaryCategoryId: string | null
     primaryAreaId: string | null
     approvedAt: Date | null
@@ -2962,6 +3038,7 @@ export interface ProviderProfileFieldRefs {
   readonly contactName: Prisma.FieldRef<"ProviderProfile", 'String'>
   readonly status: Prisma.FieldRef<"ProviderProfile", 'ProviderStatus'>
   readonly avatarUrl: Prisma.FieldRef<"ProviderProfile", 'String'>
+  readonly coverUrl: Prisma.FieldRef<"ProviderProfile", 'String'>
   readonly primaryCategoryId: Prisma.FieldRef<"ProviderProfile", 'String'>
   readonly primaryAreaId: Prisma.FieldRef<"ProviderProfile", 'String'>
   readonly approvedAt: Prisma.FieldRef<"ProviderProfile", 'DateTime'>

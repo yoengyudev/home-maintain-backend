@@ -660,6 +660,7 @@ export class VendorAuthenticationService {
         cityProvince?: string;
         about?: string;
         logoUrl?: string | null;
+        coverUrl?: string | null;
         latitude?: number | null;
         longitude?: number | null;
         coverageSummary?: string;
@@ -683,6 +684,7 @@ export class VendorAuthenticationService {
             ...(data.cityProvince !== undefined && { cityProvince: data.cityProvince }),
             ...(data.about !== undefined && { description: data.about }),
             ...(data.logoUrl !== undefined && { logoUrl: data.logoUrl }),
+            ...(data.coverUrl !== undefined && { coverUrl: data.coverUrl }),
             ...(data.latitude !== undefined && { latitude: data.latitude }),
             ...(data.longitude !== undefined && { longitude: data.longitude }),
             ...(data.coverageSummary !== undefined && { coverageSummary: data.coverageSummary }),
@@ -705,11 +707,18 @@ export class VendorAuthenticationService {
             });
         }
 
-        // Update provider profile contact name
+        // Update provider profile contact name and coverUrl
+        const providerProfileUpdateData: { contactName?: string; coverUrl?: string | null } = {};
         if (data.contactName !== undefined) {
+            providerProfileUpdateData.contactName = data.contactName;
+        }
+        if (data.coverUrl !== undefined) {
+            providerProfileUpdateData.coverUrl = data.coverUrl;
+        }
+        if (Object.keys(providerProfileUpdateData).length > 0) {
             await prisma.providerProfile.update({
                 where: { id: providerProfile.id },
-                data: { contactName: data.contactName },
+                data: providerProfileUpdateData,
             });
         }
 

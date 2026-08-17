@@ -296,6 +296,7 @@ export class CustomerProvidersService {
             publicId: string;
             contactName: string;
             avatarUrl: string | null;
+            coverUrl?: string | null;
             averageRating: { toNumber?: () => number } | number | string | null;
             completedJobs: number;
             approvedAt: Date | null;
@@ -304,6 +305,7 @@ export class CustomerProvidersService {
                 businessName: string;
                 description: string | null;
                 logoUrl: string | null;
+                coverUrl?: string | null;
                 addressLine: string | null;
                 district: string | null;
                 cityProvince: string | null;
@@ -356,6 +358,7 @@ export class CustomerProvidersService {
             description: business?.description ?? null,
             avatarUrl: provider.avatarUrl,
             logoUrl: business?.logoUrl ?? provider.avatarUrl,
+            coverUrl: business?.coverUrl ?? (provider as any).coverUrl ?? null,
             providerType: business?.providerType ?? null,
             location,
             coverageSummary: business?.coverageSummary ?? null,
@@ -398,6 +401,7 @@ export class CustomerProvidersService {
             publicId: string;
             contactName: string;
             avatarUrl: string | null;
+            coverUrl?: string | null;
             averageRating: { toNumber?: () => number } | number | string | null;
             completedJobs: number;
             approvedAt: Date | null;
@@ -406,6 +410,7 @@ export class CustomerProvidersService {
                 businessName: string;
                 description: string | null;
                 logoUrl: string | null;
+                coverUrl?: string | null;
                 addressLine: string | null;
                 district: string | null;
                 cityProvince: string | null;

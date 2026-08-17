@@ -45,6 +45,7 @@ export type ProviderBusinessProfileMinAggregateOutputType = {
   providerType: string | null
   description: string | null
   logoUrl: string | null
+  coverUrl: string | null
   addressLine: string | null
   district: string | null
   cityProvince: string | null
@@ -65,6 +66,7 @@ export type ProviderBusinessProfileMaxAggregateOutputType = {
   providerType: string | null
   description: string | null
   logoUrl: string | null
+  coverUrl: string | null
   addressLine: string | null
   district: string | null
   cityProvince: string | null
@@ -85,6 +87,7 @@ export type ProviderBusinessProfileCountAggregateOutputType = {
   providerType: number
   description: number
   logoUrl: number
+  coverUrl: number
   addressLine: number
   district: number
   cityProvince: number
@@ -122,6 +125,7 @@ export type ProviderBusinessProfileMinAggregateInputType = {
   providerType?: true
   description?: true
   logoUrl?: true
+  coverUrl?: true
   addressLine?: true
   district?: true
   cityProvince?: true
@@ -142,6 +146,7 @@ export type ProviderBusinessProfileMaxAggregateInputType = {
   providerType?: true
   description?: true
   logoUrl?: true
+  coverUrl?: true
   addressLine?: true
   district?: true
   cityProvince?: true
@@ -162,6 +167,7 @@ export type ProviderBusinessProfileCountAggregateInputType = {
   providerType?: true
   description?: true
   logoUrl?: true
+  coverUrl?: true
   addressLine?: true
   district?: true
   cityProvince?: true
@@ -272,6 +278,7 @@ export type ProviderBusinessProfileGroupByOutputType = {
   providerType: string | null
   description: string | null
   logoUrl: string | null
+  coverUrl: string | null
   addressLine: string | null
   district: string | null
   cityProvince: string | null
@@ -318,6 +325,7 @@ export type ProviderBusinessProfileWhereInput = {
   providerType?: Prisma.StringNullableFilter<"ProviderBusinessProfile"> | string | null
   description?: Prisma.StringNullableFilter<"ProviderBusinessProfile"> | string | null
   logoUrl?: Prisma.StringNullableFilter<"ProviderBusinessProfile"> | string | null
+  coverUrl?: Prisma.StringNullableFilter<"ProviderBusinessProfile"> | string | null
   addressLine?: Prisma.StringNullableFilter<"ProviderBusinessProfile"> | string | null
   district?: Prisma.StringNullableFilter<"ProviderBusinessProfile"> | string | null
   cityProvince?: Prisma.StringNullableFilter<"ProviderBusinessProfile"> | string | null
@@ -342,6 +350,7 @@ export type ProviderBusinessProfileOrderByWithRelationInput = {
   providerType?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   logoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  coverUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   addressLine?: Prisma.SortOrderInput | Prisma.SortOrder
   district?: Prisma.SortOrderInput | Prisma.SortOrder
   cityProvince?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -369,6 +378,7 @@ export type ProviderBusinessProfileWhereUniqueInput = Prisma.AtLeast<{
   providerType?: Prisma.StringNullableFilter<"ProviderBusinessProfile"> | string | null
   description?: Prisma.StringNullableFilter<"ProviderBusinessProfile"> | string | null
   logoUrl?: Prisma.StringNullableFilter<"ProviderBusinessProfile"> | string | null
+  coverUrl?: Prisma.StringNullableFilter<"ProviderBusinessProfile"> | string | null
   addressLine?: Prisma.StringNullableFilter<"ProviderBusinessProfile"> | string | null
   district?: Prisma.StringNullableFilter<"ProviderBusinessProfile"> | string | null
   cityProvince?: Prisma.StringNullableFilter<"ProviderBusinessProfile"> | string | null
@@ -393,6 +403,7 @@ export type ProviderBusinessProfileOrderByWithAggregationInput = {
   providerType?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   logoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  coverUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   addressLine?: Prisma.SortOrderInput | Prisma.SortOrder
   district?: Prisma.SortOrderInput | Prisma.SortOrder
   cityProvince?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -424,6 +435,7 @@ export type ProviderBusinessProfileScalarWhereWithAggregatesInput = {
   providerType?: Prisma.StringNullableWithAggregatesFilter<"ProviderBusinessProfile"> | string | null
   description?: Prisma.StringNullableWithAggregatesFilter<"ProviderBusinessProfile"> | string | null
   logoUrl?: Prisma.StringNullableWithAggregatesFilter<"ProviderBusinessProfile"> | string | null
+  coverUrl?: Prisma.StringNullableWithAggregatesFilter<"ProviderBusinessProfile"> | string | null
   addressLine?: Prisma.StringNullableWithAggregatesFilter<"ProviderBusinessProfile"> | string | null
   district?: Prisma.StringNullableWithAggregatesFilter<"ProviderBusinessProfile"> | string | null
   cityProvince?: Prisma.StringNullableWithAggregatesFilter<"ProviderBusinessProfile"> | string | null
@@ -446,6 +458,7 @@ export type ProviderBusinessProfileCreateInput = {
   providerType?: string | null
   description?: string | null
   logoUrl?: string | null
+  coverUrl?: string | null
   addressLine?: string | null
   district?: string | null
   cityProvince?: string | null
@@ -470,6 +483,7 @@ export type ProviderBusinessProfileUncheckedCreateInput = {
   providerType?: string | null
   description?: string | null
   logoUrl?: string | null
+  coverUrl?: string | null
   addressLine?: string | null
   district?: string | null
   cityProvince?: string | null
@@ -492,6 +506,7 @@ export type ProviderBusinessProfileUpdateInput = {
   providerType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addressLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   district?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cityProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -516,6 +531,7 @@ export type ProviderBusinessProfileUncheckedUpdateInput = {
   providerType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addressLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   district?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cityProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -539,6 +555,7 @@ export type ProviderBusinessProfileCreateManyInput = {
   providerType?: string | null
   description?: string | null
   logoUrl?: string | null
+  coverUrl?: string | null
   addressLine?: string | null
   district?: string | null
   cityProvince?: string | null
@@ -561,6 +578,7 @@ export type ProviderBusinessProfileUpdateManyMutationInput = {
   providerType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addressLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   district?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cityProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -584,6 +602,7 @@ export type ProviderBusinessProfileUncheckedUpdateManyInput = {
   providerType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addressLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   district?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cityProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -628,6 +647,7 @@ export type ProviderBusinessProfileCountOrderByAggregateInput = {
   providerType?: Prisma.SortOrder
   description?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrder
+  coverUrl?: Prisma.SortOrder
   addressLine?: Prisma.SortOrder
   district?: Prisma.SortOrder
   cityProvince?: Prisma.SortOrder
@@ -657,6 +677,7 @@ export type ProviderBusinessProfileMaxOrderByAggregateInput = {
   providerType?: Prisma.SortOrder
   description?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrder
+  coverUrl?: Prisma.SortOrder
   addressLine?: Prisma.SortOrder
   district?: Prisma.SortOrder
   cityProvince?: Prisma.SortOrder
@@ -677,6 +698,7 @@ export type ProviderBusinessProfileMinOrderByAggregateInput = {
   providerType?: Prisma.SortOrder
   description?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrder
+  coverUrl?: Prisma.SortOrder
   addressLine?: Prisma.SortOrder
   district?: Prisma.SortOrder
   cityProvince?: Prisma.SortOrder
@@ -756,6 +778,7 @@ export type ProviderBusinessProfileCreateWithoutProviderProfileInput = {
   providerType?: string | null
   description?: string | null
   logoUrl?: string | null
+  coverUrl?: string | null
   addressLine?: string | null
   district?: string | null
   cityProvince?: string | null
@@ -778,6 +801,7 @@ export type ProviderBusinessProfileUncheckedCreateWithoutProviderProfileInput = 
   providerType?: string | null
   description?: string | null
   logoUrl?: string | null
+  coverUrl?: string | null
   addressLine?: string | null
   district?: string | null
   cityProvince?: string | null
@@ -816,6 +840,7 @@ export type ProviderBusinessProfileUpdateWithoutProviderProfileInput = {
   providerType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addressLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   district?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cityProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -838,6 +863,7 @@ export type ProviderBusinessProfileUncheckedUpdateWithoutProviderProfileInput = 
   providerType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addressLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   district?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cityProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -863,6 +889,7 @@ export type ProviderBusinessProfileSelect<ExtArgs extends runtime.Types.Extensio
   providerType?: boolean
   description?: boolean
   logoUrl?: boolean
+  coverUrl?: boolean
   addressLine?: boolean
   district?: boolean
   cityProvince?: boolean
@@ -887,6 +914,7 @@ export type ProviderBusinessProfileSelectCreateManyAndReturn<ExtArgs extends run
   providerType?: boolean
   description?: boolean
   logoUrl?: boolean
+  coverUrl?: boolean
   addressLine?: boolean
   district?: boolean
   cityProvince?: boolean
@@ -911,6 +939,7 @@ export type ProviderBusinessProfileSelectUpdateManyAndReturn<ExtArgs extends run
   providerType?: boolean
   description?: boolean
   logoUrl?: boolean
+  coverUrl?: boolean
   addressLine?: boolean
   district?: boolean
   cityProvince?: boolean
@@ -935,6 +964,7 @@ export type ProviderBusinessProfileSelectScalar = {
   providerType?: boolean
   description?: boolean
   logoUrl?: boolean
+  coverUrl?: boolean
   addressLine?: boolean
   district?: boolean
   cityProvince?: boolean
@@ -951,7 +981,7 @@ export type ProviderBusinessProfileSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ProviderBusinessProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "providerProfileId" | "businessName" | "providerType" | "description" | "logoUrl" | "addressLine" | "district" | "cityProvince" | "coverageSummary" | "latitude" | "longitude" | "detectedAddress" | "workingDays" | "workingHours" | "unavailableDates" | "temporarilyPaused" | "maxBookingsPerSlot" | "createdAt" | "updatedAt", ExtArgs["result"]["providerBusinessProfile"]>
+export type ProviderBusinessProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "providerProfileId" | "businessName" | "providerType" | "description" | "logoUrl" | "coverUrl" | "addressLine" | "district" | "cityProvince" | "coverageSummary" | "latitude" | "longitude" | "detectedAddress" | "workingDays" | "workingHours" | "unavailableDates" | "temporarilyPaused" | "maxBookingsPerSlot" | "createdAt" | "updatedAt", ExtArgs["result"]["providerBusinessProfile"]>
 export type ProviderBusinessProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   providerProfile?: boolean | Prisma.ProviderProfileDefaultArgs<ExtArgs>
 }
@@ -974,6 +1004,7 @@ export type $ProviderBusinessProfilePayload<ExtArgs extends runtime.Types.Extens
     providerType: string | null
     description: string | null
     logoUrl: string | null
+    coverUrl: string | null
     addressLine: string | null
     district: string | null
     cityProvince: string | null
@@ -1418,6 +1449,7 @@ export interface ProviderBusinessProfileFieldRefs {
   readonly providerType: Prisma.FieldRef<"ProviderBusinessProfile", 'String'>
   readonly description: Prisma.FieldRef<"ProviderBusinessProfile", 'String'>
   readonly logoUrl: Prisma.FieldRef<"ProviderBusinessProfile", 'String'>
+  readonly coverUrl: Prisma.FieldRef<"ProviderBusinessProfile", 'String'>
   readonly addressLine: Prisma.FieldRef<"ProviderBusinessProfile", 'String'>
   readonly district: Prisma.FieldRef<"ProviderBusinessProfile", 'String'>
   readonly cityProvince: Prisma.FieldRef<"ProviderBusinessProfile", 'String'>
