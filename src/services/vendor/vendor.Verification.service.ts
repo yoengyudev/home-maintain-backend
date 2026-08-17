@@ -82,6 +82,7 @@ async function resolveCategoryId(keys: string[]): Promise<string | null> {
     if (keys.length === 0) return null;
 
     const categories = await prisma.serviceCategory.findMany({
+        where: { deletedAt: null },
         select: { id: true, publicId: true, slug: true, nameEn: true, nameKm: true },
     });
 
@@ -97,6 +98,7 @@ async function resolveAreaId(keys: string[]): Promise<string | null> {
     if (keys.length === 0) return null;
 
     const areas = await prisma.serviceArea.findMany({
+        where: { deletedAt: null },
         select: { id: true, publicId: true, slug: true, nameEn: true, nameKm: true },
     });
 
@@ -112,6 +114,7 @@ async function resolveAreaIds(keys: string[]): Promise<string[]> {
     if (keys.length === 0) return [];
 
     const areas = await prisma.serviceArea.findMany({
+        where: { deletedAt: null },
         select: { id: true, publicId: true, slug: true, nameEn: true, nameKm: true },
     });
 
@@ -135,7 +138,7 @@ export class VendorVerificationService {
                 user: true,
                 businessProfile: true,
                 verifications: {
-                    where: { status: ProviderVerificationStatus.DRAFT },
+                    where: { status: ProviderVerificationStatus.DRAFT, deletedAt: null },
                     orderBy: { createdAt: 'desc' },
                     take: 1,
                     include: {
@@ -230,7 +233,8 @@ export class VendorVerificationService {
         let draftVerification = await prisma.providerVerification.findFirst({
             where: {
                 providerProfileId: providerProfile.id,
-                status: ProviderVerificationStatus.DRAFT
+                status: ProviderVerificationStatus.DRAFT,
+                deletedAt: null,
             }
         });
 
@@ -360,12 +364,16 @@ export class VendorVerificationService {
 
         // Create verification record
         const verification = await prisma.$transaction(async (tx) => {
-            // Delete any existing drafts
-            await tx.providerVerification.deleteMany({
+            // Soft delete any existing drafts
+            await tx.providerVerification.updateMany({
                 where: {
                     providerProfileId: providerProfile.id,
-                    status: ProviderVerificationStatus.DRAFT
-                }
+                    status: ProviderVerificationStatus.DRAFT,
+                    deletedAt: null,
+                },
+                data: {
+                    deletedAt: new Date(),
+                },
             });
 
             // Create new verification
@@ -646,11 +654,15 @@ export class VendorVerificationService {
             throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
         }
 
-        await prisma.providerVerification.deleteMany({
+        await prisma.providerVerification.updateMany({
             where: {
                 providerProfileId: providerProfile.id,
-                status: ProviderVerificationStatus.DRAFT
-            }
+                status: ProviderVerificationStatus.DRAFT,
+                deletedAt: null,
+            },
+            data: {
+                deletedAt: new Date(),
+            },
         });
 
         return {

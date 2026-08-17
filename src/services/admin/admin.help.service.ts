@@ -158,7 +158,7 @@ export class AdminHelpService {
         const search = firstQueryString(query.search)?.trim();
         const isActiveRaw = firstQueryString(query.isActive);
 
-        const where: any = {};
+        const where: any = { deletedAt: null };
         if (audience) where.audience = audience;
         if (category) where.category = category;
         if (isActiveRaw === "true") where.isActive = true;
@@ -191,7 +191,7 @@ export class AdminHelpService {
 
     static async getFaqById(id: string, lang: Lang) {
         const faq = await prisma.faq.findFirst({
-            where: { OR: [{ id }, { publicId: id }] },
+            where: { deletedAt: null, OR: [{ id }, { publicId: id }] },
         });
         if (!faq) throw new NotFoundException(t("ADMIN_FAQ_NOT_FOUND", lang));
         return formatFaq(faq);
@@ -203,7 +203,7 @@ export class AdminHelpService {
         }
 
         const maxSort = await prisma.faq.aggregate({
-            where: { audience: data.audience },
+            where: { audience: data.audience, deletedAt: null },
             _max: { sortOrder: true },
         });
 
@@ -231,7 +231,7 @@ export class AdminHelpService {
 
     static async updateFaq(id: string, data: FaqBody, adminUserId: string, lang: Lang) {
         const faq = await prisma.faq.findFirst({
-            where: { OR: [{ id }, { publicId: id }] },
+            where: { deletedAt: null, OR: [{ id }, { publicId: id }] },
         });
         if (!faq) throw new NotFoundException(t("ADMIN_FAQ_NOT_FOUND", lang));
 
@@ -263,7 +263,7 @@ export class AdminHelpService {
 
     static async disableFaq(id: string, adminUserId: string, lang: Lang) {
         const faq = await prisma.faq.findFirst({
-            where: { OR: [{ id }, { publicId: id }] },
+            where: { deletedAt: null, OR: [{ id }, { publicId: id }] },
         });
         if (!faq) throw new NotFoundException(t("ADMIN_FAQ_NOT_FOUND", lang));
 
@@ -277,7 +277,7 @@ export class AdminHelpService {
 
     static async restoreFaq(id: string, adminUserId: string, lang: Lang) {
         const faq = await prisma.faq.findFirst({
-            where: { OR: [{ id }, { publicId: id }] },
+            where: { deletedAt: null, OR: [{ id }, { publicId: id }] },
         });
         if (!faq) throw new NotFoundException(t("ADMIN_FAQ_NOT_FOUND", lang));
 
@@ -291,12 +291,18 @@ export class AdminHelpService {
 
     static async deleteFaq(id: string, adminUserId: string, lang: Lang) {
         const faq = await prisma.faq.findFirst({
-            where: { OR: [{ id }, { publicId: id }] },
+            where: { deletedAt: null, OR: [{ id }, { publicId: id }] },
         });
         if (!faq) throw new NotFoundException(t("ADMIN_FAQ_NOT_FOUND", lang));
 
         await writeAudit(adminUserId, "DISABLED", "CRITICAL", `Deleted FAQ: ${faq.questionEn}`, faq.publicId);
-        await prisma.faq.delete({ where: { id: faq.id } });
+        await prisma.faq.update({
+            where: { id: faq.id },
+            data: {
+                deletedAt: new Date(),
+                isActive: false,
+            },
+        });
         return { deleted: true, id: faq.publicId };
     }
 

@@ -75,7 +75,10 @@ export class AdminCategoriesService {
                 ? false
                 : undefined;
 
-        const where: any = isActiveFilter !== undefined ? { isActive: isActiveFilter } : {};
+        const where: any = {
+            deletedAt: null,
+            ...(isActiveFilter !== undefined ? { isActive: isActiveFilter } : {}),
+        };
 
         const [categories, total] = await Promise.all([
             prisma.serviceCategory.findMany({
@@ -97,7 +100,7 @@ export class AdminCategoriesService {
             }),
             prisma.serviceListing.groupBy({
                 by: ["categoryId"],
-                where: { categoryId: { in: categoryIds } },
+                where: { categoryId: { in: categoryIds }, deletedAt: null },
                 _count: { id: true },
             }),
         ]);
@@ -122,13 +125,13 @@ export class AdminCategoriesService {
 
     static async getById(id: string, lang: Lang) {
         const c = await prisma.serviceCategory.findFirst({
-            where: { OR: [{ id }, { publicId: id }] },
+            where: { deletedAt: null, OR: [{ id }, { publicId: id }] },
         });
         if (!c) throw new NotFoundException(t("ADMIN_CATEGORY_NOT_FOUND", lang));
 
         const [providers, services] = await Promise.all([
             prisma.providerProfile.count({ where: { primaryCategoryId: c.id } }),
-            prisma.serviceListing.count({ where: { categoryId: c.id } }),
+            prisma.serviceListing.count({ where: { categoryId: c.id, deletedAt: null } }),
         ]);
 
         return formatCategory(c, { providers, services });
@@ -191,7 +194,7 @@ export class AdminCategoriesService {
         lang: Lang
     ) {
         const c = await prisma.serviceCategory.findFirst({
-            where: { OR: [{ id }, { publicId: id }] },
+            where: { deletedAt: null, OR: [{ id }, { publicId: id }] },
         });
         if (!c) throw new NotFoundException(t("ADMIN_CATEGORY_NOT_FOUND", lang));
 
@@ -229,7 +232,7 @@ export class AdminCategoriesService {
 
     static async disable(id: string, adminUserId: string, lang: Lang) {
         const c = await prisma.serviceCategory.findFirst({
-            where: { OR: [{ id }, { publicId: id }] },
+            where: { deletedAt: null, OR: [{ id }, { publicId: id }] },
         });
         if (!c) throw new NotFoundException(t("ADMIN_CATEGORY_NOT_FOUND", lang));
 
@@ -259,7 +262,7 @@ export class AdminCategoriesService {
 
     static async restore(id: string, adminUserId: string, lang: Lang) {
         const c = await prisma.serviceCategory.findFirst({
-            where: { OR: [{ id }, { publicId: id }] },
+            where: { deletedAt: null, OR: [{ id }, { publicId: id }] },
         });
         if (!c) throw new NotFoundException(t("ADMIN_CATEGORY_NOT_FOUND", lang));
 
@@ -289,13 +292,13 @@ export class AdminCategoriesService {
 
     static async delete(id: string, adminUserId: string, lang: Lang) {
         const c = await prisma.serviceCategory.findFirst({
-            where: { OR: [{ id }, { publicId: id }] },
+            where: { deletedAt: null, OR: [{ id }, { publicId: id }] },
         });
         if (!c) throw new NotFoundException(t("ADMIN_CATEGORY_NOT_FOUND", lang));
 
         const [providerCount, serviceCount] = await Promise.all([
             prisma.providerProfile.count({ where: { primaryCategoryId: c.id } }),
-            prisma.serviceListing.count({ where: { categoryId: c.id } }),
+            prisma.serviceListing.count({ where: { categoryId: c.id, deletedAt: null } }),
         ]);
 
         if (providerCount > 0 || serviceCount > 0) {
@@ -323,8 +326,13 @@ export class AdminCategoriesService {
             });
         }
 
-        await prisma.serviceCategory.delete({ where: { id: c.id } });
-        await destroyCloudinaryImageByUrl(c.iconName);
+        await prisma.serviceCategory.update({
+            where: { id: c.id },
+            data: {
+                deletedAt: new Date(),
+                isActive: false,
+            },
+        });
         return { deleted: true, id: c.publicId };
     }
 

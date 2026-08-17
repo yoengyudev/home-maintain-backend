@@ -3229,6 +3229,7 @@ export const UserScalarFieldEnum = {
   emailVerifiedAt: 'emailVerifiedAt',
   phoneVerifiedAt: 'phoneVerifiedAt',
   lastSignedInAt: 'lastSignedInAt',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -3397,6 +3398,7 @@ export const ServiceCategoryScalarFieldEnum = {
   descriptionKm: 'descriptionKm',
   iconName: 'iconName',
   isActive: 'isActive',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -3415,6 +3417,7 @@ export const ServiceAreaScalarFieldEnum = {
   longitude: 'longitude',
   radiusKm: 'radiusKm',
   isActive: 'isActive',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -3440,6 +3443,7 @@ export const ProviderVerificationScalarFieldEnum = {
   submittedAt: 'submittedAt',
   reviewedAt: 'reviewedAt',
   reviewerNotes: 'reviewerNotes',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -3526,6 +3530,7 @@ export const ServiceListingScalarFieldEnum = {
   availabilitySummary: 'availabilitySummary',
   serviceStatus: 'serviceStatus',
   moderationStatus: 'moderationStatus',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -3572,6 +3577,7 @@ export const CustomerAddressScalarFieldEnum = {
   longitude: 'longitude',
   detectedLocation: 'detectedLocation',
   isDefault: 'isDefault',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -3656,6 +3662,7 @@ export const ReviewScalarFieldEnum = {
   bookingId: 'bookingId',
   rating: 'rating',
   comment: 'comment',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -3736,6 +3743,7 @@ export const FaqScalarFieldEnum = {
   relatedRouteLabelKm: 'relatedRouteLabelKm',
   sortOrder: 'sortOrder',
   isActive: 'isActive',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

@@ -543,8 +543,8 @@ export class VendorAuthenticationService {
 
             if (user.providerProfile) {
                 await tx.serviceListing.updateMany({
-                    where: { providerProfileId: user.providerProfile.id },
-                    data: { serviceStatus: ServiceStatus.DISABLED },
+                    where: { providerProfileId: user.providerProfile.id, deletedAt: null },
+                    data: { serviceStatus: ServiceStatus.DISABLED, deletedAt: new Date() },
                 });
 
                 await tx.providerProfile.update({
@@ -561,6 +561,7 @@ export class VendorAuthenticationService {
                 where: { id: user.id },
                 data: {
                     accountStatus: AccountStatus.DISABLED,
+                    deletedAt: new Date(),
                     passwordHash: null,
                     email: anonymizedEmail,
                     phone: null,

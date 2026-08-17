@@ -762,6 +762,7 @@ export class CustomerAuthenticationService {
                 where: { id: user.id },
                 data: {
                     accountStatus: AccountStatus.DISABLED,
+                    deletedAt: new Date(),
                     passwordHash: null,
                     email: anonymizedEmail,
                     phone: null,

@@ -19,7 +19,7 @@ export class CustomerAddressesService {
         const customer = await this.requireCustomerProfile(userId, lang);
 
         const addresses = await prisma.customerAddress.findMany({
-            where: { customerProfileId: customer.id },
+            where: { customerProfileId: customer.id, deletedAt: null },
             orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }],
         });
 
@@ -31,6 +31,7 @@ export class CustomerAddressesService {
         const address = await prisma.customerAddress.findFirst({
             where: {
                 customerProfileId: customer.id,
+                deletedAt: null,
                 OR: [{ id }, { publicId: id }],
             },
         });
@@ -48,7 +49,7 @@ export class CustomerAddressesService {
 
         if (data.isDefault) {
             await prisma.customerAddress.updateMany({
-                where: { customerProfileId: customer.id, isDefault: true },
+                where: { customerProfileId: customer.id, isDefault: true, deletedAt: null },
                 data: { isDefault: false },
             });
         }
@@ -82,6 +83,7 @@ export class CustomerAddressesService {
         const existing = await prisma.customerAddress.findFirst({
             where: {
                 customerProfileId: customer.id,
+                deletedAt: null,
                 OR: [{ id }, { publicId: id }],
             },
         });
@@ -95,6 +97,7 @@ export class CustomerAddressesService {
                 where: {
                     customerProfileId: customer.id,
                     isDefault: true,
+                    deletedAt: null,
                     NOT: { id: existing.id },
                 },
                 data: { isDefault: false },
@@ -126,6 +129,7 @@ export class CustomerAddressesService {
         const existing = await prisma.customerAddress.findFirst({
             where: {
                 customerProfileId: customer.id,
+                deletedAt: null,
                 OR: [{ id }, { publicId: id }],
             },
         });
@@ -134,7 +138,13 @@ export class CustomerAddressesService {
             throw new NotFoundException(t("CUSTOMER_ADDRESS_NOT_FOUND", lang));
         }
 
-        await prisma.customerAddress.delete({ where: { id: existing.id } });
+        await prisma.customerAddress.update({
+            where: { id: existing.id },
+            data: {
+                deletedAt: new Date(),
+                isDefault: false,
+            },
+        });
         return { id: existing.id, publicId: existing.publicId };
     }
 

@@ -151,6 +151,7 @@ export class VendorServiceService {
             where: { userId },
             include: {
                 serviceListings: {
+                    where: { deletedAt: null },
                     include: {
                         category: true,
                         areas: {
@@ -183,6 +184,7 @@ export class VendorServiceService {
         const service = await prisma.serviceListing.findFirst({
             where: {
                 providerProfileId: providerProfile.id,
+                deletedAt: null,
                 OR: [{ id: serviceId }, { publicId: serviceId }],
             },
             include: {
@@ -278,6 +280,7 @@ export class VendorServiceService {
         const existingService = await prisma.serviceListing.findFirst({
             where: {
                 providerProfileId: providerProfile.id,
+                deletedAt: null,
                 OR: [{ id: serviceId }, { publicId: serviceId }],
             },
         });
@@ -375,6 +378,7 @@ export class VendorServiceService {
         const existingService = await prisma.serviceListing.findFirst({
             where: {
                 providerProfileId: providerProfile.id,
+                deletedAt: null,
                 OR: [{ id: serviceId }, { publicId: serviceId }],
             },
         });
@@ -396,8 +400,12 @@ export class VendorServiceService {
             throw new BadRequestException(t("VENDOR_SERVICE_HAS_ACTIVE_BOOKINGS", lang));
         }
 
-        await prisma.serviceListing.delete({
+        await prisma.serviceListing.update({
             where: { id: existingService.id },
+            data: {
+                deletedAt: new Date(),
+                serviceStatus: ServiceStatus.DISABLED,
+            },
         });
 
         return {
@@ -418,6 +426,7 @@ export class VendorServiceService {
         const existingService = await prisma.serviceListing.findFirst({
             where: {
                 providerProfileId: providerProfile.id,
+                deletedAt: null,
                 OR: [{ id: serviceId }, { publicId: serviceId }],
             },
         });

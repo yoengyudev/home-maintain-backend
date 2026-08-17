@@ -49,6 +49,7 @@ export type ServiceAreaMinAggregateOutputType = {
   longitude: runtime.Decimal | null
   radiusKm: runtime.Decimal | null
   isActive: boolean | null
+  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -64,6 +65,7 @@ export type ServiceAreaMaxAggregateOutputType = {
   longitude: runtime.Decimal | null
   radiusKm: runtime.Decimal | null
   isActive: boolean | null
+  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -79,6 +81,7 @@ export type ServiceAreaCountAggregateOutputType = {
   longitude: number
   radiusKm: number
   isActive: number
+  deletedAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -108,6 +111,7 @@ export type ServiceAreaMinAggregateInputType = {
   longitude?: true
   radiusKm?: true
   isActive?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -123,6 +127,7 @@ export type ServiceAreaMaxAggregateInputType = {
   longitude?: true
   radiusKm?: true
   isActive?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -138,6 +143,7 @@ export type ServiceAreaCountAggregateInputType = {
   longitude?: true
   radiusKm?: true
   isActive?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -240,6 +246,7 @@ export type ServiceAreaGroupByOutputType = {
   longitude: runtime.Decimal | null
   radiusKm: runtime.Decimal
   isActive: boolean
+  deletedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: ServiceAreaCountAggregateOutputType | null
@@ -278,6 +285,7 @@ export type ServiceAreaWhereInput = {
   longitude?: Prisma.DecimalNullableFilter<"ServiceArea"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   radiusKm?: Prisma.DecimalFilter<"ServiceArea"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFilter<"ServiceArea"> | boolean
+  deletedAt?: Prisma.DateTimeNullableFilter<"ServiceArea"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ServiceArea"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ServiceArea"> | Date | string
   listingAreas?: Prisma.ServiceListingAreaListRelationFilter
@@ -297,6 +305,7 @@ export type ServiceAreaOrderByWithRelationInput = {
   longitude?: Prisma.SortOrderInput | Prisma.SortOrder
   radiusKm?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   listingAreas?: Prisma.ServiceListingAreaOrderByRelationAggregateInput
@@ -319,6 +328,7 @@ export type ServiceAreaWhereUniqueInput = Prisma.AtLeast<{
   longitude?: Prisma.DecimalNullableFilter<"ServiceArea"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   radiusKm?: Prisma.DecimalFilter<"ServiceArea"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFilter<"ServiceArea"> | boolean
+  deletedAt?: Prisma.DateTimeNullableFilter<"ServiceArea"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ServiceArea"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ServiceArea"> | Date | string
   listingAreas?: Prisma.ServiceListingAreaListRelationFilter
@@ -338,6 +348,7 @@ export type ServiceAreaOrderByWithAggregationInput = {
   longitude?: Prisma.SortOrderInput | Prisma.SortOrder
   radiusKm?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ServiceAreaCountOrderByAggregateInput
@@ -361,6 +372,7 @@ export type ServiceAreaScalarWhereWithAggregatesInput = {
   longitude?: Prisma.DecimalNullableWithAggregatesFilter<"ServiceArea"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   radiusKm?: Prisma.DecimalWithAggregatesFilter<"ServiceArea"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolWithAggregatesFilter<"ServiceArea"> | boolean
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ServiceArea"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ServiceArea"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ServiceArea"> | Date | string
 }
@@ -376,6 +388,7 @@ export type ServiceAreaCreateInput = {
   longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   radiusKm?: runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   listingAreas?: Prisma.ServiceListingAreaCreateNestedManyWithoutServiceAreaInput
@@ -395,6 +408,7 @@ export type ServiceAreaUncheckedCreateInput = {
   longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   radiusKm?: runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   listingAreas?: Prisma.ServiceListingAreaUncheckedCreateNestedManyWithoutServiceAreaInput
@@ -414,6 +428,7 @@ export type ServiceAreaUpdateInput = {
   longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   radiusKm?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listingAreas?: Prisma.ServiceListingAreaUpdateManyWithoutServiceAreaNestedInput
@@ -433,6 +448,7 @@ export type ServiceAreaUncheckedUpdateInput = {
   longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   radiusKm?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listingAreas?: Prisma.ServiceListingAreaUncheckedUpdateManyWithoutServiceAreaNestedInput
@@ -452,6 +468,7 @@ export type ServiceAreaCreateManyInput = {
   longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   radiusKm?: runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -467,6 +484,7 @@ export type ServiceAreaUpdateManyMutationInput = {
   longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   radiusKm?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -482,6 +500,7 @@ export type ServiceAreaUncheckedUpdateManyInput = {
   longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   radiusKm?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -502,6 +521,7 @@ export type ServiceAreaCountOrderByAggregateInput = {
   longitude?: Prisma.SortOrder
   radiusKm?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -523,6 +543,7 @@ export type ServiceAreaMaxOrderByAggregateInput = {
   longitude?: Prisma.SortOrder
   radiusKm?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -538,6 +559,7 @@ export type ServiceAreaMinOrderByAggregateInput = {
   longitude?: Prisma.SortOrder
   radiusKm?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -632,6 +654,7 @@ export type ServiceAreaCreateWithoutPrimaryProvidersInput = {
   longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   radiusKm?: runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   listingAreas?: Prisma.ServiceListingAreaCreateNestedManyWithoutServiceAreaInput
@@ -650,6 +673,7 @@ export type ServiceAreaUncheckedCreateWithoutPrimaryProvidersInput = {
   longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   radiusKm?: runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   listingAreas?: Prisma.ServiceListingAreaUncheckedCreateNestedManyWithoutServiceAreaInput
@@ -684,6 +708,7 @@ export type ServiceAreaUpdateWithoutPrimaryProvidersInput = {
   longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   radiusKm?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listingAreas?: Prisma.ServiceListingAreaUpdateManyWithoutServiceAreaNestedInput
@@ -702,6 +727,7 @@ export type ServiceAreaUncheckedUpdateWithoutPrimaryProvidersInput = {
   longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   radiusKm?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listingAreas?: Prisma.ServiceListingAreaUncheckedUpdateManyWithoutServiceAreaNestedInput
@@ -720,6 +746,7 @@ export type ServiceAreaCreateWithoutProviderAreasInput = {
   longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   radiusKm?: runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   listingAreas?: Prisma.ServiceListingAreaCreateNestedManyWithoutServiceAreaInput
@@ -738,6 +765,7 @@ export type ServiceAreaUncheckedCreateWithoutProviderAreasInput = {
   longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   radiusKm?: runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   listingAreas?: Prisma.ServiceListingAreaUncheckedCreateNestedManyWithoutServiceAreaInput
@@ -772,6 +800,7 @@ export type ServiceAreaUpdateWithoutProviderAreasInput = {
   longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   radiusKm?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listingAreas?: Prisma.ServiceListingAreaUpdateManyWithoutServiceAreaNestedInput
@@ -790,6 +819,7 @@ export type ServiceAreaUncheckedUpdateWithoutProviderAreasInput = {
   longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   radiusKm?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listingAreas?: Prisma.ServiceListingAreaUncheckedUpdateManyWithoutServiceAreaNestedInput
@@ -808,6 +838,7 @@ export type ServiceAreaCreateWithoutListingAreasInput = {
   longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   radiusKm?: runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   providerAreas?: Prisma.ProviderServiceAreaCreateNestedManyWithoutServiceAreaInput
@@ -826,6 +857,7 @@ export type ServiceAreaUncheckedCreateWithoutListingAreasInput = {
   longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   radiusKm?: runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   providerAreas?: Prisma.ProviderServiceAreaUncheckedCreateNestedManyWithoutServiceAreaInput
@@ -860,6 +892,7 @@ export type ServiceAreaUpdateWithoutListingAreasInput = {
   longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   radiusKm?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   providerAreas?: Prisma.ProviderServiceAreaUpdateManyWithoutServiceAreaNestedInput
@@ -878,6 +911,7 @@ export type ServiceAreaUncheckedUpdateWithoutListingAreasInput = {
   longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   radiusKm?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   providerAreas?: Prisma.ProviderServiceAreaUncheckedUpdateManyWithoutServiceAreaNestedInput
@@ -896,6 +930,7 @@ export type ServiceAreaCreateWithoutBookingsInput = {
   longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   radiusKm?: runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   listingAreas?: Prisma.ServiceListingAreaCreateNestedManyWithoutServiceAreaInput
@@ -914,6 +949,7 @@ export type ServiceAreaUncheckedCreateWithoutBookingsInput = {
   longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   radiusKm?: runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   listingAreas?: Prisma.ServiceListingAreaUncheckedCreateNestedManyWithoutServiceAreaInput
@@ -948,6 +984,7 @@ export type ServiceAreaUpdateWithoutBookingsInput = {
   longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   radiusKm?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listingAreas?: Prisma.ServiceListingAreaUpdateManyWithoutServiceAreaNestedInput
@@ -966,6 +1003,7 @@ export type ServiceAreaUncheckedUpdateWithoutBookingsInput = {
   longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   radiusKm?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listingAreas?: Prisma.ServiceListingAreaUncheckedUpdateManyWithoutServiceAreaNestedInput
@@ -1042,6 +1080,7 @@ export type ServiceAreaSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   longitude?: boolean
   radiusKm?: boolean
   isActive?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   listingAreas?: boolean | Prisma.ServiceArea$listingAreasArgs<ExtArgs>
@@ -1062,6 +1101,7 @@ export type ServiceAreaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   longitude?: boolean
   radiusKm?: boolean
   isActive?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["serviceArea"]>
@@ -1077,6 +1117,7 @@ export type ServiceAreaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   longitude?: boolean
   radiusKm?: boolean
   isActive?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["serviceArea"]>
@@ -1092,11 +1133,12 @@ export type ServiceAreaSelectScalar = {
   longitude?: boolean
   radiusKm?: boolean
   isActive?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ServiceAreaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "nameEn" | "nameKm" | "slug" | "provinceOrCity" | "latitude" | "longitude" | "radiusKm" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["serviceArea"]>
+export type ServiceAreaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "nameEn" | "nameKm" | "slug" | "provinceOrCity" | "latitude" | "longitude" | "radiusKm" | "isActive" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["serviceArea"]>
 export type ServiceAreaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   listingAreas?: boolean | Prisma.ServiceArea$listingAreasArgs<ExtArgs>
   providerAreas?: boolean | Prisma.ServiceArea$providerAreasArgs<ExtArgs>
@@ -1126,6 +1168,7 @@ export type $ServiceAreaPayload<ExtArgs extends runtime.Types.Extensions.Interna
     longitude: runtime.Decimal | null
     radiusKm: runtime.Decimal
     isActive: boolean
+    deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["serviceArea"]>
@@ -1565,6 +1608,7 @@ export interface ServiceAreaFieldRefs {
   readonly longitude: Prisma.FieldRef<"ServiceArea", 'Decimal'>
   readonly radiusKm: Prisma.FieldRef<"ServiceArea", 'Decimal'>
   readonly isActive: Prisma.FieldRef<"ServiceArea", 'Boolean'>
+  readonly deletedAt: Prisma.FieldRef<"ServiceArea", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"ServiceArea", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ServiceArea", 'DateTime'>
 }

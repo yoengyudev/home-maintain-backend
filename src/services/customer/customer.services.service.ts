@@ -72,6 +72,7 @@ export class CustomerServicesService {
         const area = firstQueryString(query.area)?.trim() ?? "";
 
         const where = {
+            deletedAt: null,
             serviceStatus: ServiceStatus.ACTIVE,
             moderationStatus: {
                 not: ServiceModerationStatus.DISABLED_BY_ADMIN,
@@ -115,6 +116,7 @@ export class CustomerServicesService {
                 ? {
                       category: {
                           isActive: true,
+                          deletedAt: null,
                           OR: [{ id: category }, { slug: category }, { publicId: category }],
                       },
                   }
@@ -125,6 +127,7 @@ export class CustomerServicesService {
                           some: {
                               serviceArea: {
                                   isActive: true,
+                                  deletedAt: null,
                                   OR: [{ slug: area }, { publicId: area }],
                               },
                           },
@@ -161,6 +164,7 @@ export class CustomerServicesService {
             : 3;
 
         const activeWhere = {
+            deletedAt: null,
             serviceStatus: ServiceStatus.ACTIVE,
             moderationStatus: {
                 not: ServiceModerationStatus.DISABLED_BY_ADMIN,
@@ -170,41 +174,58 @@ export class CustomerServicesService {
 
         const topBooked = await prisma.booking.groupBy({
             by: ["serviceListingId"],
-            _count: { serviceListingId: true },
-            orderBy: { _count: { serviceListingId: "desc" } },
+            where: {
+                status: {
+                    in: [
+                        BookingStatus.COMPLETED,
+                        BookingStatus.IN_PROGRESS,
+                        BookingStatus.ACCEPTED,
+                    ],
+                },
+                serviceListing: activeWhere,
+            },
+            _count: { id: true },
+            orderBy: {
+                _count: { id: "desc" },
+            },
             take: limit,
         });
 
-        const bookedIds = topBooked.map((row) => row.serviceListingId);
-        const bookingCountById = new Map(
-            topBooked.map((row) => [row.serviceListingId, row._count.serviceListingId])
+        const bookedIds = topBooked
+            .map((b) => b.serviceListingId)
+            .filter((id): id is string => Boolean(id));
+
+        const bookingCountById = new Map<string, number>(
+            topBooked
+                .filter((b): b is typeof b & { serviceListingId: string } => Boolean(b.serviceListingId))
+                .map((b) => [b.serviceListingId, b._count.id])
         );
 
         let recommended =
             bookedIds.length > 0
                 ? await prisma.serviceListing.findMany({
                       where: {
-                          ...activeWhere,
                           id: { in: bookedIds },
+                          ...activeWhere,
                       },
                       include: serviceInclude,
                   })
                 : [];
 
-        // Preserve booking-count order from groupBy
-        recommended = bookedIds
-            .map((id) => recommended.find((service) => service.id === id))
-            .filter((service): service is NonNullable<typeof service> => Boolean(service));
+        recommended.sort(
+            (a, b) =>
+                (bookingCountById.get(b.id) ?? 0) - (bookingCountById.get(a.id) ?? 0)
+        );
 
         if (recommended.length < limit) {
-            const excludeIds = recommended.map((service) => service.id);
+            const excludeIds = recommended.map((s) => s.id);
             const fallback = await prisma.serviceListing.findMany({
                 where: {
                     ...activeWhere,
                     ...(excludeIds.length > 0 ? { id: { notIn: excludeIds } } : {}),
                 },
-                orderBy: [{ createdAt: "desc" }],
                 take: limit - recommended.length,
+                orderBy: { createdAt: "desc" },
                 include: serviceInclude,
             });
             recommended = [...recommended, ...fallback];
@@ -223,6 +244,7 @@ export class CustomerServicesService {
     static async getServiceById(id: string, lang: Lang) {
         const service = await prisma.serviceListing.findFirst({
             where: {
+                deletedAt: null,
                 OR: [{ id }, { publicId: id }],
                 serviceStatus: ServiceStatus.ACTIVE,
                 moderationStatus: {
@@ -243,6 +265,7 @@ export class CustomerServicesService {
     static async getServiceAvailability(id: string, query: { days?: unknown }, lang: Lang) {
         const service = await prisma.serviceListing.findFirst({
             where: {
+                deletedAt: null,
                 OR: [{ id }, { publicId: id }],
                 serviceStatus: ServiceStatus.ACTIVE,
                 moderationStatus: {

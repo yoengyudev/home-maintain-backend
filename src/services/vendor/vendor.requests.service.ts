@@ -131,46 +131,77 @@ export class VendorVerificationService {
         });
 
         // Find or create draft verification
-        let draftVerification = await prisma.providerVerification.findFirst({
+        let draft = await prisma.providerVerification.findFirst({
             where: {
                 providerProfileId: providerProfile.id,
-                status: ProviderVerificationStatus.DRAFT
-            }
+                status: ProviderVerificationStatus.DRAFT,
+                deletedAt: null,
+            },
+            include: { documents: true }
         });
 
-        if (!draftVerification) {
-            draftVerification = await prisma.providerVerification.create({
+        if (!draft) {
+            draft = await prisma.providerVerification.create({
                 data: {
                     publicId: crypto.randomUUID(),
                     providerProfileId: providerProfile.id,
                     status: ProviderVerificationStatus.DRAFT
-                }
+                },
+                include: { documents: true }
+            });
+        }
+
+        // Update documents if provided
+        if (data.documents && data.documents.length > 0) {
+            const documentsToCreate = data.documents;
+            await prisma.$transaction(async (tx) => {
+                // Delete existing documents
+                await tx.providerVerificationDocument.deleteMany({
+                    where: { providerVerificationId: draft!.id }
+                });
+
+                // Create new documents
+                await tx.providerVerificationDocument.createMany({
+                    data: documentsToCreate.map(doc => ({
+                        publicId: crypto.randomUUID(),
+                        providerVerificationId: draft!.id,
+                        documentType: doc.documentType,
+                        fileName: doc.fileName,
+                        fileUrl: doc.fileUrl,
+                        mimeType: doc.mimeType,
+                        documentNumber: doc.documentNumber
+                    }))
+                });
             });
         }
 
         return {
-            success: true,
-            message: t("VENDOR_VERIFICATION_DRAFT_SAVED", lang),
-            verificationId: draftVerification.publicId
+            id: draft.publicId,
+            step: data.step || 1,
+            savedAt: new Date()
         };
     }
 
     static async submitVerification(userId: string, data: VerificationSubmissionData, lang: Lang = "en") {
         const providerProfile = await prisma.providerProfile.findUnique({
             where: { userId },
-            include: { businessProfile: true, user: true }
+            include: { businessProfile: true }
         });
 
         if (!providerProfile) {
             throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
         }
 
-        // Check if there's already a pending verification
+        // Check if there's already an active verification
         const existingVerification = await prisma.providerVerification.findFirst({
             where: {
                 providerProfileId: providerProfile.id,
+                deletedAt: null,
                 status: {
-                    in: [ProviderVerificationStatus.UNDER_REVIEW, ProviderVerificationStatus.CHANGES_REQUIRED]
+                    in: [
+                        ProviderVerificationStatus.UNDER_REVIEW,
+                        ProviderVerificationStatus.APPROVED
+                    ]
                 }
             }
         });
@@ -179,11 +210,26 @@ export class VendorVerificationService {
             throw new BadRequestException(t("VENDOR_VERIFICATION_ALREADY_UNDER_REVIEW", lang));
         }
 
-        // Update business profile
+        // Update or create business profile
         if (providerProfile.businessProfile) {
             await prisma.providerBusinessProfile.update({
-                where: { id: providerProfile.businessProfile.id },
+                where: { providerProfileId: providerProfile.id },
                 data: {
+                    businessName: data.businessName,
+                    providerType: data.providerType,
+                    addressLine: data.addressLine,
+                    district: data.district,
+                    cityProvince: data.cityProvince,
+                    description: data.about,
+                    logoUrl: data.logoUrl,
+                    latitude: data.latitude,
+                    longitude: data.longitude
+                }
+            });
+        } else {
+            await prisma.providerBusinessProfile.create({
+                data: {
+                    providerProfileId: providerProfile.id,
                     businessName: data.businessName,
                     providerType: data.providerType,
                     addressLine: data.addressLine,
@@ -197,6 +243,7 @@ export class VendorVerificationService {
             });
         }
 
+        // Update contact name in provider profile
         await prisma.providerProfile.update({
             where: { id: providerProfile.id },
             data: {
@@ -206,12 +253,16 @@ export class VendorVerificationService {
 
         // Create verification record
         const verification = await prisma.$transaction(async (tx) => {
-            // Delete any existing drafts
-            await tx.providerVerification.deleteMany({
+            // Soft delete any existing drafts
+            await tx.providerVerification.updateMany({
                 where: {
                     providerProfileId: providerProfile.id,
-                    status: ProviderVerificationStatus.DRAFT
-                }
+                    status: ProviderVerificationStatus.DRAFT,
+                    deletedAt: null,
+                },
+                data: {
+                    deletedAt: new Date(),
+                },
             });
 
             // Create new verification
@@ -231,23 +282,18 @@ export class VendorVerificationService {
                             documentNumber: doc.documentNumber
                         }))
                     },
-                    checklistItems: {
-                        create: [
-                            { publicId: crypto.randomUUID(), label: "Business Information", isComplete: true, sortOrder: 1 },
-                            { publicId: crypto.randomUUID(), label: "Contact Details", isComplete: true, sortOrder: 2 },
-                            { publicId: crypto.randomUUID(), label: "Service Categories", isComplete: true, sortOrder: 3 },
-                            { publicId: crypto.randomUUID(), label: "Required Documents", isComplete: true, sortOrder: 4 },
-                            { publicId: crypto.randomUUID(), label: "Terms & Conditions", isComplete: true, sortOrder: 5 }
-                        ]
-                    },
                     timelineItems: {
                         create: {
                             publicId: crypto.randomUUID(),
                             title: "Verification Submitted",
-                            description: "Provider submitted verification for review",
+                            description: "Provider submitted initial verification request",
                             status: ProviderVerificationStatus.UNDER_REVIEW
                         }
                     }
+                },
+                include: {
+                    documents: true,
+                    timelineItems: true
                 }
             });
 
@@ -255,10 +301,15 @@ export class VendorVerificationService {
         });
 
         return {
-            success: true,
-            message: t("VENDOR_VERIFICATION_SUBMITTED", lang),
-            verificationId: verification.publicId,
-            status: verification.status
+            id: verification.publicId,
+            status: verification.status,
+            submittedAt: verification.submittedAt,
+            documents: verification.documents.map(doc => ({
+                id: doc.publicId,
+                type: doc.documentType,
+                name: doc.fileName,
+                url: doc.fileUrl
+            }))
         };
     }
 
@@ -267,15 +318,15 @@ export class VendorVerificationService {
             where: { userId },
             include: {
                 verifications: {
+                    where: { deletedAt: null },
                     orderBy: { createdAt: 'desc' },
                     take: 1,
                     include: {
                         documents: true,
                         checklistItems: true,
                         decisions: {
-                            include: {
-                                adminProfile: true
-                            }
+                            orderBy: { decidedAt: 'desc' },
+                            take: 1
                         },
                         timelineItems: {
                             orderBy: { occurredAt: 'desc' }
@@ -289,40 +340,39 @@ export class VendorVerificationService {
             throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
         }
 
-        const verification = providerProfile.verifications[0];
+        const latestVerification = providerProfile.verifications[0];
 
-        if (!verification) {
+        if (!latestVerification) {
             return {
-                exists: false,
-                status: null,
-                data: null
+                status: "NOT_SUBMITTED",
+                canSubmit: true,
+                message: "No verification request submitted yet"
             };
         }
 
+        const latestDecision = latestVerification.decisions[0];
+
         return {
-            exists: true,
-            status: verification.status,
-            submittedAt: verification.submittedAt,
-            reviewedAt: verification.reviewedAt,
-            reviewerNotes: verification.reviewerNotes,
-            documents: verification.documents.map(doc => ({
-                documentType: doc.documentType,
-                fileName: doc.fileName,
-                fileUrl: doc.fileUrl,
-                isVerified: doc.isVerified
+            id: latestVerification.publicId,
+            status: latestVerification.status,
+            submittedAt: latestVerification.submittedAt,
+            reviewedAt: latestVerification.reviewedAt,
+            rejectionReason: latestDecision?.reason,
+            actionRequired: latestDecision?.reason, // Simplified mapping
+            reviewerNotes: latestVerification.reviewerNotes,
+            documents: latestVerification.documents.map(doc => ({
+                id: doc.publicId,
+                type: doc.documentType,
+                name: doc.fileName,
+                status: "VERIFIED"
             })),
-            checklistItems: verification.checklistItems.map(item => ({
+            checklist: latestVerification.checklistItems.map(item => ({
+                id: item.publicId,
                 label: item.label,
-                isComplete: item.isComplete,
-                notes: item.notes
+                checked: item.isComplete
             })),
-            decisions: verification.decisions.map(decision => ({
-                status: decision.status,
-                reason: decision.reason,
-                decidedAt: decision.decidedAt,
-                reviewerName: decision.adminProfile?.fullName
-            })),
-            timeline: verification.timelineItems.map(item => ({
+            timeline: latestVerification.timelineItems.map(item => ({
+                id: item.publicId,
                 title: item.title,
                 description: item.description,
                 status: item.status,
@@ -345,7 +395,8 @@ export class VendorVerificationService {
         const verification = await prisma.providerVerification.findFirst({
             where: {
                 providerProfileId: providerProfile.id,
-                status: ProviderVerificationStatus.CHANGES_REQUIRED
+                status: ProviderVerificationStatus.CHANGES_REQUIRED,
+                deletedAt: null
             }
         });
 
@@ -356,7 +407,7 @@ export class VendorVerificationService {
         // Update business profile
         if (providerProfile.businessProfile) {
             await prisma.providerBusinessProfile.update({
-                where: { id: providerProfile.businessProfile.id },
+                where: { providerProfileId: providerProfile.id },
                 data: {
                     ...(data.businessName && { businessName: data.businessName }),
                     ...(data.providerType && { providerType: data.providerType }),
@@ -436,11 +487,15 @@ export class VendorVerificationService {
             throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
         }
 
-        await prisma.providerVerification.deleteMany({
+        await prisma.providerVerification.updateMany({
             where: {
                 providerProfileId: providerProfile.id,
-                status: ProviderVerificationStatus.DRAFT
-            }
+                status: ProviderVerificationStatus.DRAFT,
+                deletedAt: null,
+            },
+            data: {
+                deletedAt: new Date(),
+            },
         });
 
         return {

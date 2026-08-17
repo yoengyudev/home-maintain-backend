@@ -32,6 +32,7 @@ export class VendorServiceService {
             where: { userId },
             include: {
                 serviceListings: {
+                    where: { deletedAt: null },
                     include: {
                         category: true,
                         areas: {
@@ -93,7 +94,8 @@ export class VendorServiceService {
         const service = await prisma.serviceListing.findFirst({
             where: {
                 id: serviceId,
-                providerProfileId: providerProfile.id
+                providerProfileId: providerProfile.id,
+                deletedAt: null,
             },
             include: {
                 category: true,
@@ -198,14 +200,14 @@ export class VendorServiceService {
                 pricingType: data.pricingType,
                 duration: data.duration,
                 imageUrl: data.imageUrl,
-                quantityEnabled: data.quantityEnabled,
+                quantityEnabled: data.quantityEnabled || false,
                 quantityUnit: data.quantityUnit,
                 minQuantity: data.minQuantity,
                 maxQuantity: data.maxQuantity,
                 availabilitySummary: data.availabilitySummary,
-                serviceStatus: ServiceStatus.DISABLED, // Start as disabled until provider activates
+                serviceStatus: ServiceStatus.ACTIVE,
                 moderationStatus: ServiceModerationStatus.NORMAL,
-                areas: data.areaIds && data.areaIds.length > 0 ? {
+                areas: data.areaIds ? {
                     create: data.areaIds.map(areaId => ({
                         serviceAreaId: areaId
                     }))
@@ -245,7 +247,8 @@ export class VendorServiceService {
         const existingService = await prisma.serviceListing.findFirst({
             where: {
                 id: serviceId,
-                providerProfileId: providerProfile.id
+                providerProfileId: providerProfile.id,
+                deletedAt: null,
             }
         });
 
@@ -253,33 +256,32 @@ export class VendorServiceService {
             throw new NotFoundException(t("VENDOR_SERVICE_NOT_FOUND", lang));
         }
 
-        // Handle category - accept both ID and name
-        let category;
+        // Handle category if provided
+        let categoryId = undefined;
         if (data.categoryId) {
-            // Try to find by ID first
-            category = await prisma.serviceCategory.findUnique({
-                where: { id: data.categoryId }
+            const category = await prisma.serviceCategory.findFirst({
+                where: {
+                    OR: [
+                        { id: data.categoryId },
+                        { nameEn: data.categoryId },
+                        { slug: data.categoryId }
+                    ]
+                }
             });
-            
-            // If not found by ID, try to find by name
-            if (!category) {
-                category = await prisma.serviceCategory.findFirst({
-                    where: { 
-                        OR: [
-                            { nameEn: data.categoryId },
-                            { slug: data.categoryId }
-                        ]
-                    }
-                });
-            }
 
             if (!category) {
                 throw new BadRequestException(t("VENDOR_INVALID_CATEGORY", lang));
             }
+            categoryId = category.id;
         }
 
-        // Update areas if provided
-        if (data.areaIds !== undefined) {
+        // Handle area update if provided
+        if (data.areaIds) {
+            // Remove existing areas
+            await prisma.serviceListingArea.deleteMany({
+                where: { serviceListingId: serviceId }
+            });
+
             // Verify areas
             if (data.areaIds.length > 0) {
                 const areas = await prisma.serviceArea.findMany({
@@ -289,15 +291,8 @@ export class VendorServiceService {
                 if (areas.length !== data.areaIds.length) {
                     throw new BadRequestException(t("VENDOR_INVALID_SERVICE_AREAS", lang));
                 }
-            }
 
-            // Remove existing areas
-            await prisma.serviceListingArea.deleteMany({
-                where: { serviceListingId: serviceId }
-            });
-
-            // Add new areas
-            if (data.areaIds.length > 0) {
+                // Add new areas
                 await prisma.serviceListingArea.createMany({
                     data: data.areaIds.map(areaId => ({
                         serviceListingId: serviceId,
@@ -311,7 +306,7 @@ export class VendorServiceService {
             where: { id: serviceId },
             data: {
                 ...(data.name && { name: data.name }),
-                ...(category && { categoryId: category.id }),
+                ...(categoryId && { categoryId }),
                 ...(data.description !== undefined && { description: data.description }),
                 ...(data.price !== undefined && { price: data.price }),
                 ...(data.priceUnit !== undefined && { priceUnit: data.priceUnit }),
@@ -359,7 +354,8 @@ export class VendorServiceService {
         const existingService = await prisma.serviceListing.findFirst({
             where: {
                 id: serviceId,
-                providerProfileId: providerProfile.id
+                providerProfileId: providerProfile.id,
+                deletedAt: null,
             }
         });
 
@@ -381,8 +377,12 @@ export class VendorServiceService {
             throw new BadRequestException(t("VENDOR_SERVICE_HAS_ACTIVE_BOOKINGS", lang));
         }
 
-        await prisma.serviceListing.delete({
-            where: { id: serviceId }
+        await prisma.serviceListing.update({
+            where: { id: serviceId },
+            data: {
+                deletedAt: new Date(),
+                serviceStatus: ServiceStatus.DISABLED,
+            },
         });
 
         return {
@@ -403,7 +403,8 @@ export class VendorServiceService {
         const existingService = await prisma.serviceListing.findFirst({
             where: {
                 id: serviceId,
-                providerProfileId: providerProfile.id
+                providerProfileId: providerProfile.id,
+                deletedAt: null,
             }
         });
 

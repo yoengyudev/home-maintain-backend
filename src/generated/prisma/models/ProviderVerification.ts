@@ -32,6 +32,7 @@ export type ProviderVerificationMinAggregateOutputType = {
   submittedAt: Date | null
   reviewedAt: Date | null
   reviewerNotes: string | null
+  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -44,6 +45,7 @@ export type ProviderVerificationMaxAggregateOutputType = {
   submittedAt: Date | null
   reviewedAt: Date | null
   reviewerNotes: string | null
+  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -56,6 +58,7 @@ export type ProviderVerificationCountAggregateOutputType = {
   submittedAt: number
   reviewedAt: number
   reviewerNotes: number
+  deletedAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -70,6 +73,7 @@ export type ProviderVerificationMinAggregateInputType = {
   submittedAt?: true
   reviewedAt?: true
   reviewerNotes?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -82,6 +86,7 @@ export type ProviderVerificationMaxAggregateInputType = {
   submittedAt?: true
   reviewedAt?: true
   reviewerNotes?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -94,6 +99,7 @@ export type ProviderVerificationCountAggregateInputType = {
   submittedAt?: true
   reviewedAt?: true
   reviewerNotes?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -179,6 +185,7 @@ export type ProviderVerificationGroupByOutputType = {
   submittedAt: Date | null
   reviewedAt: Date | null
   reviewerNotes: string | null
+  deletedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: ProviderVerificationCountAggregateOutputType | null
@@ -212,6 +219,7 @@ export type ProviderVerificationWhereInput = {
   submittedAt?: Prisma.DateTimeNullableFilter<"ProviderVerification"> | Date | string | null
   reviewedAt?: Prisma.DateTimeNullableFilter<"ProviderVerification"> | Date | string | null
   reviewerNotes?: Prisma.StringNullableFilter<"ProviderVerification"> | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"ProviderVerification"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ProviderVerification"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ProviderVerification"> | Date | string
   providerProfile?: Prisma.XOR<Prisma.ProviderProfileScalarRelationFilter, Prisma.ProviderProfileWhereInput>
@@ -229,6 +237,7 @@ export type ProviderVerificationOrderByWithRelationInput = {
   submittedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   reviewedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   reviewerNotes?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   providerProfile?: Prisma.ProviderProfileOrderByWithRelationInput
@@ -249,6 +258,7 @@ export type ProviderVerificationWhereUniqueInput = Prisma.AtLeast<{
   submittedAt?: Prisma.DateTimeNullableFilter<"ProviderVerification"> | Date | string | null
   reviewedAt?: Prisma.DateTimeNullableFilter<"ProviderVerification"> | Date | string | null
   reviewerNotes?: Prisma.StringNullableFilter<"ProviderVerification"> | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"ProviderVerification"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ProviderVerification"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ProviderVerification"> | Date | string
   providerProfile?: Prisma.XOR<Prisma.ProviderProfileScalarRelationFilter, Prisma.ProviderProfileWhereInput>
@@ -266,6 +276,7 @@ export type ProviderVerificationOrderByWithAggregationInput = {
   submittedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   reviewedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   reviewerNotes?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ProviderVerificationCountOrderByAggregateInput
@@ -284,6 +295,7 @@ export type ProviderVerificationScalarWhereWithAggregatesInput = {
   submittedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ProviderVerification"> | Date | string | null
   reviewedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ProviderVerification"> | Date | string | null
   reviewerNotes?: Prisma.StringNullableWithAggregatesFilter<"ProviderVerification"> | string | null
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ProviderVerification"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ProviderVerification"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ProviderVerification"> | Date | string
 }
@@ -295,6 +307,7 @@ export type ProviderVerificationCreateInput = {
   submittedAt?: Date | string | null
   reviewedAt?: Date | string | null
   reviewerNotes?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   providerProfile: Prisma.ProviderProfileCreateNestedOneWithoutVerificationsInput
@@ -312,6 +325,7 @@ export type ProviderVerificationUncheckedCreateInput = {
   submittedAt?: Date | string | null
   reviewedAt?: Date | string | null
   reviewerNotes?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   documents?: Prisma.ProviderVerificationDocumentUncheckedCreateNestedManyWithoutProviderVerificationInput
@@ -327,6 +341,7 @@ export type ProviderVerificationUpdateInput = {
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   providerProfile?: Prisma.ProviderProfileUpdateOneRequiredWithoutVerificationsNestedInput
@@ -344,6 +359,7 @@ export type ProviderVerificationUncheckedUpdateInput = {
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   documents?: Prisma.ProviderVerificationDocumentUncheckedUpdateManyWithoutProviderVerificationNestedInput
@@ -360,6 +376,7 @@ export type ProviderVerificationCreateManyInput = {
   submittedAt?: Date | string | null
   reviewedAt?: Date | string | null
   reviewerNotes?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -371,6 +388,7 @@ export type ProviderVerificationUpdateManyMutationInput = {
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -383,6 +401,7 @@ export type ProviderVerificationUncheckedUpdateManyInput = {
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -405,6 +424,7 @@ export type ProviderVerificationCountOrderByAggregateInput = {
   submittedAt?: Prisma.SortOrder
   reviewedAt?: Prisma.SortOrder
   reviewerNotes?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -417,6 +437,7 @@ export type ProviderVerificationMaxOrderByAggregateInput = {
   submittedAt?: Prisma.SortOrder
   reviewedAt?: Prisma.SortOrder
   reviewerNotes?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -429,6 +450,7 @@ export type ProviderVerificationMinOrderByAggregateInput = {
   submittedAt?: Prisma.SortOrder
   reviewedAt?: Prisma.SortOrder
   reviewerNotes?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -547,6 +569,7 @@ export type ProviderVerificationCreateWithoutProviderProfileInput = {
   submittedAt?: Date | string | null
   reviewedAt?: Date | string | null
   reviewerNotes?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   documents?: Prisma.ProviderVerificationDocumentCreateNestedManyWithoutProviderVerificationInput
@@ -562,6 +585,7 @@ export type ProviderVerificationUncheckedCreateWithoutProviderProfileInput = {
   submittedAt?: Date | string | null
   reviewedAt?: Date | string | null
   reviewerNotes?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   documents?: Prisma.ProviderVerificationDocumentUncheckedCreateNestedManyWithoutProviderVerificationInput
@@ -607,6 +631,7 @@ export type ProviderVerificationScalarWhereInput = {
   submittedAt?: Prisma.DateTimeNullableFilter<"ProviderVerification"> | Date | string | null
   reviewedAt?: Prisma.DateTimeNullableFilter<"ProviderVerification"> | Date | string | null
   reviewerNotes?: Prisma.StringNullableFilter<"ProviderVerification"> | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"ProviderVerification"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ProviderVerification"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ProviderVerification"> | Date | string
 }
@@ -618,6 +643,7 @@ export type ProviderVerificationCreateWithoutDocumentsInput = {
   submittedAt?: Date | string | null
   reviewedAt?: Date | string | null
   reviewerNotes?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   providerProfile: Prisma.ProviderProfileCreateNestedOneWithoutVerificationsInput
@@ -634,6 +660,7 @@ export type ProviderVerificationUncheckedCreateWithoutDocumentsInput = {
   submittedAt?: Date | string | null
   reviewedAt?: Date | string | null
   reviewerNotes?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   checklistItems?: Prisma.ProviderVerificationChecklistItemUncheckedCreateNestedManyWithoutProviderVerificationInput
@@ -664,6 +691,7 @@ export type ProviderVerificationUpdateWithoutDocumentsInput = {
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   providerProfile?: Prisma.ProviderProfileUpdateOneRequiredWithoutVerificationsNestedInput
@@ -680,6 +708,7 @@ export type ProviderVerificationUncheckedUpdateWithoutDocumentsInput = {
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   checklistItems?: Prisma.ProviderVerificationChecklistItemUncheckedUpdateManyWithoutProviderVerificationNestedInput
@@ -694,6 +723,7 @@ export type ProviderVerificationCreateWithoutChecklistItemsInput = {
   submittedAt?: Date | string | null
   reviewedAt?: Date | string | null
   reviewerNotes?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   providerProfile: Prisma.ProviderProfileCreateNestedOneWithoutVerificationsInput
@@ -710,6 +740,7 @@ export type ProviderVerificationUncheckedCreateWithoutChecklistItemsInput = {
   submittedAt?: Date | string | null
   reviewedAt?: Date | string | null
   reviewerNotes?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   documents?: Prisma.ProviderVerificationDocumentUncheckedCreateNestedManyWithoutProviderVerificationInput
@@ -740,6 +771,7 @@ export type ProviderVerificationUpdateWithoutChecklistItemsInput = {
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   providerProfile?: Prisma.ProviderProfileUpdateOneRequiredWithoutVerificationsNestedInput
@@ -756,6 +788,7 @@ export type ProviderVerificationUncheckedUpdateWithoutChecklistItemsInput = {
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   documents?: Prisma.ProviderVerificationDocumentUncheckedUpdateManyWithoutProviderVerificationNestedInput
@@ -770,6 +803,7 @@ export type ProviderVerificationCreateWithoutDecisionsInput = {
   submittedAt?: Date | string | null
   reviewedAt?: Date | string | null
   reviewerNotes?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   providerProfile: Prisma.ProviderProfileCreateNestedOneWithoutVerificationsInput
@@ -786,6 +820,7 @@ export type ProviderVerificationUncheckedCreateWithoutDecisionsInput = {
   submittedAt?: Date | string | null
   reviewedAt?: Date | string | null
   reviewerNotes?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   documents?: Prisma.ProviderVerificationDocumentUncheckedCreateNestedManyWithoutProviderVerificationInput
@@ -816,6 +851,7 @@ export type ProviderVerificationUpdateWithoutDecisionsInput = {
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   providerProfile?: Prisma.ProviderProfileUpdateOneRequiredWithoutVerificationsNestedInput
@@ -832,6 +868,7 @@ export type ProviderVerificationUncheckedUpdateWithoutDecisionsInput = {
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   documents?: Prisma.ProviderVerificationDocumentUncheckedUpdateManyWithoutProviderVerificationNestedInput
@@ -846,6 +883,7 @@ export type ProviderVerificationCreateWithoutTimelineItemsInput = {
   submittedAt?: Date | string | null
   reviewedAt?: Date | string | null
   reviewerNotes?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   providerProfile: Prisma.ProviderProfileCreateNestedOneWithoutVerificationsInput
@@ -862,6 +900,7 @@ export type ProviderVerificationUncheckedCreateWithoutTimelineItemsInput = {
   submittedAt?: Date | string | null
   reviewedAt?: Date | string | null
   reviewerNotes?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   documents?: Prisma.ProviderVerificationDocumentUncheckedCreateNestedManyWithoutProviderVerificationInput
@@ -892,6 +931,7 @@ export type ProviderVerificationUpdateWithoutTimelineItemsInput = {
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   providerProfile?: Prisma.ProviderProfileUpdateOneRequiredWithoutVerificationsNestedInput
@@ -908,6 +948,7 @@ export type ProviderVerificationUncheckedUpdateWithoutTimelineItemsInput = {
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   documents?: Prisma.ProviderVerificationDocumentUncheckedUpdateManyWithoutProviderVerificationNestedInput
@@ -922,6 +963,7 @@ export type ProviderVerificationCreateManyProviderProfileInput = {
   submittedAt?: Date | string | null
   reviewedAt?: Date | string | null
   reviewerNotes?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -933,6 +975,7 @@ export type ProviderVerificationUpdateWithoutProviderProfileInput = {
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   documents?: Prisma.ProviderVerificationDocumentUpdateManyWithoutProviderVerificationNestedInput
@@ -948,6 +991,7 @@ export type ProviderVerificationUncheckedUpdateWithoutProviderProfileInput = {
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   documents?: Prisma.ProviderVerificationDocumentUncheckedUpdateManyWithoutProviderVerificationNestedInput
@@ -963,6 +1007,7 @@ export type ProviderVerificationUncheckedUpdateManyWithoutProviderProfileInput =
   submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reviewerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1033,6 +1078,7 @@ export type ProviderVerificationSelect<ExtArgs extends runtime.Types.Extensions.
   submittedAt?: boolean
   reviewedAt?: boolean
   reviewerNotes?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   providerProfile?: boolean | Prisma.ProviderProfileDefaultArgs<ExtArgs>
@@ -1051,6 +1097,7 @@ export type ProviderVerificationSelectCreateManyAndReturn<ExtArgs extends runtim
   submittedAt?: boolean
   reviewedAt?: boolean
   reviewerNotes?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   providerProfile?: boolean | Prisma.ProviderProfileDefaultArgs<ExtArgs>
@@ -1064,6 +1111,7 @@ export type ProviderVerificationSelectUpdateManyAndReturn<ExtArgs extends runtim
   submittedAt?: boolean
   reviewedAt?: boolean
   reviewerNotes?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   providerProfile?: boolean | Prisma.ProviderProfileDefaultArgs<ExtArgs>
@@ -1077,11 +1125,12 @@ export type ProviderVerificationSelectScalar = {
   submittedAt?: boolean
   reviewedAt?: boolean
   reviewerNotes?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ProviderVerificationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "providerProfileId" | "status" | "submittedAt" | "reviewedAt" | "reviewerNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["providerVerification"]>
+export type ProviderVerificationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "providerProfileId" | "status" | "submittedAt" | "reviewedAt" | "reviewerNotes" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["providerVerification"]>
 export type ProviderVerificationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   providerProfile?: boolean | Prisma.ProviderProfileDefaultArgs<ExtArgs>
   documents?: boolean | Prisma.ProviderVerification$documentsArgs<ExtArgs>
@@ -1114,6 +1163,7 @@ export type $ProviderVerificationPayload<ExtArgs extends runtime.Types.Extension
     submittedAt: Date | null
     reviewedAt: Date | null
     reviewerNotes: string | null
+    deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["providerVerification"]>
@@ -1551,6 +1601,7 @@ export interface ProviderVerificationFieldRefs {
   readonly submittedAt: Prisma.FieldRef<"ProviderVerification", 'DateTime'>
   readonly reviewedAt: Prisma.FieldRef<"ProviderVerification", 'DateTime'>
   readonly reviewerNotes: Prisma.FieldRef<"ProviderVerification", 'String'>
+  readonly deletedAt: Prisma.FieldRef<"ProviderVerification", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"ProviderVerification", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ProviderVerification", 'DateTime'>
 }

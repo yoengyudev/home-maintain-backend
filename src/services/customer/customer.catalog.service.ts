@@ -79,6 +79,7 @@ export class CustomerCatalogService {
             prisma.serviceCategory.findMany({
                 where: {
                     isActive: true,
+                    deletedAt: null,
                     ...(searchText
                         ? {
                               OR: [
@@ -95,6 +96,7 @@ export class CustomerCatalogService {
                 include: {
                     serviceListings: {
                         where: {
+                            deletedAt: null,
                             serviceStatus: ServiceStatus.ACTIVE,
                             moderationStatus: { not: ServiceModerationStatus.DISABLED_BY_ADMIN },
                         },
@@ -104,6 +106,7 @@ export class CustomerCatalogService {
             prisma.serviceCategory.count({
                 where: {
                     isActive: true,
+                    deletedAt: null,
                     ...(searchText
                         ? {
                               OR: [
@@ -144,12 +147,14 @@ export class CustomerCatalogService {
     static async getServiceCategoryById(id: string, lang: "en" | "kh") {
         const item = await prisma.serviceCategory.findFirst({
             where: {
+                deletedAt: null,
                 OR: [{ id }, { publicId: id }],
                 isActive: true,
             },
             include: {
                 serviceListings: {
                     where: {
+                        deletedAt: null,
                         serviceStatus: ServiceStatus.ACTIVE,
                         moderationStatus: { not: ServiceModerationStatus.DISABLED_BY_ADMIN },
                     },
@@ -184,6 +189,7 @@ export class CustomerCatalogService {
         const searchText = search?.trim().toLowerCase();
 
         const where: any = {
+            deletedAt: null,
             serviceStatus: ServiceStatus.ACTIVE,
             moderationStatus: { not: ServiceModerationStatus.DISABLED_BY_ADMIN },
             ...(searchText
@@ -199,6 +205,7 @@ export class CustomerCatalogService {
             ...(category
                 ? {
                       category: {
+                          deletedAt: null,
                           OR: [
                               { id: category },
                               { publicId: category },
@@ -300,6 +307,7 @@ export class CustomerCatalogService {
     static async getServiceById(id: string, lang: "en" | "kh") {
         const item = await prisma.serviceListing.findFirst({
             where: {
+                deletedAt: null,
                 OR: [{ id }, { publicId: id }],
                 serviceStatus: ServiceStatus.ACTIVE,
                 moderationStatus: { not: ServiceModerationStatus.DISABLED_BY_ADMIN },
@@ -315,6 +323,7 @@ export class CustomerCatalogService {
                 },
                 areas: { include: { serviceArea: true } },
                 reviews: {
+                    where: { deletedAt: null },
                     orderBy: { createdAt: "desc" },
                     take: 8,
                     include: {

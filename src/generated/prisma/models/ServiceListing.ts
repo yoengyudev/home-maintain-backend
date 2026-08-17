@@ -59,6 +59,7 @@ export type ServiceListingMinAggregateOutputType = {
   availabilitySummary: string | null
   serviceStatus: $Enums.ServiceStatus | null
   moderationStatus: $Enums.ServiceModerationStatus | null
+  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -84,6 +85,7 @@ export type ServiceListingMaxAggregateOutputType = {
   availabilitySummary: string | null
   serviceStatus: $Enums.ServiceStatus | null
   moderationStatus: $Enums.ServiceModerationStatus | null
+  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -109,6 +111,7 @@ export type ServiceListingCountAggregateOutputType = {
   availabilitySummary: number
   serviceStatus: number
   moderationStatus: number
+  deletedAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -148,6 +151,7 @@ export type ServiceListingMinAggregateInputType = {
   availabilitySummary?: true
   serviceStatus?: true
   moderationStatus?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -173,6 +177,7 @@ export type ServiceListingMaxAggregateInputType = {
   availabilitySummary?: true
   serviceStatus?: true
   moderationStatus?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -198,6 +203,7 @@ export type ServiceListingCountAggregateInputType = {
   availabilitySummary?: true
   serviceStatus?: true
   moderationStatus?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -310,6 +316,7 @@ export type ServiceListingGroupByOutputType = {
   availabilitySummary: string | null
   serviceStatus: $Enums.ServiceStatus
   moderationStatus: $Enums.ServiceModerationStatus
+  deletedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: ServiceListingCountAggregateOutputType | null
@@ -358,6 +365,7 @@ export type ServiceListingWhereInput = {
   availabilitySummary?: Prisma.StringNullableFilter<"ServiceListing"> | string | null
   serviceStatus?: Prisma.EnumServiceStatusFilter<"ServiceListing"> | $Enums.ServiceStatus
   moderationStatus?: Prisma.EnumServiceModerationStatusFilter<"ServiceListing"> | $Enums.ServiceModerationStatus
+  deletedAt?: Prisma.DateTimeNullableFilter<"ServiceListing"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ServiceListing"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ServiceListing"> | Date | string
   providerProfile?: Prisma.XOR<Prisma.ProviderProfileScalarRelationFilter, Prisma.ProviderProfileWhereInput>
@@ -389,6 +397,7 @@ export type ServiceListingOrderByWithRelationInput = {
   availabilitySummary?: Prisma.SortOrderInput | Prisma.SortOrder
   serviceStatus?: Prisma.SortOrder
   moderationStatus?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   providerProfile?: Prisma.ProviderProfileOrderByWithRelationInput
@@ -423,6 +432,7 @@ export type ServiceListingWhereUniqueInput = Prisma.AtLeast<{
   availabilitySummary?: Prisma.StringNullableFilter<"ServiceListing"> | string | null
   serviceStatus?: Prisma.EnumServiceStatusFilter<"ServiceListing"> | $Enums.ServiceStatus
   moderationStatus?: Prisma.EnumServiceModerationStatusFilter<"ServiceListing"> | $Enums.ServiceModerationStatus
+  deletedAt?: Prisma.DateTimeNullableFilter<"ServiceListing"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ServiceListing"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ServiceListing"> | Date | string
   providerProfile?: Prisma.XOR<Prisma.ProviderProfileScalarRelationFilter, Prisma.ProviderProfileWhereInput>
@@ -454,6 +464,7 @@ export type ServiceListingOrderByWithAggregationInput = {
   availabilitySummary?: Prisma.SortOrderInput | Prisma.SortOrder
   serviceStatus?: Prisma.SortOrder
   moderationStatus?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ServiceListingCountOrderByAggregateInput
@@ -487,6 +498,7 @@ export type ServiceListingScalarWhereWithAggregatesInput = {
   availabilitySummary?: Prisma.StringNullableWithAggregatesFilter<"ServiceListing"> | string | null
   serviceStatus?: Prisma.EnumServiceStatusWithAggregatesFilter<"ServiceListing"> | $Enums.ServiceStatus
   moderationStatus?: Prisma.EnumServiceModerationStatusWithAggregatesFilter<"ServiceListing"> | $Enums.ServiceModerationStatus
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ServiceListing"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ServiceListing"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ServiceListing"> | Date | string
 }
@@ -510,6 +522,7 @@ export type ServiceListingCreateInput = {
   availabilitySummary?: string | null
   serviceStatus?: $Enums.ServiceStatus
   moderationStatus?: $Enums.ServiceModerationStatus
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   providerProfile: Prisma.ProviderProfileCreateNestedOneWithoutServiceListingsInput
@@ -541,6 +554,7 @@ export type ServiceListingUncheckedCreateInput = {
   availabilitySummary?: string | null
   serviceStatus?: $Enums.ServiceStatus
   moderationStatus?: $Enums.ServiceModerationStatus
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   areas?: Prisma.ServiceListingAreaUncheckedCreateNestedManyWithoutServiceListingInput
@@ -568,6 +582,7 @@ export type ServiceListingUpdateInput = {
   availabilitySummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceStatus?: Prisma.EnumServiceStatusFieldUpdateOperationsInput | $Enums.ServiceStatus
   moderationStatus?: Prisma.EnumServiceModerationStatusFieldUpdateOperationsInput | $Enums.ServiceModerationStatus
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   providerProfile?: Prisma.ProviderProfileUpdateOneRequiredWithoutServiceListingsNestedInput
@@ -599,6 +614,7 @@ export type ServiceListingUncheckedUpdateInput = {
   availabilitySummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceStatus?: Prisma.EnumServiceStatusFieldUpdateOperationsInput | $Enums.ServiceStatus
   moderationStatus?: Prisma.EnumServiceModerationStatusFieldUpdateOperationsInput | $Enums.ServiceModerationStatus
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   areas?: Prisma.ServiceListingAreaUncheckedUpdateManyWithoutServiceListingNestedInput
@@ -628,6 +644,7 @@ export type ServiceListingCreateManyInput = {
   availabilitySummary?: string | null
   serviceStatus?: $Enums.ServiceStatus
   moderationStatus?: $Enums.ServiceModerationStatus
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -651,6 +668,7 @@ export type ServiceListingUpdateManyMutationInput = {
   availabilitySummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceStatus?: Prisma.EnumServiceStatusFieldUpdateOperationsInput | $Enums.ServiceStatus
   moderationStatus?: Prisma.EnumServiceModerationStatusFieldUpdateOperationsInput | $Enums.ServiceModerationStatus
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -676,6 +694,7 @@ export type ServiceListingUncheckedUpdateManyInput = {
   availabilitySummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceStatus?: Prisma.EnumServiceStatusFieldUpdateOperationsInput | $Enums.ServiceStatus
   moderationStatus?: Prisma.EnumServiceModerationStatusFieldUpdateOperationsInput | $Enums.ServiceModerationStatus
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -711,6 +730,7 @@ export type ServiceListingCountOrderByAggregateInput = {
   availabilitySummary?: Prisma.SortOrder
   serviceStatus?: Prisma.SortOrder
   moderationStatus?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -742,6 +762,7 @@ export type ServiceListingMaxOrderByAggregateInput = {
   availabilitySummary?: Prisma.SortOrder
   serviceStatus?: Prisma.SortOrder
   moderationStatus?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -767,6 +788,7 @@ export type ServiceListingMinOrderByAggregateInput = {
   availabilitySummary?: Prisma.SortOrder
   serviceStatus?: Prisma.SortOrder
   moderationStatus?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -957,6 +979,7 @@ export type ServiceListingCreateWithoutProviderProfileInput = {
   availabilitySummary?: string | null
   serviceStatus?: $Enums.ServiceStatus
   moderationStatus?: $Enums.ServiceModerationStatus
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   category: Prisma.ServiceCategoryCreateNestedOneWithoutServiceListingsInput
@@ -986,6 +1009,7 @@ export type ServiceListingUncheckedCreateWithoutProviderProfileInput = {
   availabilitySummary?: string | null
   serviceStatus?: $Enums.ServiceStatus
   moderationStatus?: $Enums.ServiceModerationStatus
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   areas?: Prisma.ServiceListingAreaUncheckedCreateNestedManyWithoutServiceListingInput
@@ -1044,6 +1068,7 @@ export type ServiceListingScalarWhereInput = {
   availabilitySummary?: Prisma.StringNullableFilter<"ServiceListing"> | string | null
   serviceStatus?: Prisma.EnumServiceStatusFilter<"ServiceListing"> | $Enums.ServiceStatus
   moderationStatus?: Prisma.EnumServiceModerationStatusFilter<"ServiceListing"> | $Enums.ServiceModerationStatus
+  deletedAt?: Prisma.DateTimeNullableFilter<"ServiceListing"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ServiceListing"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ServiceListing"> | Date | string
 }
@@ -1067,6 +1092,7 @@ export type ServiceListingCreateWithoutCategoryInput = {
   availabilitySummary?: string | null
   serviceStatus?: $Enums.ServiceStatus
   moderationStatus?: $Enums.ServiceModerationStatus
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   providerProfile: Prisma.ProviderProfileCreateNestedOneWithoutServiceListingsInput
@@ -1096,6 +1122,7 @@ export type ServiceListingUncheckedCreateWithoutCategoryInput = {
   availabilitySummary?: string | null
   serviceStatus?: $Enums.ServiceStatus
   moderationStatus?: $Enums.ServiceModerationStatus
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   areas?: Prisma.ServiceListingAreaUncheckedCreateNestedManyWithoutServiceListingInput
@@ -1149,6 +1176,7 @@ export type ServiceListingCreateWithoutAreasInput = {
   availabilitySummary?: string | null
   serviceStatus?: $Enums.ServiceStatus
   moderationStatus?: $Enums.ServiceModerationStatus
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   providerProfile: Prisma.ProviderProfileCreateNestedOneWithoutServiceListingsInput
@@ -1179,6 +1207,7 @@ export type ServiceListingUncheckedCreateWithoutAreasInput = {
   availabilitySummary?: string | null
   serviceStatus?: $Enums.ServiceStatus
   moderationStatus?: $Enums.ServiceModerationStatus
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   moderationHistory?: Prisma.ServiceModerationHistoryUncheckedCreateNestedManyWithoutServiceListingInput
@@ -1221,6 +1250,7 @@ export type ServiceListingUpdateWithoutAreasInput = {
   availabilitySummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceStatus?: Prisma.EnumServiceStatusFieldUpdateOperationsInput | $Enums.ServiceStatus
   moderationStatus?: Prisma.EnumServiceModerationStatusFieldUpdateOperationsInput | $Enums.ServiceModerationStatus
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   providerProfile?: Prisma.ProviderProfileUpdateOneRequiredWithoutServiceListingsNestedInput
@@ -1251,6 +1281,7 @@ export type ServiceListingUncheckedUpdateWithoutAreasInput = {
   availabilitySummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceStatus?: Prisma.EnumServiceStatusFieldUpdateOperationsInput | $Enums.ServiceStatus
   moderationStatus?: Prisma.EnumServiceModerationStatusFieldUpdateOperationsInput | $Enums.ServiceModerationStatus
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   moderationHistory?: Prisma.ServiceModerationHistoryUncheckedUpdateManyWithoutServiceListingNestedInput
@@ -1277,6 +1308,7 @@ export type ServiceListingCreateWithoutModerationHistoryInput = {
   availabilitySummary?: string | null
   serviceStatus?: $Enums.ServiceStatus
   moderationStatus?: $Enums.ServiceModerationStatus
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   providerProfile: Prisma.ProviderProfileCreateNestedOneWithoutServiceListingsInput
@@ -1307,6 +1339,7 @@ export type ServiceListingUncheckedCreateWithoutModerationHistoryInput = {
   availabilitySummary?: string | null
   serviceStatus?: $Enums.ServiceStatus
   moderationStatus?: $Enums.ServiceModerationStatus
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   areas?: Prisma.ServiceListingAreaUncheckedCreateNestedManyWithoutServiceListingInput
@@ -1349,6 +1382,7 @@ export type ServiceListingUpdateWithoutModerationHistoryInput = {
   availabilitySummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceStatus?: Prisma.EnumServiceStatusFieldUpdateOperationsInput | $Enums.ServiceStatus
   moderationStatus?: Prisma.EnumServiceModerationStatusFieldUpdateOperationsInput | $Enums.ServiceModerationStatus
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   providerProfile?: Prisma.ProviderProfileUpdateOneRequiredWithoutServiceListingsNestedInput
@@ -1379,6 +1413,7 @@ export type ServiceListingUncheckedUpdateWithoutModerationHistoryInput = {
   availabilitySummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceStatus?: Prisma.EnumServiceStatusFieldUpdateOperationsInput | $Enums.ServiceStatus
   moderationStatus?: Prisma.EnumServiceModerationStatusFieldUpdateOperationsInput | $Enums.ServiceModerationStatus
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   areas?: Prisma.ServiceListingAreaUncheckedUpdateManyWithoutServiceListingNestedInput
@@ -1405,6 +1440,7 @@ export type ServiceListingCreateWithoutBookingsInput = {
   availabilitySummary?: string | null
   serviceStatus?: $Enums.ServiceStatus
   moderationStatus?: $Enums.ServiceModerationStatus
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   providerProfile: Prisma.ProviderProfileCreateNestedOneWithoutServiceListingsInput
@@ -1435,6 +1471,7 @@ export type ServiceListingUncheckedCreateWithoutBookingsInput = {
   availabilitySummary?: string | null
   serviceStatus?: $Enums.ServiceStatus
   moderationStatus?: $Enums.ServiceModerationStatus
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   areas?: Prisma.ServiceListingAreaUncheckedCreateNestedManyWithoutServiceListingInput
@@ -1477,6 +1514,7 @@ export type ServiceListingUpdateWithoutBookingsInput = {
   availabilitySummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceStatus?: Prisma.EnumServiceStatusFieldUpdateOperationsInput | $Enums.ServiceStatus
   moderationStatus?: Prisma.EnumServiceModerationStatusFieldUpdateOperationsInput | $Enums.ServiceModerationStatus
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   providerProfile?: Prisma.ProviderProfileUpdateOneRequiredWithoutServiceListingsNestedInput
@@ -1507,6 +1545,7 @@ export type ServiceListingUncheckedUpdateWithoutBookingsInput = {
   availabilitySummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceStatus?: Prisma.EnumServiceStatusFieldUpdateOperationsInput | $Enums.ServiceStatus
   moderationStatus?: Prisma.EnumServiceModerationStatusFieldUpdateOperationsInput | $Enums.ServiceModerationStatus
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   areas?: Prisma.ServiceListingAreaUncheckedUpdateManyWithoutServiceListingNestedInput
@@ -1533,6 +1572,7 @@ export type ServiceListingCreateWithoutReviewsInput = {
   availabilitySummary?: string | null
   serviceStatus?: $Enums.ServiceStatus
   moderationStatus?: $Enums.ServiceModerationStatus
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   providerProfile: Prisma.ProviderProfileCreateNestedOneWithoutServiceListingsInput
@@ -1563,6 +1603,7 @@ export type ServiceListingUncheckedCreateWithoutReviewsInput = {
   availabilitySummary?: string | null
   serviceStatus?: $Enums.ServiceStatus
   moderationStatus?: $Enums.ServiceModerationStatus
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   areas?: Prisma.ServiceListingAreaUncheckedCreateNestedManyWithoutServiceListingInput
@@ -1605,6 +1646,7 @@ export type ServiceListingUpdateWithoutReviewsInput = {
   availabilitySummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceStatus?: Prisma.EnumServiceStatusFieldUpdateOperationsInput | $Enums.ServiceStatus
   moderationStatus?: Prisma.EnumServiceModerationStatusFieldUpdateOperationsInput | $Enums.ServiceModerationStatus
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   providerProfile?: Prisma.ProviderProfileUpdateOneRequiredWithoutServiceListingsNestedInput
@@ -1635,6 +1677,7 @@ export type ServiceListingUncheckedUpdateWithoutReviewsInput = {
   availabilitySummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceStatus?: Prisma.EnumServiceStatusFieldUpdateOperationsInput | $Enums.ServiceStatus
   moderationStatus?: Prisma.EnumServiceModerationStatusFieldUpdateOperationsInput | $Enums.ServiceModerationStatus
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   areas?: Prisma.ServiceListingAreaUncheckedUpdateManyWithoutServiceListingNestedInput
@@ -1662,6 +1705,7 @@ export type ServiceListingCreateManyProviderProfileInput = {
   availabilitySummary?: string | null
   serviceStatus?: $Enums.ServiceStatus
   moderationStatus?: $Enums.ServiceModerationStatus
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1685,6 +1729,7 @@ export type ServiceListingUpdateWithoutProviderProfileInput = {
   availabilitySummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceStatus?: Prisma.EnumServiceStatusFieldUpdateOperationsInput | $Enums.ServiceStatus
   moderationStatus?: Prisma.EnumServiceModerationStatusFieldUpdateOperationsInput | $Enums.ServiceModerationStatus
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.ServiceCategoryUpdateOneRequiredWithoutServiceListingsNestedInput
@@ -1714,6 +1759,7 @@ export type ServiceListingUncheckedUpdateWithoutProviderProfileInput = {
   availabilitySummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceStatus?: Prisma.EnumServiceStatusFieldUpdateOperationsInput | $Enums.ServiceStatus
   moderationStatus?: Prisma.EnumServiceModerationStatusFieldUpdateOperationsInput | $Enums.ServiceModerationStatus
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   areas?: Prisma.ServiceListingAreaUncheckedUpdateManyWithoutServiceListingNestedInput
@@ -1742,6 +1788,7 @@ export type ServiceListingUncheckedUpdateManyWithoutProviderProfileInput = {
   availabilitySummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceStatus?: Prisma.EnumServiceStatusFieldUpdateOperationsInput | $Enums.ServiceStatus
   moderationStatus?: Prisma.EnumServiceModerationStatusFieldUpdateOperationsInput | $Enums.ServiceModerationStatus
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1766,6 +1813,7 @@ export type ServiceListingCreateManyCategoryInput = {
   availabilitySummary?: string | null
   serviceStatus?: $Enums.ServiceStatus
   moderationStatus?: $Enums.ServiceModerationStatus
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1789,6 +1837,7 @@ export type ServiceListingUpdateWithoutCategoryInput = {
   availabilitySummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceStatus?: Prisma.EnumServiceStatusFieldUpdateOperationsInput | $Enums.ServiceStatus
   moderationStatus?: Prisma.EnumServiceModerationStatusFieldUpdateOperationsInput | $Enums.ServiceModerationStatus
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   providerProfile?: Prisma.ProviderProfileUpdateOneRequiredWithoutServiceListingsNestedInput
@@ -1818,6 +1867,7 @@ export type ServiceListingUncheckedUpdateWithoutCategoryInput = {
   availabilitySummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceStatus?: Prisma.EnumServiceStatusFieldUpdateOperationsInput | $Enums.ServiceStatus
   moderationStatus?: Prisma.EnumServiceModerationStatusFieldUpdateOperationsInput | $Enums.ServiceModerationStatus
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   areas?: Prisma.ServiceListingAreaUncheckedUpdateManyWithoutServiceListingNestedInput
@@ -1846,6 +1896,7 @@ export type ServiceListingUncheckedUpdateManyWithoutCategoryInput = {
   availabilitySummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceStatus?: Prisma.EnumServiceStatusFieldUpdateOperationsInput | $Enums.ServiceStatus
   moderationStatus?: Prisma.EnumServiceModerationStatusFieldUpdateOperationsInput | $Enums.ServiceModerationStatus
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1929,6 +1980,7 @@ export type ServiceListingSelect<ExtArgs extends runtime.Types.Extensions.Intern
   availabilitySummary?: boolean
   serviceStatus?: boolean
   moderationStatus?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   providerProfile?: boolean | Prisma.ProviderProfileDefaultArgs<ExtArgs>
@@ -1961,6 +2013,7 @@ export type ServiceListingSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   availabilitySummary?: boolean
   serviceStatus?: boolean
   moderationStatus?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   providerProfile?: boolean | Prisma.ProviderProfileDefaultArgs<ExtArgs>
@@ -1988,6 +2041,7 @@ export type ServiceListingSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   availabilitySummary?: boolean
   serviceStatus?: boolean
   moderationStatus?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   providerProfile?: boolean | Prisma.ProviderProfileDefaultArgs<ExtArgs>
@@ -2015,11 +2069,12 @@ export type ServiceListingSelectScalar = {
   availabilitySummary?: boolean
   serviceStatus?: boolean
   moderationStatus?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ServiceListingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "providerProfileId" | "categoryId" | "name" | "nameKm" | "description" | "descriptionKm" | "price" | "priceUnit" | "pricingType" | "duration" | "imageUrl" | "quantityEnabled" | "quantityUnit" | "minQuantity" | "maxQuantity" | "availabilitySummary" | "serviceStatus" | "moderationStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["serviceListing"]>
+export type ServiceListingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "providerProfileId" | "categoryId" | "name" | "nameKm" | "description" | "descriptionKm" | "price" | "priceUnit" | "pricingType" | "duration" | "imageUrl" | "quantityEnabled" | "quantityUnit" | "minQuantity" | "maxQuantity" | "availabilitySummary" | "serviceStatus" | "moderationStatus" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["serviceListing"]>
 export type ServiceListingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   providerProfile?: boolean | Prisma.ProviderProfileDefaultArgs<ExtArgs>
   category?: boolean | Prisma.ServiceCategoryDefaultArgs<ExtArgs>
@@ -2069,6 +2124,7 @@ export type $ServiceListingPayload<ExtArgs extends runtime.Types.Extensions.Inte
     availabilitySummary: string | null
     serviceStatus: $Enums.ServiceStatus
     moderationStatus: $Enums.ServiceModerationStatus
+    deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["serviceListing"]>
@@ -2520,6 +2576,7 @@ export interface ServiceListingFieldRefs {
   readonly availabilitySummary: Prisma.FieldRef<"ServiceListing", 'String'>
   readonly serviceStatus: Prisma.FieldRef<"ServiceListing", 'ServiceStatus'>
   readonly moderationStatus: Prisma.FieldRef<"ServiceListing", 'ServiceModerationStatus'>
+  readonly deletedAt: Prisma.FieldRef<"ServiceListing", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"ServiceListing", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ServiceListing", 'DateTime'>
 }

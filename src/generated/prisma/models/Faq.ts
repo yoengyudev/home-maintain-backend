@@ -48,6 +48,7 @@ export type FaqMinAggregateOutputType = {
   relatedRouteLabelKm: string | null
   sortOrder: number | null
   isActive: boolean | null
+  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -66,6 +67,7 @@ export type FaqMaxAggregateOutputType = {
   relatedRouteLabelKm: string | null
   sortOrder: number | null
   isActive: boolean | null
+  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -85,6 +87,7 @@ export type FaqCountAggregateOutputType = {
   relatedRouteLabelKm: number
   sortOrder: number
   isActive: number
+  deletedAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -113,6 +116,7 @@ export type FaqMinAggregateInputType = {
   relatedRouteLabelKm?: true
   sortOrder?: true
   isActive?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -131,6 +135,7 @@ export type FaqMaxAggregateInputType = {
   relatedRouteLabelKm?: true
   sortOrder?: true
   isActive?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -150,6 +155,7 @@ export type FaqCountAggregateInputType = {
   relatedRouteLabelKm?: true
   sortOrder?: true
   isActive?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -256,6 +262,7 @@ export type FaqGroupByOutputType = {
   relatedRouteLabelKm: string | null
   sortOrder: number
   isActive: boolean
+  deletedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: FaqCountAggregateOutputType | null
@@ -298,6 +305,7 @@ export type FaqWhereInput = {
   relatedRouteLabelKm?: Prisma.StringNullableFilter<"Faq"> | string | null
   sortOrder?: Prisma.IntFilter<"Faq"> | number
   isActive?: Prisma.BoolFilter<"Faq"> | boolean
+  deletedAt?: Prisma.DateTimeNullableFilter<"Faq"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Faq"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Faq"> | Date | string
 }
@@ -317,6 +325,7 @@ export type FaqOrderByWithRelationInput = {
   relatedRouteLabelKm?: Prisma.SortOrderInput | Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -339,6 +348,7 @@ export type FaqWhereUniqueInput = Prisma.AtLeast<{
   relatedRouteLabelKm?: Prisma.StringNullableFilter<"Faq"> | string | null
   sortOrder?: Prisma.IntFilter<"Faq"> | number
   isActive?: Prisma.BoolFilter<"Faq"> | boolean
+  deletedAt?: Prisma.DateTimeNullableFilter<"Faq"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Faq"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Faq"> | Date | string
 }, "id" | "publicId">
@@ -358,6 +368,7 @@ export type FaqOrderByWithAggregationInput = {
   relatedRouteLabelKm?: Prisma.SortOrderInput | Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.FaqCountOrderByAggregateInput
@@ -385,6 +396,7 @@ export type FaqScalarWhereWithAggregatesInput = {
   relatedRouteLabelKm?: Prisma.StringNullableWithAggregatesFilter<"Faq"> | string | null
   sortOrder?: Prisma.IntWithAggregatesFilter<"Faq"> | number
   isActive?: Prisma.BoolWithAggregatesFilter<"Faq"> | boolean
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Faq"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Faq"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Faq"> | Date | string
 }
@@ -404,6 +416,7 @@ export type FaqCreateInput = {
   relatedRouteLabelKm?: string | null
   sortOrder?: number
   isActive?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -423,6 +436,7 @@ export type FaqUncheckedCreateInput = {
   relatedRouteLabelKm?: string | null
   sortOrder?: number
   isActive?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -442,6 +456,7 @@ export type FaqUpdateInput = {
   relatedRouteLabelKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -461,6 +476,7 @@ export type FaqUncheckedUpdateInput = {
   relatedRouteLabelKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -480,6 +496,7 @@ export type FaqCreateManyInput = {
   relatedRouteLabelKm?: string | null
   sortOrder?: number
   isActive?: boolean
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -499,6 +516,7 @@ export type FaqUpdateManyMutationInput = {
   relatedRouteLabelKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -518,6 +536,7 @@ export type FaqUncheckedUpdateManyInput = {
   relatedRouteLabelKm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -537,6 +556,7 @@ export type FaqCountOrderByAggregateInput = {
   relatedRouteLabelKm?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -559,6 +579,7 @@ export type FaqMaxOrderByAggregateInput = {
   relatedRouteLabelKm?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -577,6 +598,7 @@ export type FaqMinOrderByAggregateInput = {
   relatedRouteLabelKm?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -615,6 +637,7 @@ export type FaqSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   relatedRouteLabelKm?: boolean
   sortOrder?: boolean
   isActive?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["faq"]>
@@ -634,6 +657,7 @@ export type FaqSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
   relatedRouteLabelKm?: boolean
   sortOrder?: boolean
   isActive?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["faq"]>
@@ -653,6 +677,7 @@ export type FaqSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extension
   relatedRouteLabelKm?: boolean
   sortOrder?: boolean
   isActive?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["faq"]>
@@ -672,11 +697,12 @@ export type FaqSelectScalar = {
   relatedRouteLabelKm?: boolean
   sortOrder?: boolean
   isActive?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type FaqOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "audience" | "category" | "questionEn" | "questionKm" | "answerEn" | "answerKm" | "keywords" | "relatedRoute" | "relatedRouteLabelEn" | "relatedRouteLabelKm" | "sortOrder" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["faq"]>
+export type FaqOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "audience" | "category" | "questionEn" | "questionKm" | "answerEn" | "answerKm" | "keywords" | "relatedRoute" | "relatedRouteLabelEn" | "relatedRouteLabelKm" | "sortOrder" | "isActive" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["faq"]>
 
 export type $FaqPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Faq"
@@ -696,6 +722,7 @@ export type $FaqPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     relatedRouteLabelKm: string | null
     sortOrder: number
     isActive: boolean
+    deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["faq"]>
@@ -1135,6 +1162,7 @@ export interface FaqFieldRefs {
   readonly relatedRouteLabelKm: Prisma.FieldRef<"Faq", 'String'>
   readonly sortOrder: Prisma.FieldRef<"Faq", 'Int'>
   readonly isActive: Prisma.FieldRef<"Faq", 'Boolean'>
+  readonly deletedAt: Prisma.FieldRef<"Faq", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Faq", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Faq", 'DateTime'>
 }

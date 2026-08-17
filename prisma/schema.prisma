@@ -141,6 +141,7 @@ model User {
   emailVerifiedAt   DateTime?
   phoneVerifiedAt   DateTime?
   lastSignedInAt    DateTime?
+  deletedAt         DateTime?
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
   adminProfile      AdminProfile?
@@ -158,6 +159,7 @@ model User {
   @@index([googleId])
   @@index([role])
   @@index([accountStatus])
+  @@index([deletedAt])
   @@map("users")
 }
 
@@ -351,12 +353,14 @@ model ServiceCategory {
   descriptionKm    String?
   iconName         String?
   isActive         Boolean           @default(true)
+  deletedAt        DateTime?
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
   serviceListings  ServiceListing[]
   primaryProviders ProviderProfile[] @relation("ProviderPrimaryCategory")
 
   @@index([isActive])
+  @@index([deletedAt])
   @@map("service_categories")
 }
 
@@ -371,6 +375,7 @@ model ServiceArea {
   longitude        Decimal?             @db.Decimal(10, 7)
   radiusKm         Decimal              @default(15) @db.Decimal(6, 2)
   isActive         Boolean              @default(true)
+  deletedAt        DateTime?
   createdAt        DateTime             @default(now())
   updatedAt        DateTime             @updatedAt
   listingAreas     ServiceListingArea[]
@@ -379,6 +384,7 @@ model ServiceArea {
   bookings         Booking[]
 
   @@index([isActive])
+  @@index([deletedAt])
   @@map("service_areas")
 }
 
@@ -403,6 +409,7 @@ model ProviderVerification {
   submittedAt     DateTime?
   reviewedAt      DateTime?
   reviewerNotes   String?
+  deletedAt       DateTime?
   createdAt       DateTime                           @default(now())
   updatedAt       DateTime                           @updatedAt
   providerProfile ProviderProfile                    @relation(fields: [providerProfileId], references: [id], onDelete: Cascade)
@@ -414,6 +421,7 @@ model ProviderVerification {
   @@index([providerProfileId])
   @@index([status])
   @@index([submittedAt])
+  @@index([deletedAt])
   @@map("provider_verifications")
 }
 
@@ -502,6 +510,7 @@ model ServiceListing {
   availabilitySummary  String?
   serviceStatus        ServiceStatus              @default(DISABLED)
   moderationStatus     ServiceModerationStatus    @default(NORMAL)
+  deletedAt            DateTime?
   createdAt            DateTime                   @default(now())
   updatedAt            DateTime                   @updatedAt
   providerProfile      ProviderProfile            @relation(fields: [providerProfileId], references: [id], onDelete: Cascade)
@@ -515,6 +524,7 @@ model ServiceListing {
   @@index([categoryId])
   @@index([serviceStatus])
   @@index([moderationStatus])
+  @@index([deletedAt])
   @@map("service_listings")
 }
 
@@ -562,12 +572,14 @@ model CustomerAddress {
   longitude         Decimal?        @db.Decimal(10, 7)
   detectedLocation  String?
   isDefault         Boolean         @default(false)
+  deletedAt         DateTime?
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
   customerProfile   CustomerProfile @relation(fields: [customerProfileId], references: [id], onDelete: Cascade)
   bookings           Booking[]
 
   @@index([customerProfileId])
+  @@index([deletedAt])
   @@map("customer_addresses")
 }
 
@@ -666,6 +678,7 @@ model Review {
   bookingId         String?         @unique
   rating            Decimal         @db.Decimal(2, 1)
   comment           String?
+  deletedAt         DateTime?
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
   customerProfile   CustomerProfile @relation(fields: [customerProfileId], references: [id], onDelete: Restrict)
@@ -676,6 +689,7 @@ model Review {
   @@index([customerProfileId])
   @@index([providerProfileId])
   @@index([serviceListingId])
+  @@index([deletedAt])
   @@map("reviews")
 }
 
@@ -774,11 +788,13 @@ model Faq {
   relatedRouteLabelKm  String?
   sortOrder            Int         @default(0)
   isActive             Boolean     @default(true)
+  deletedAt            DateTime?
   createdAt            DateTime    @default(now())
   updatedAt            DateTime    @updatedAt
 
   @@index([isActive, sortOrder])
   @@index([audience, isActive, category])
+  @@index([deletedAt])
   @@map("faqs")
 }
 

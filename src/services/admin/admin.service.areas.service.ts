@@ -59,7 +59,10 @@ export class AdminServiceAreasService {
                 ? false
                 : undefined;
 
-        const where: any = isActiveFilter !== undefined ? { isActive: isActiveFilter } : {};
+        const where: any = {
+            deletedAt: null,
+            ...(isActiveFilter !== undefined ? { isActive: isActiveFilter } : {}),
+        };
 
         const [areas, total] = await Promise.all([
             prisma.serviceArea.findMany({
@@ -104,7 +107,7 @@ export class AdminServiceAreasService {
 
     static async getById(id: string, lang: Lang) {
         const a = await prisma.serviceArea.findFirst({
-            where: { OR: [{ id }, { publicId: id }] },
+            where: { deletedAt: null, OR: [{ id }, { publicId: id }] },
         });
         if (!a) throw new NotFoundException(t("ADMIN_SERVICE_AREA_NOT_FOUND", lang));
         const count = await countProvidersForArea(a.id);
@@ -117,7 +120,7 @@ export class AdminServiceAreasService {
             .replace(/[^a-z0-9]+/g, "-")
             .replace(/^-|-$/g, "");
 
-        if (
+        if(
             data.latitude == null ||
             data.longitude == null ||
             !Number.isFinite(Number(data.latitude)) ||
@@ -155,28 +158,54 @@ export class AdminServiceAreasService {
         lang: Lang
     ) {
         const a = await prisma.serviceArea.findFirst({
-            where: { OR: [{ id }, { publicId: id }] },
+            where: { deletedAt: null, OR: [{ id }, { publicId: id }] },
         });
         if (!a) throw new NotFoundException(t("ADMIN_SERVICE_AREA_NOT_FOUND", lang));
 
-        const patch: Record<string, unknown> = {};
-        if (data.nameEn !== undefined) patch.nameEn = data.nameEn;
-        if (data.nameKm !== undefined) patch.nameKm = data.nameKm;
-        if (data.provinceOrCity !== undefined) patch.provinceOrCity = data.provinceOrCity;
-        if (data.isActive !== undefined) patch.isActive = data.isActive;
-        if (data.latitude !== undefined) patch.latitude = data.latitude;
-        if (data.longitude !== undefined) patch.longitude = data.longitude;
-        if (data.radiusKm !== undefined && Number.isFinite(Number(data.radiusKm))) {
-            patch.radiusKm = Math.max(0.5, Number(data.radiusKm));
+        let slug: string | undefined;
+        if (data.nameEn) {
+            slug = data.nameEn
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/^-|-$/g, "");
         }
 
-        await prisma.serviceArea.update({ where: { id: a.id }, data: patch });
+        const latitude =
+            data.latitude !== undefined
+                ? data.latitude != null && Number.isFinite(Number(data.latitude))
+                    ? Number(data.latitude)
+                    : null
+                : undefined;
+        const longitude =
+            data.longitude !== undefined
+                ? data.longitude != null && Number.isFinite(Number(data.longitude))
+                    ? Number(data.longitude)
+                    : null
+                : undefined;
+        const radiusKm =
+            data.radiusKm !== undefined && Number.isFinite(Number(data.radiusKm))
+                ? Math.max(0.5, Number(data.radiusKm))
+                : undefined;
+
+        await prisma.serviceArea.update({
+            where: { id: a.id },
+            data: {
+                ...(data.nameEn ? { nameEn: data.nameEn, slug } : {}),
+                ...(data.nameKm !== undefined ? { nameKm: data.nameKm } : {}),
+                ...(data.provinceOrCity !== undefined ? { provinceOrCity: data.provinceOrCity } : {}),
+                ...(latitude !== undefined ? { latitude } : {}),
+                ...(longitude !== undefined ? { longitude } : {}),
+                ...(radiusKm !== undefined ? { radiusKm } : {}),
+                ...(data.isActive !== undefined ? { isActive: data.isActive } : {}),
+            },
+        });
+
         return this.getById(id, lang);
     }
 
     static async disable(id: string, adminUserId: string, lang: Lang) {
         const a = await prisma.serviceArea.findFirst({
-            where: { OR: [{ id }, { publicId: id }] },
+            where: { deletedAt: null, OR: [{ id }, { publicId: id }] },
         });
         if (!a) throw new NotFoundException(t("ADMIN_SERVICE_AREA_NOT_FOUND", lang));
 
@@ -203,7 +232,7 @@ export class AdminServiceAreasService {
 
     static async restore(id: string, adminUserId: string, lang: Lang) {
         const a = await prisma.serviceArea.findFirst({
-            where: { OR: [{ id }, { publicId: id }] },
+            where: { deletedAt: null, OR: [{ id }, { publicId: id }] },
         });
         if (!a) throw new NotFoundException(t("ADMIN_SERVICE_AREA_NOT_FOUND", lang));
 
@@ -230,7 +259,7 @@ export class AdminServiceAreasService {
 
     static async delete(id: string, adminUserId: string, lang: Lang) {
         const a = await prisma.serviceArea.findFirst({
-            where: { OR: [{ id }, { publicId: id }] },
+            where: { deletedAt: null, OR: [{ id }, { publicId: id }] },
         });
         if (!a) throw new NotFoundException(t("ADMIN_SERVICE_AREA_NOT_FOUND", lang));
 
@@ -265,7 +294,13 @@ export class AdminServiceAreasService {
             });
         }
 
-        await prisma.serviceArea.delete({ where: { id: a.id } });
+        await prisma.serviceArea.update({
+            where: { id: a.id },
+            data: {
+                deletedAt: new Date(),
+                isActive: false,
+            },
+        });
         return { deleted: true, id: a.publicId };
     }
 }

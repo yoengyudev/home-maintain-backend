@@ -43,7 +43,7 @@ export class CustomerProfileService {
                 },
             }),
             prisma.customerAddress.count({
-                where: { customerProfileId },
+                where: { customerProfileId, deletedAt: null },
             }),
             prisma.booking.count({
                 where: {

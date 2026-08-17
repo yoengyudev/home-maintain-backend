@@ -17,6 +17,7 @@ export class CustomerFaqsService {
 
         const where = {
             isActive: true,
+            deletedAt: null,
             audience: FaqAudience.CUSTOMER,
             ...(search
                 ? {

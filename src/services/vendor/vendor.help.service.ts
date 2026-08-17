@@ -33,6 +33,7 @@ export class VendorHelpService {
                 where: {
                     audience: FaqAudience.PROVIDER,
                     isActive: true,
+                    deletedAt: null,
                 },
                 orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
             }),
