@@ -2,9 +2,13 @@ import crypto from "crypto";
 import { prisma } from "../../database/prisma.client";
 import { SupportPageKey } from "../../generated/prisma/enums";
 import type { Lang } from "../../i18n/messages";
-import { t } from "../../i18n/translate";
-import { NotFoundException } from "../../utils/app-error.util";
-import { CUSTOMER_CONTACT_DEFAULT } from "./customer.support.seed";
+import {
+    CUSTOMER_CONTACT_DEFAULT,
+    CUSTOMER_ABOUT_DEFAULT_EN,
+    CUSTOMER_ABOUT_DEFAULT_KM,
+    CUSTOMER_MISSION_DEFAULT_EN,
+    CUSTOMER_MISSION_DEFAULT_KM,
+} from "./customer.support.seed";
 
 type AboutContent = {
     eyebrow: string;
@@ -33,30 +37,44 @@ type MissionContent = {
     qualityDescription: string;
 };
 
-type ContactContent = {
-    telegramHandle: string;
-    telegramUrl: string;
-    phone: string;
-    phoneDisplay: string;
-    email: string;
-    hoursEn: string;
-    hoursKm: string;
-};
-
 function asRecord(value: unknown): Record<string, unknown> {
     return value && typeof value === "object" ? (value as Record<string, unknown>) : {};
 }
 
 export class CustomerSupportService {
     static async getAbout(lang: Lang) {
-        return this.getPageContent<AboutContent>(SupportPageKey.ABOUT, lang);
+        await this.ensurePage(
+            SupportPageKey.ABOUT,
+            CUSTOMER_ABOUT_DEFAULT_EN,
+            CUSTOMER_ABOUT_DEFAULT_KM
+        );
+        return this.getPageContent<AboutContent>(
+            SupportPageKey.ABOUT,
+            lang,
+            lang === "kh" ? CUSTOMER_ABOUT_DEFAULT_KM : CUSTOMER_ABOUT_DEFAULT_EN
+        );
     }
 
     static async getMission(lang: Lang) {
-        return this.getPageContent<MissionContent>(SupportPageKey.MISSION, lang);
+        await this.ensurePage(
+            SupportPageKey.MISSION,
+            CUSTOMER_MISSION_DEFAULT_EN,
+            CUSTOMER_MISSION_DEFAULT_KM
+        );
+        return this.getPageContent<MissionContent>(
+            SupportPageKey.MISSION,
+            lang,
+            lang === "kh" ? CUSTOMER_MISSION_DEFAULT_KM : CUSTOMER_MISSION_DEFAULT_EN
+        );
     }
 
     static async getContact(lang: Lang) {
+        await this.ensurePage(
+            SupportPageKey.CUSTOMER_CONTACT,
+            CUSTOMER_CONTACT_DEFAULT,
+            CUSTOMER_CONTACT_DEFAULT
+        );
+
         const page = await prisma.supportPage.findFirst({
             where: {
                 pageKey: SupportPageKey.CUSTOMER_CONTACT,
@@ -133,25 +151,45 @@ export class CustomerSupportService {
         };
     }
 
-    /** Ensure the customer contact page exists so admin can edit it. */
+    /** Ensure customer contact page exists so admin can edit it. */
     static async ensureCustomerContactPage() {
-        const existing = await prisma.supportPage.findUnique({
-            where: { pageKey: SupportPageKey.CUSTOMER_CONTACT },
-        });
-        if (existing) return existing;
-
-        return prisma.supportPage.create({
-            data: {
-                publicId: crypto.randomUUID(),
-                pageKey: SupportPageKey.CUSTOMER_CONTACT,
-                contentEn: CUSTOMER_CONTACT_DEFAULT,
-                contentKm: CUSTOMER_CONTACT_DEFAULT,
-                isActive: true,
-            },
-        });
+        return this.ensurePage(
+            SupportPageKey.CUSTOMER_CONTACT,
+            CUSTOMER_CONTACT_DEFAULT,
+            CUSTOMER_CONTACT_DEFAULT
+        );
     }
 
-    private static async getPageContent<T>(pageKey: SupportPageKey, lang: Lang) {
+    private static async ensurePage(
+        pageKey: SupportPageKey,
+        defaultEn: Record<string, any>,
+        defaultKm: Record<string, any>
+    ) {
+        try {
+            const existing = await prisma.supportPage.findUnique({
+                where: { pageKey },
+            });
+            if (existing) return existing;
+
+            return await prisma.supportPage.create({
+                data: {
+                    publicId: crypto.randomUUID(),
+                    pageKey,
+                    contentEn: defaultEn,
+                    contentKm: defaultKm,
+                    isActive: true,
+                },
+            });
+        } catch {
+            return null;
+        }
+    }
+
+    private static async getPageContent<T>(
+        pageKey: SupportPageKey,
+        lang: Lang,
+        fallbackDefault: Record<string, any>
+    ) {
         const page = await prisma.supportPage.findFirst({
             where: {
                 pageKey,
@@ -159,17 +197,13 @@ export class CustomerSupportService {
             },
         });
 
-        if (!page) {
-            throw new NotFoundException(t("CUSTOMER_SUPPORT_PAGE_NOT_FOUND", lang));
-        }
-
         const isKh = lang === "kh";
-        const content = (isKh ? page.contentKm : page.contentEn) as T;
+        const content = (page ? (isKh ? page.contentKm : page.contentEn) : fallbackDefault) as T;
 
         return {
-            publicId: page.publicId,
-            pageKey: page.pageKey,
-            ...content,
+            publicId: page?.publicId || `${pageKey.toLowerCase()}-default`,
+            pageKey,
+            ...(typeof content === "object" && content !== null ? content : fallbackDefault),
         };
     }
 }
