@@ -32,8 +32,18 @@ const bookingInclude = {
             user: { select: { email: true, phone: true } },
         },
     },
+    customerAddress: {
+        select: {
+            id: true,
+            publicId: true,
+            addressLine: true,
+            latitude: true,
+            longitude: true,
+            detectedLocation: true,
+        },
+    },
     serviceArea: {
-        select: { nameEn: true, nameKm: true },
+        select: { nameEn: true, nameKm: true, latitude: true, longitude: true },
     },
 } as const;
 
@@ -64,6 +74,19 @@ function decimalNumber(value: { toNumber?: () => number } | number | string | nu
 }
 
 function formatBooking(booking: any) {
+    const lat =
+        booking.customerAddress?.latitude != null
+            ? Number(booking.customerAddress.latitude)
+            : booking.serviceArea?.latitude != null
+            ? Number(booking.serviceArea.latitude)
+            : null;
+    const lng =
+        booking.customerAddress?.longitude != null
+            ? Number(booking.customerAddress.longitude)
+            : booking.serviceArea?.longitude != null
+            ? Number(booking.serviceArea.longitude)
+            : null;
+
     return {
         bookingId: booking.publicId || booking.id,
         serviceId: booking.serviceListing?.publicId || booking.serviceListingId,
@@ -74,7 +97,7 @@ function formatBooking(booking: any) {
         quantity: booking.quantity ?? 1,
         requestedDate: calendarDate(booking.scheduledAt),
         requestedTimeSlot: booking.timeSlot || "",
-        serviceAddress: booking.serviceAddress || "",
+        serviceAddress: booking.serviceAddress || booking.customerAddress?.addressLine || "",
         areaSummary: booking.areaSummary || booking.serviceArea?.nameEn || booking.serviceArea?.nameKm || "",
         accessInstructions: booking.accessInstructions || "",
         estimatedTotal: decimalNumber(booking.estimatedTotal),
@@ -83,6 +106,8 @@ function formatBooking(booking: any) {
         rejectionReason: booking.rejectionReason || undefined,
         notes: booking.customerNotes || undefined,
         scheduledAt: booking.scheduledAt.toISOString(),
+        latitude: lat,
+        longitude: lng,
     };
 }
 
