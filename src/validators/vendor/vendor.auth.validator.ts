@@ -66,3 +66,40 @@ export const resetPasswordSchema = z.object({
 export const vendorRefreshTokenSchema = z.object({
     refreshToken: z.string().min(1, "Refresh token is required"),
 });
+
+export const vendorRequestPhoneChangeOtpSchema = z.object({
+    phone: z.string()
+        .transform(normalizeCambodiaPhone)
+        .refine(validateCambodiaPhone, "Invalid Cambodia phone number"),
+});
+
+export const vendorResendPhoneChangeOtpSchema = z.object({
+    phone: z.string()
+        .transform(normalizeCambodiaPhone)
+        .refine(validateCambodiaPhone, "Invalid Cambodia phone number"),
+});
+
+export const vendorVerifyPhoneChangeOtpSchema = z.object({
+    phone: z.string()
+        .transform(normalizeCambodiaPhone)
+        .refine(validateCambodiaPhone, "Invalid Cambodia phone number"),
+    otp: z.string().length(6, "OTP must be exactly 6 digits"),
+});
+
+export const vendorUpdateProfileSchema = z.object({
+    businessName: z.string().min(2).optional(),
+    providerType: z.string().optional(),
+    contactName: z.string().min(2).optional(),
+    email: z.string().email("Invalid email address").refine(validateEmail, "Invalid email address format").optional().or(z.literal('')).nullable(),
+    addressLine: z.string().optional(),
+    district: z.string().optional(),
+    cityProvince: z.string().optional(),
+    about: z.string().optional(),
+    logoUrl: z.string().nullable().optional(),
+    coverUrl: z.string().nullable().optional(),
+    latitude: z.number().nullable().optional(),
+    longitude: z.number().nullable().optional(),
+    coverageSummary: z.string().optional(),
+    detectedAddress: z.string().optional(),
+    serviceAreaIds: z.array(z.string()).optional(),
+});

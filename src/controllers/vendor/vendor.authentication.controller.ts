@@ -189,3 +189,40 @@ export const updateAvailability = async (req: Request, res: Response) => {
         data,
     });
 };
+
+export const requestPhoneChangeOtp = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const userId = (req as any).user?.userId;
+    const data = await VendorAuthenticationService.requestPhoneChangeOtp(userId, req.body, lang);
+
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: t("VENDOR_OTP_SENT", lang),
+        data,
+    });
+};
+
+export const resendPhoneChangeOtp = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const userId = (req as any).user?.userId;
+    const data = await VendorAuthenticationService.resendPhoneChangeOtp(userId, req.body, lang);
+
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: t("VENDOR_OTP_SENT", lang),
+        data,
+    });
+};
+
+export const verifyPhoneChangeOtp = async (req: Request, res: Response) => {
+    const lang = getLang(req);
+    const userId = (req as any).user?.userId;
+    const data = await VendorAuthenticationService.verifyPhoneChangeOtp(userId, req.body, lang);
+
+    return sendResponse(res, {
+        statusCode: HTTPSTATUS.OK,
+        message: t("VENDOR_PROFILE_UPDATED", lang),
+        data,
+    });
+};
+

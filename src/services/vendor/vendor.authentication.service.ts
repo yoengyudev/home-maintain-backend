@@ -11,6 +11,7 @@ import { UserRole, ProviderStatus, AccountStatus, BookingStatus, ServiceStatus }
 import { deactivateFcmToken, upsertFcmToken } from "../../helper/customer/auth.helper";
 import { Lang } from "../../i18n/messages";
 import { t } from "../../i18n/translate";
+import { OtpService } from "../otp/otp.service";
 
 type RegisterDto = z.infer<typeof vendorRegisterSchema>;
 type LoginDto = z.infer<typeof vendorLoginSchema>;
@@ -655,6 +656,7 @@ export class VendorAuthenticationService {
         businessName?: string;
         providerType?: string;
         contactName?: string;
+        email?: string | null;
         addressLine?: string;
         district?: string;
         cityProvince?: string;
@@ -674,6 +676,26 @@ export class VendorAuthenticationService {
 
         if (!providerProfile) {
             throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
+        }
+
+        // Update email on user record if supplied
+        if (data.email !== undefined && data.email !== null) {
+            const normalizedEmail = data.email.trim().toLowerCase();
+            if (normalizedEmail) {
+                const existingUser = await prisma.user.findFirst({
+                    where: {
+                        email: { equals: normalizedEmail, mode: 'insensitive' },
+                        NOT: { id: userId }
+                    }
+                });
+                if (existingUser) {
+                    throw new BadRequestException(t("VENDOR_PHONE_OR_EMAIL_EXISTS", lang));
+                }
+                await prisma.user.update({
+                    where: { id: userId },
+                    data: { email: normalizedEmail }
+                });
+            }
         }
 
         const businessData = {
@@ -733,6 +755,107 @@ export class VendorAuthenticationService {
         }
 
         // Return updated profile
+        return this.me(userId, lang);
+    }
+
+    static async requestPhoneChangeOtp(userId: string, data: { phone: string }, lang: Lang = "en") {
+        const providerProfile = await prisma.providerProfile.findUnique({
+            where: { userId },
+            include: { user: true }
+        });
+
+        if (!providerProfile || !providerProfile.user) {
+            throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
+        }
+
+        const { phone } = data;
+
+        if (providerProfile.user.phone === phone) {
+            throw new BadRequestException(t("VENDOR_PHONE_OR_EMAIL_EXISTS", lang));
+        }
+
+        const existingPhone = await prisma.user.findFirst({
+            where: {
+                phone,
+                NOT: { id: userId },
+            },
+        });
+
+        if (existingPhone) {
+            throw new BadRequestException(t("VENDOR_PHONE_OR_EMAIL_EXISTS", lang));
+        }
+
+        const otpResult = await OtpService.createAndSend<{
+            userId: string;
+            newPhone: string;
+        }>({
+            phone,
+            purpose: "VENDOR_CHANGE_PHONE",
+            payload: {
+                userId,
+                newPhone: phone,
+            },
+        });
+
+        return otpResult;
+    }
+
+    static async resendPhoneChangeOtp(userId: string, data: { phone: string }, lang: Lang = "en") {
+        const providerProfile = await prisma.providerProfile.findUnique({
+            where: { userId }
+        });
+
+        if (!providerProfile) {
+            throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
+        }
+
+        return OtpService.resend(data.phone, "VENDOR_CHANGE_PHONE", lang);
+    }
+
+    static async verifyPhoneChangeOtp(
+        userId: string,
+        data: { phone: string; otp: string },
+        lang: Lang = "en"
+    ) {
+        const providerProfile = await prisma.providerProfile.findUnique({
+            where: { userId },
+            include: { user: true }
+        });
+
+        if (!providerProfile || !providerProfile.user) {
+            throw new NotFoundException(t("VENDOR_PROVIDER_PROFILE_NOT_FOUND", lang));
+        }
+
+        const { phone, otp } = data;
+
+        const pending = OtpService.consume<{
+            userId: string;
+            newPhone: string;
+        }>(phone, "VENDOR_CHANGE_PHONE", otp, lang);
+
+        if (pending.userId !== userId || pending.newPhone !== phone) {
+            throw new BadRequestException(t("VENDOR_INVALID_VERIFICATION_CODE", lang));
+        }
+
+        const existingPhone = await prisma.user.findFirst({
+            where: {
+                phone,
+                NOT: { id: userId },
+            },
+        });
+
+        if (existingPhone) {
+            throw new BadRequestException(t("VENDOR_PHONE_OR_EMAIL_EXISTS", lang));
+        }
+
+        await prisma.user.update({
+            where: { id: userId },
+            data: {
+                phone,
+                phoneVerifiedAt: new Date(),
+            },
+        });
+
         return this.me(userId, lang);
     }
 

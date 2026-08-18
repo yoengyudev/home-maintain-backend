@@ -17,7 +17,8 @@ export type OtpPurpose =
     | "CUSTOMER_FORGOT_PASSWORD"
     | "CUSTOMER_PASSWORD_RESET"
     | "CUSTOMER_CHANGE_PHONE"
-    | "VENDOR_FORGOT_PASSWORD";
+    | "VENDOR_FORGOT_PASSWORD"
+    | "VENDOR_CHANGE_PHONE";
 
 type OtpChallenge<TPayload = unknown> = {
     phone: string;

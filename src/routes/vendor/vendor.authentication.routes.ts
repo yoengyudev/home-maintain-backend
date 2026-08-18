@@ -1,8 +1,37 @@
 import { Router } from "express";
-import { register, login, refresh, forgotPassword, resetPassword, logout, me, getProfile, updateProfile, updateAvailability, changePassword, listSessions, revokeOtherSessions, deleteAccount } from "../../controllers/vendor/vendor.authentication.controller";
+import {
+    register,
+    login,
+    refresh,
+    forgotPassword,
+    resetPassword,
+    logout,
+    me,
+    getProfile,
+    updateProfile,
+    updateAvailability,
+    changePassword,
+    listSessions,
+    revokeOtherSessions,
+    deleteAccount,
+    requestPhoneChangeOtp,
+    resendPhoneChangeOtp,
+    verifyPhoneChangeOtp,
+} from "../../controllers/vendor/vendor.authentication.controller";
 import { asyncHandler } from "../../middlewares/async-handler.middlerware";
 import { validate } from "../../validators/validate";
-import { vendorRegisterSchema, vendorLoginSchema, forgotPasswordSchema, resetPasswordSchema, vendorChangePasswordSchema, vendorDeleteAccountSchema, vendorRefreshTokenSchema } from "../../validators/vendor/vendor.auth.validator";
+import {
+    vendorRegisterSchema,
+    vendorLoginSchema,
+    forgotPasswordSchema,
+    resetPasswordSchema,
+    vendorChangePasswordSchema,
+    vendorDeleteAccountSchema,
+    vendorRefreshTokenSchema,
+    vendorRequestPhoneChangeOtpSchema,
+    vendorResendPhoneChangeOtpSchema,
+    vendorVerifyPhoneChangeOtpSchema,
+} from "../../validators/vendor/vendor.auth.validator";
 import { authenticate } from "../../middlewares/auth.middlerware";
 import { authorize } from "../../middlewares/role.middlerware";
 import { UserRole } from "../../generated/prisma/enums";
@@ -36,4 +65,27 @@ router.get("/profile", authenticate, authorize(UserRole.PROVIDER), asyncHandler(
 router.put("/profile", authenticate, authorize(UserRole.PROVIDER), asyncHandler(updateProfile));
 router.put("/availability", authenticate, authorize(UserRole.PROVIDER), asyncHandler(updateAvailability));
 
+router.post(
+    "/phone/change-request",
+    authenticate,
+    authorize(UserRole.PROVIDER),
+    validate(vendorRequestPhoneChangeOtpSchema),
+    asyncHandler(requestPhoneChangeOtp)
+);
+router.post(
+    "/phone/change-resend",
+    authenticate,
+    authorize(UserRole.PROVIDER),
+    validate(vendorResendPhoneChangeOtpSchema),
+    asyncHandler(resendPhoneChangeOtp)
+);
+router.post(
+    "/phone/change-verify",
+    authenticate,
+    authorize(UserRole.PROVIDER),
+    validate(vendorVerifyPhoneChangeOtpSchema),
+    asyncHandler(verifyPhoneChangeOtp)
+);
+
 export default router;
+
