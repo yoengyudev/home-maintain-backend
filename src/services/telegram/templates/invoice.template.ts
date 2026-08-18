@@ -91,4 +91,44 @@ export const InvoiceTelegramTemplate = {
 
     return { text, replyMarkup };
   },
+
+  formatOverdue(data: {
+    invoiceNumber: string;
+    publicId?: string;
+    providerName: string;
+    amount: number;
+    dueDate?: string;
+    daysOverdue?: number;
+    actionUrl?: string;
+  }, lang: 'en' | 'km' = 'en'): FormattedTelegramMessage {
+    const isKh = lang === 'km';
+    let text = isKh
+      ? `🚨 <b>ការរំលឹក៖ វិក្កយបត្រកម្រៃសេវាបានហួសកាលកំណត់!</b>\n\n`
+      : `🚨 <b>ALERT: Commission Invoice is OVERDUE!</b>\n\n`;
+
+    text += `🧾 <b>${isKh ? 'លេខវិក្កយបត្រ' : 'Invoice Number'}:</b> <code>${telegramBotService.escapeHtml(data.invoiceNumber)}</code>\n`;
+    text += `🏢 <b>${isKh ? 'អ្នកផ្តល់សេវា' : 'Provider'}:</b> ${telegramBotService.escapeHtml(data.providerName)}\n`;
+    text += `💵 <b>${isKh ? 'ទឹកប្រាក់ត្រូវទូទាត់' : 'Outstanding Amount'}:</b> <b>$${Number(data.amount || 0).toFixed(2)}</b>\n`;
+
+    if (data.dueDate) {
+      text += `📅 <b>${isKh ? 'ថ្ងៃផុតកំណត់' : 'Due Date'}:</b> ${telegramBotService.escapeHtml(data.dueDate)}\n`;
+    }
+    if (data.daysOverdue !== undefined && data.daysOverdue > 0) {
+      text += `⏳ <b>${isKh ? 'ហួសកំណត់' : 'Overdue by'}:</b> <b>${data.daysOverdue} ${isKh ? 'ថ្ងៃ' : 'day(s)'}</b>\n`;
+    }
+
+    text += isKh
+      ? `\n⚠️ <i>សូមមេត្តាធ្វើការទូទាត់កម្រៃសេវាដើម្បីធានានិរន្តរភាពក្នុងការទទួលការងារលើប្រព័ន្ធ។</i>\n`
+      : `\n⚠️ <i>Please settle your outstanding platform fee to maintain active status on the platform.</i>\n`;
+
+    text += `\n⏰ <i>${formatTelegramDateTime()}</i>`;
+
+    const replyMarkup = data.actionUrl
+      ? telegramBotService.buildInlineKeyboard([
+          [{ text: isKh ? '💳 មើលវិក្កយបត្រ & ទូទាត់' : '💳 View Invoice & Pay', url: data.actionUrl }],
+        ])
+      : undefined;
+
+    return { text, replyMarkup };
+  },
 };

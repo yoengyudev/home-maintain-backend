@@ -212,6 +212,26 @@ export class NotificationDispatcher {
         return;
       }
 
+      if (payload.relatedModule === 'COMMISSION_INVOICE_OVERDUE') {
+        const msg = InvoiceTelegramTemplate.formatOverdue(
+          {
+            invoiceNumber: (meta.invoiceNumber as string) || payload.relatedRecordId || 'Invoice',
+            publicId: (meta.publicId as string) || payload.relatedRecordId,
+            providerName: (meta.providerName as string) || 'Provider',
+            amount: (meta.totalCommission as number) || (meta.amount as number) || 0,
+            dueDate: meta.dueDate as string | undefined,
+            daysOverdue: meta.daysOverdue as number | undefined,
+            actionUrl: fullActionUrl,
+          },
+          'en'
+        );
+        telegramQueueService.enqueueMessage(chatId, msg.text, {
+          parse_mode: 'HTML',
+          reply_markup: msg.replyMarkup,
+        });
+        return;
+      }
+
       if (payload.type === NotificationType.VERIFICATION) {
         const msg = VerificationTelegramTemplate.formatDecision(
           {

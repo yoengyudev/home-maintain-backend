@@ -18,6 +18,7 @@ import { t } from "./i18n/translate";
 import { attachBookingWebSocket } from "./websocket/booking-ws";
 import { telegramBotService } from "./services/telegram/telegram-bot.service";
 import { TelegramCommandRouter } from "./services/telegram/telegram-command-router";
+import { InvoiceOverdueAlertService } from "./services/vendor/invoice-overdue-alert.service";
 const app = express();
 
 const server = http.createServer(app);
@@ -104,12 +105,16 @@ const startServer = async () => {
         void telegramBotService.startPolling((update) => TelegramCommandRouter.handleUpdate(update));
     }
 
+    // Start 24h overdue invoice alert recurring scheduler
+    InvoiceOverdueAlertService.startScheduler();
+
     server.listen(Env.PORT, () => {
         logger.info(`Server is running on port ${Env.PORT} in ${Env.NODE_ENV} mode`);
     });
 
     const shutdown = async (signal: string) => {
         logger.info(`${signal} received. Shutting down gracefully...`);
+        InvoiceOverdueAlertService.stopScheduler();
         telegramBotService.stopPolling();
         server.close(() => {
             logger.info("HTTP server closed.");
